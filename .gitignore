@@ -11,3 +11,6 @@ dist/
 build/
 *.egg-info/
 .DS_Store
+
+# Human-validation source material must never enter the repository.
+benchmark/agronomy_blind_v1/private/

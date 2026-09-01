@@ -44,7 +44,17 @@ benchmark/agronomy_blind_v1/
     local-candidate-2026-09-01.json
   freeze/
     manifest.json
+  authorization/
+    README.md
+    authorization-request.md
+    contact-and-review-plan.md
+    invitation-and-consent-scripts.md
+    privacy-controls.md
+    execution-checklist.md
+    preflight-findings.md
 ```
+
+El directorio `authorization/` prepara el reclutamiento y la revisión, pero no autoriza contacto por sí mismo. Su estado inicial es `NOT_AUTHORIZED` y contiene los bloqueos técnicos que deben cerrarse antes de mostrar salidas a revisores.
 
 ## Flujo de trabajo
 
