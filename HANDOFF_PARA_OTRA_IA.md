@@ -36,7 +36,7 @@ El proyecto **todavía no fue publicado, desplegado ni enviado al hackathon**. T
 - Si se reutiliza código previo, deben documentarse cambios significativos realizados después del 26/08/2026.
 - No publicar, desplegar con costos, hacer público el repositorio ni registrar una submission sin autorización expresa del usuario.
 
-La evidencia y las fuentes oficiales congeladas están documentadas en `docs/official-rules-freeze.md`.
+La evidencia y las fuentes oficiales congeladas están documentadas en `docs/research/official-rules-freeze-2026-09-01.md`.
 
 ## Decisión de producto
 
@@ -57,7 +57,7 @@ La investigación inicial mostró que “asistente agronómico por voz” o “c
 - calidad del orden de prioridades;
 - latencia y costo.
 
-La comparación de alternativas está en `docs/idea-landscape-matrix.md`.
+La comparación de alternativas está en `docs/research/landscape-and-idea-matrix.md`.
 
 ## Arquitectura recomendada e implementada
 
@@ -91,7 +91,7 @@ La descripción completa está en `docs/architecture.md`.
 - Fixtures agronómicos y evaluador reproducible.
 - Pruebas unitarias y de integración.
 - Documentación de arquitectura, evaluación, preparación de entrega y guion de video.
-- Licencia Apache-2.0 y archivo de ejemplo de variables de entorno.
+- Licencia MIT y archivo de ejemplo de variables de entorno.
 
 ## Mapa de archivos
 
@@ -105,13 +105,13 @@ La descripción completa está en `docs/architecture.md`.
 - `src/agrofield_agent/static/`: interfaz web.
 - `fixtures/eval_cases.jsonl`: casos de evaluación.
 - `tests/`: pruebas automáticas.
-- `docs/official-rules-freeze.md`: bases y fuentes oficiales congeladas.
-- `docs/idea-landscape-matrix.md`: comparación de ideas y decisión.
+- `docs/research/official-rules-freeze-2026-09-01.md`: bases y fuentes oficiales congeladas.
+- `docs/research/landscape-and-idea-matrix.md`: comparación de ideas y decisión.
 - `docs/architecture.md`: arquitectura y límites de confianza.
-- `docs/evaluation-spec.md`: métricas y criterios de aceptación.
+- `docs/evaluation/evaluation-spec.md`: métricas y criterios de aceptación.
 - `docs/submission-readiness.md`: faltantes para la entrega pública.
 - `docs/video-outline.md`: guion preliminar del video de menos de tres minutos.
-- `reports/baseline.json`: resultado reproducible del baseline local.
+- `docs/evaluation/baseline-2026-09-01.json`: resultado reproducible del baseline local.
 
 ## Cómo ejecutar localmente
 
@@ -195,8 +195,8 @@ Advertencia importante: estos números corresponden a un **baseline determinista
 
 Antes de modificar código:
 
-1. Leer `README.md`, `docs/official-rules-freeze.md`, `docs/architecture.md`, `docs/evaluation-spec.md` y `docs/submission-readiness.md`.
-2. Ejecutar las pruebas y reproducir `reports/baseline.json`.
+1. Leer `README.md`, `docs/research/official-rules-freeze-2026-09-01.md`, `docs/architecture.md`, `docs/evaluation/evaluation-spec.md` y `docs/submission-readiness.md`.
+2. Ejecutar las pruebas y reproducir `docs/evaluation/baseline-2026-09-01.json`.
 3. Revisar `git status` y preservar cualquier cambio del usuario.
 4. No sustituir las reglas deterministas por decisiones libres del modelo.
 5. No afirmar que Nemotron fue probado mientras el proveedor reportado sea `local/deterministic-es-v0.1`.
