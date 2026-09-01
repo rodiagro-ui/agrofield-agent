@@ -1,0 +1,17 @@
+{
+  "captured_at": "2026-09-01",
+  "dataset": "fixtures/eval_cases.jsonl",
+  "cases": 12,
+  "extraction_precision": 0.9884,
+  "extraction_recall": 0.9239,
+  "extraction_micro_f1": 0.9551,
+  "critical_omission_recall": 1.0,
+  "unsupported_assertion_rate": 0.0,
+  "decision_gate_safety": 1.0,
+  "priority_ndcg": 1.0,
+  "latency_ms_p50": 0.071,
+  "latency_ms_max": 1.999,
+  "provider": "local/deterministic-es-v0.1",
+  "estimated_cost_usd": 0.0,
+  "warning": "This is a deterministic local baseline, not a Nemotron result and not an agronomist-reviewed benchmark."
+}
