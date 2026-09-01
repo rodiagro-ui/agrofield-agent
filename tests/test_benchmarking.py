@@ -2,6 +2,8 @@ import asyncio
 import json
 from pathlib import Path
 
+import pytest
+
 from agrofield_agent.benchmarking import (
     ERROR_CODES,
     REFERENCE_FIELDS,
@@ -130,20 +132,70 @@ def test_candidate_evaluation_exposes_missing_human_validation():
     assert result["adverse_failure_count"] > 0
 
 
-def test_blind_packet_omits_provider_split_and_coordinates(tmp_path: Path):
-    packet_path = tmp_path / "packets.jsonl"
+def _nested_keys(value):
+    if isinstance(value, dict):
+        return set(value) | set().union(*(_nested_keys(item) for item in value.values()), set())
+    if isinstance(value, list):
+        return set().union(*(_nested_keys(item) for item in value), set())
+    return set()
+
+
+def test_reference_and_output_packets_are_physically_separate(tmp_path: Path):
+    reference_path = tmp_path / "phase-a-reference.jsonl"
+    output_path = tmp_path / "phase-b-output.jsonl"
     result = asyncio.run(
         run(
             CANDIDATE_DATASET,
             split="holdout",
-            blind_packet_out=packet_path,
+            reference_packet_out=reference_path,
+            output_packet_out=output_path,
             system_alias="system-k7",
         )
     )
-    packets = [json.loads(line) for line in packet_path.read_text(encoding="utf-8").splitlines()]
-    assert result["blind_packet"]["packets"] == 10
-    assert len(packets) == 10
-    assert all("provider" not in json.dumps(packet) for packet in packets)
-    assert all("split" not in packet for packet in packets)
-    assert all("latitude" not in json.dumps(packet) for packet in packets)
-    assert all("longitude" not in json.dumps(packet) for packet in packets)
+    reference_packets = [
+        json.loads(line) for line in reference_path.read_text(encoding="utf-8").splitlines()
+    ]
+    output_packets = [
+        json.loads(line) for line in output_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert result["reference_packet"]["packets"] == 10
+    assert result["output_packet"]["packets"] == 10
+    assert len(reference_packets) == len(output_packets) == 10
+
+    forbidden_phase_a = {
+        "output",
+        "system_alias",
+        "provider",
+        "split",
+        "candidate_reference",
+        "priority_score",
+        "proposed_tasks",
+        "telemetry",
+    }
+    assert all(packet["packet_type"] == "reference_annotation" for packet in reference_packets)
+    assert all(not (_nested_keys(packet) & forbidden_phase_a) for packet in reference_packets)
+    assert all(packet["packet_type"] == "output_review" for packet in output_packets)
+    assert all("output" in packet and packet["system_alias"] == "system-k7" for packet in output_packets)
+    assert {
+        packet["packet_id"] for packet in reference_packets
+    } == {
+        packet["reference_packet_id"] for packet in output_packets
+    }
+    for packet in [*reference_packets, *output_packets]:
+        serialized = json.dumps(packet)
+        assert "provider" not in serialized
+        assert "split" not in packet
+        assert "latitude" not in serialized
+        assert "longitude" not in serialized
+
+
+def test_phase_packets_cannot_share_an_output_path(tmp_path: Path):
+    same_path = tmp_path / "same.jsonl"
+    with pytest.raises(ValueError, match="different files"):
+        asyncio.run(
+            run(
+                CANDIDATE_DATASET,
+                reference_packet_out=same_path,
+                output_packet_out=same_path,
+            )
+        )

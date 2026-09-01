@@ -433,7 +433,37 @@ def dataset_audit(cases: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def make_blind_packet(
+def _field_context(case: dict[str, Any]) -> dict[str, Any]:
+    field = case["field"]
+    return {
+        "crop": field.get("crop"),
+        "stage_in_memory": field.get("stage"),
+        "risk_flags": field.get("risk_flags", []),
+        "history": field.get("history", []),
+        "weather": field.get("weather", {}),
+    }
+
+
+def reference_packet_id(case_id: str) -> str:
+    return hashlib.sha256(
+        f"reference:{case_id}:1.1.0-candidate".encode("utf-8")
+    ).hexdigest()[:16]
+
+
+def make_reference_packet(case: dict[str, Any]) -> dict[str, Any]:
+    """Build Phase A material without any system output or system identity."""
+
+    return {
+        "schema_version": "1.1.0-candidate",
+        "packet_type": "reference_annotation",
+        "packet_id": reference_packet_id(case["id"]),
+        "case_id": case["id"],
+        "note": case["note"],
+        "field_context": _field_context(case),
+    }
+
+
+def make_output_review_packet(
     case: dict[str, Any],
     observation: StructuredObservation,
     status: str,
@@ -445,25 +475,20 @@ def make_blind_packet(
     system_alias: str,
 ) -> dict[str, Any]:
     packet_id = hashlib.sha256(
-        f"{case['id']}:{system_alias}".encode("utf-8")
+        f"output:{case['id']}:{system_alias}:1.1.0-candidate".encode("utf-8")
     ).hexdigest()[:16]
-    field = case["field"]
     observation_payload = observation.model_dump(
         exclude={"field_id", "raw_text", "provider"}
     )
     return {
-        "schema_version": "1.0.0-candidate",
+        "schema_version": "1.1.0-candidate",
+        "packet_type": "output_review",
         "packet_id": packet_id,
+        "reference_packet_id": reference_packet_id(case["id"]),
         "case_id": case["id"],
         "system_alias": system_alias,
         "note": case["note"],
-        "field_context": {
-            "crop": field.get("crop"),
-            "stage_in_memory": field.get("stage"),
-            "risk_flags": field.get("risk_flags", []),
-            "history": field.get("history", []),
-            "weather": field.get("weather", {}),
-        },
+        "field_context": _field_context(case),
         "output": {
             "observation": observation_payload,
             "status": status,

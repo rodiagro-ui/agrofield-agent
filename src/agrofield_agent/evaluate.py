@@ -16,7 +16,8 @@ from agrofield_agent.benchmarking import (
     dataset_audit,
     load_cases,
     load_records,
-    make_blind_packet,
+    make_output_review_packet,
+    make_reference_packet,
     reference_for_case,
     reference_status,
     review_readiness,
@@ -157,9 +158,16 @@ async def run(
     case_annotations_path: Path | None = None,
     output_reviews_path: Path | None = None,
     adjudications_path: Path | None = None,
-    blind_packet_out: Path | None = None,
+    reference_packet_out: Path | None = None,
+    output_packet_out: Path | None = None,
     system_alias: str = "system-unlabeled",
 ) -> dict[str, Any]:
+    if (
+        reference_packet_out is not None
+        and output_packet_out is not None
+        and reference_packet_out.resolve() == output_packet_out.resolve()
+    ):
+        raise ValueError("Phase A and Phase B packets must use different files")
     cases = load_cases(path, split)
     if not cases:
         raise ValueError("The selected dataset contains no cases")
@@ -175,7 +183,8 @@ async def run(
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     automatic_errors: dict[str, list[dict[str, Any]]] = defaultdict(list)
     source_labels: list[str] = []
-    blind_packets: list[dict[str, Any]] = []
+    reference_packets: list[dict[str, Any]] = []
+    output_packets: list[dict[str, Any]] = []
     expected_task_counts: dict[str, int] = {}
 
     for case in cases:
@@ -277,9 +286,11 @@ async def run(
                 {"case_id": case["id"], "score": score, "relevance": float(relevance)}
             )
 
-        if blind_packet_out is not None:
-            blind_packets.append(
-                make_blind_packet(
+        if reference_packet_out is not None:
+            reference_packets.append(make_reference_packet(case))
+        if output_packet_out is not None:
+            output_packets.append(
+                make_output_review_packet(
                     case,
                     observation,
                     status,
@@ -328,8 +339,10 @@ async def run(
                     "La posición prevista difiere del orden de referencia dentro del grupo.",
                 )
 
-    if blind_packet_out is not None:
-        write_jsonl(blind_packet_out, blind_packets)
+    if reference_packet_out is not None:
+        write_jsonl(reference_packet_out, reference_packets)
+    if output_packet_out is not None:
+        write_jsonl(output_packet_out, output_packets)
 
     task_metrics = task_review_metrics(output_reviews, expected_task_counts)
     human_error_counts, human_failures = reviewed_errors(output_reviews)
@@ -409,10 +422,21 @@ async def run(
             else "Human reference is adjudicated; provider remains local/deterministic-es-v0.1."
         ),
     }
-    if blind_packet_out is not None:
-        result["blind_packet"] = {
-            "path": str(blind_packet_out),
-            "packets": len(blind_packets),
+    if reference_packet_out is not None:
+        result["reference_packet"] = {
+            "path": str(reference_packet_out),
+            "packets": len(reference_packets),
+            "phase": "A",
+            "system_output_included": False,
+            "system_alias_included": False,
+            "provider_metadata_included": False,
+            "split_metadata_included": False,
+        }
+    if output_packet_out is not None:
+        result["output_packet"] = {
+            "path": str(output_packet_out),
+            "packets": len(output_packets),
+            "phase": "B",
             "system_alias": system_alias,
             "provider_metadata_included": False,
             "split_metadata_included": False,
@@ -433,7 +457,16 @@ def main() -> None:
     parser.add_argument("--case-annotations", type=Path)
     parser.add_argument("--output-reviews", type=Path)
     parser.add_argument("--adjudications", type=Path)
-    parser.add_argument("--blind-packet-out", type=Path)
+    parser.add_argument(
+        "--reference-packet-out",
+        type=Path,
+        help="Write Phase A note/context packets with no system output.",
+    )
+    parser.add_argument(
+        "--output-packet-out",
+        type=Path,
+        help="Write Phase B system-output packets for use after Phase A is locked.",
+    )
     parser.add_argument("--system-alias", default="system-unlabeled")
     parser.add_argument("--report", type=Path)
     parser.add_argument(
@@ -449,7 +482,8 @@ def main() -> None:
             case_annotations_path=args.case_annotations,
             output_reviews_path=args.output_reviews,
             adjudications_path=args.adjudications,
-            blind_packet_out=args.blind_packet_out,
+            reference_packet_out=args.reference_packet_out,
+            output_packet_out=args.output_packet_out,
             system_alias=args.system_alias,
         )
     )
