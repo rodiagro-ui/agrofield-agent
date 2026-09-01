@@ -19,6 +19,7 @@ Field notes are easy to capture and easy to over-trust. A plausible narrative ca
 - Immutable audit events stored in SQLite.
 - Optional Tavily adapter restricted to authoritative agronomy and weather domains.
 - Offline evaluation harness for extraction, critical omissions, ranking, latency, and estimated inference cost.
+- Blind agronomy benchmark candidate with 30 cases, human-review gates, E1–E8 failure analysis, and reviewer-agreement metrics.
 
 ## Quick start (local, zero API cost)
 
@@ -40,6 +41,14 @@ Run tests and the evaluation:
 pytest
 python -m agrofield_agent.evaluate fixtures/eval_cases.jsonl
 ```
+
+Run the harder blind-benchmark candidate:
+
+```bash
+python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
+```
+
+The 30-case set is synthetic and currently has **zero human agronomy reviews**. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. See `benchmark/agronomy_blind_v1/README.md` for consent, anonymization, review, agreement, adjudication, and freeze procedures.
 
 ## Nebius Token Factory mode
 
@@ -64,11 +73,14 @@ Tavily is not used to invent a diagnosis. It is called only when a recent extern
 ```text
 src/agrofield_agent/   application, providers, policy, storage, UI
 fixtures/              demo data and annotated evaluation cases
+benchmark/             blind-review protocol, candidates, templates, reports
 tests/                 unit and API tests
 docs/research/         frozen rules and competitive research
 docs/evaluation/       metric definitions and acceptance gates
 docs/architecture.md   system design and trust boundaries
 ```
+
+All demo locations are synthetic. Exact field coordinates are not stored; `0.0, 0.0` is a deliberate non-location sentinel required by the current application schema.
 
 ## Submission status
 

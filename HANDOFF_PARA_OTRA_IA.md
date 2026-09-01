@@ -5,6 +5,8 @@
 **Rama:** `main`  
 **Commit base:** `32855c4` — `Build AgroField Agent vertical MVP`
 
+Desde ese commit se agregó un handoff, se corrigió su documentación y se construyó el paquete candidato Benchmark Agronómico Ciego v1. Consultar `git log` para el HEAD actual.
+
 ## Resumen ejecutivo
 
 AgroField Agent es un proyecto independiente para competir en **Nebius x NVIDIA Global AI Hackathon 2026**. No busca ser un chatbot agronómico genérico: el MVP implementa un flujo operativo estrecho para recorridas de soja posteriores a un evento meteorológico.
@@ -92,6 +94,9 @@ La descripción completa está en `docs/architecture.md`.
 - Pruebas unitarias y de integración.
 - Documentación de arquitectura, evaluación, preparación de entrega y guion de video.
 - Licencia MIT y archivo de ejemplo de variables de entorno.
+- Protocolo ciego con consentimiento, anonimización, entrevista neutral, rúbrica y adjudicación.
+- Conjunto candidato de 30 casos: 20 desarrollo, 10 holdout y 10 prefijados para doble revisión.
+- Evaluador extendido con task precision humana, E1–E8, fallos adversos, acuerdo bruto y Cohen’s kappa.
 
 ## Mapa de archivos
 
@@ -104,6 +109,7 @@ La descripción completa está en `docs/architecture.md`.
 - `src/agrofield_agent/evaluate.py`: evaluación del conjunto de casos.
 - `src/agrofield_agent/static/`: interfaz web.
 - `fixtures/eval_cases.jsonl`: casos de evaluación.
+- `benchmark/agronomy_blind_v1/`: protocolo, candidatos, plantillas, reportes y freeze.
 - `tests/`: pruebas automáticas.
 - `docs/research/official-rules-freeze-2026-09-01.md`: bases y fuentes oficiales congeladas.
 - `docs/research/landscape-and-idea-matrix.md`: comparación de ideas y decisión.
@@ -132,6 +138,7 @@ Pruebas y evaluación:
 ```powershell
 pytest -q
 python -m agrofield_agent.evaluate fixtures/eval_cases.jsonl
+python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
 ```
 
 No copiar credenciales dentro del repositorio. Usar las variables documentadas en `.env.example`.
@@ -140,8 +147,8 @@ No copiar credenciales dentro del repositorio. Usar las variables documentadas e
 
 En la última verificación local:
 
-- **8 pruebas aprobadas**.
-- **12 casos** en el conjunto de evaluación.
+- **16 pruebas aprobadas**.
+- **12 casos** en el baseline de regresión local.
 - Precisión de extracción: **0,9884**.
 - Recall de extracción: **0,9239**.
 - F1 micro de extracción: **0,9551**.
@@ -154,10 +161,12 @@ En la última verificación local:
 
 Advertencia importante: estos números corresponden a un **baseline determinista local**, no a Nemotron y no a un benchmark revisado por agrónomos. No deben presentarse como evidencia de validez en producción.
 
+El conjunto candidato ciego contiene 30 casos y expone una referencia más difícil: F1 local `0,9188`, recall de omisiones `0,9714`, seguridad de bloqueo `1,0` y 53 fallos adversos. Su estado es `provisional_candidate_reference`; tiene **0/30 revisiones primarias y 0/10 dobles**, por lo que `benchmark_validated` permanece `false` y task precision humana no está disponible.
+
 ## Lo que todavía no se hizo
 
 - No se realizaron entrevistas reales con asesores o productores.
-- No se validaron los casos y las prioridades con agrónomos independientes.
+- No se realizaron las 30 revisiones primarias, 10 dobles ni adjudicaciones con agrónomos independientes.
 - No se ejecutó una evaluación con Nemotron en Nebius.
 - No se verificaron latencia y costo reales de Token Factory o AI Cloud desde Argentina.
 - No se ejecutó Tavily en runtime real.
@@ -184,7 +193,7 @@ Advertencia importante: estos números corresponden a un **baseline determinista
 ## Próximos pasos recomendados
 
 1. Entrevistar entre tres y cinco asesores/productores y documentar el flujo real, los datos críticos y el costo de una omisión.
-2. Revisar los 12 casos existentes con un agrónomo y ampliar el conjunto a por lo menos 30 casos, incluyendo negativos difíciles y notas ambiguas.
+2. Revisar los 30 candidatos con un agrónomo, doble anotar los 10 IDs fijados y adjudicar sin borrar desacuerdos.
 3. Con autorización y un límite de gasto explícito, ejecutar el mismo benchmark con uno o más modelos Nemotron disponibles en Nebius.
 4. Comparar exactitud, omisiones, latencia y costo contra el baseline local; conservar ejemplos de errores.
 5. Decidir con evidencia si Tavily mejora una parte concreta del flujo, por ejemplo verificación normativa o consulta de etiquetas oficiales.

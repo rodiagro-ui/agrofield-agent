@@ -176,6 +176,7 @@ async def run(
     automatic_errors: dict[str, list[dict[str, Any]]] = defaultdict(list)
     source_labels: list[str] = []
     blind_packets: list[dict[str, Any]] = []
+    expected_task_counts: dict[str, int] = {}
 
     for case in cases:
         draft, telemetry = await provider.extract(case["note"])
@@ -243,6 +244,7 @@ async def run(
         approval_intact = all(
             task.requires_approval and task.status == "pending" for task in tasks
         )
+        expected_task_counts[case["id"]] = len(tasks)
         approval_integrity_cases += int(approval_intact)
         if not approval_intact:
             _append_error(
@@ -329,7 +331,7 @@ async def run(
     if blind_packet_out is not None:
         write_jsonl(blind_packet_out, blind_packets)
 
-    task_metrics = task_review_metrics(output_reviews)
+    task_metrics = task_review_metrics(output_reviews, expected_task_counts)
     human_error_counts, human_failures = reviewed_errors(output_reviews)
     automatic_error_counts = {
         code: sum(
@@ -360,7 +362,7 @@ async def run(
     benchmark_validated = (
         readiness["complete"]
         and status_label == "adjudicated_human_reference"
-        and task_metrics["task_precision"] is not None
+        and task_metrics["complete"]
         and agreement["status"] == "available"
     )
 

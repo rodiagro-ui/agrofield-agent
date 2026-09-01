@@ -90,8 +90,11 @@ def test_task_precision_ignores_nonhuman_or_nonconsented_records():
     rejected = task_review_metrics([{**base, "review_origin": "ai"}])
     assert rejected["task_precision"] is None
     assert rejected["invalid_or_nonhuman_records_ignored"] == 1
-    accepted = task_review_metrics([{**base, "review_origin": "human"}])
+    accepted = task_review_metrics(
+        [{**base, "review_origin": "human"}], {"case-1": 1}
+    )
     assert accepted["task_precision"] == 1.0
+    assert accepted["complete"] is True
 
 
 def test_legacy_baseline_metrics_are_preserved_and_labeled():

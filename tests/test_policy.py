@@ -8,8 +8,8 @@ FIELD = FieldRecord(
     hectares=50,
     crop="soja",
     stage="V3",
-    latitude=-33,
-    longitude=-62,
+    latitude=0.0,
+    longitude=0.0,
     risk_flags=["drenaje lento"],
     weather={"precipitation_mm_72h": 120},
 )

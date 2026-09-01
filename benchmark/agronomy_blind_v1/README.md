@@ -36,9 +36,12 @@ benchmark/agronomy_blind_v1/
     interview-record.template.md
     case-annotation.template.json
     output-review.template.json
+    adjudication.template.json
   data/
     cases.jsonl
     reviews/
+  reports/
+    local-candidate-2026-09-01.json
   freeze/
     manifest.json
 ```
@@ -73,3 +76,39 @@ benchmark/agronomy_blind_v1/
 Los casos de `data/cases.jsonl` son candidatos sintéticos. Su referencia provisional sirve para desarrollar el arnés, no para afirmar validez agronómica. Hasta recibir revisión humana, las métricas deben llevar el rótulo `provisional_candidate_reference`.
 
 No se ejecutará Nemotron ni Tavily durante este incremento.
+
+## Comandos reproducibles
+
+Evaluar el proveedor local contra la referencia candidata:
+
+```bash
+python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
+```
+
+Generar un paquete ciego. El coordinador debe guardar fuera del repositorio el mapa entre alias y proveedor:
+
+```bash
+python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl \
+  --blind-packet-out blind-packets.jsonl \
+  --system-alias system-k7
+```
+
+Incorporar revisiones y exigir todos los gates:
+
+```bash
+python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl \
+  --case-annotations benchmark/agronomy_blind_v1/data/reviews \
+  --output-reviews benchmark/agronomy_blind_v1/data/reviews \
+  --adjudications benchmark/agronomy_blind_v1/data/reviews/adjudications.jsonl \
+  --require-validated
+```
+
+`--require-validated` termina con código distinto de cero mientras falten revisiones, adjudicaciones, task precision o acuerdo doble. Un resultado exitoso no cambia que el proveedor local y Nemotron deben reportarse por separado.
+
+Verificar el freeze candidato y sus hashes normalizados:
+
+```bash
+python -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json
+```
+
+El manifiesto congela artefactos candidatos y explícitamente conserva `human_validated: false`. Cuando lleguen las revisiones se deberá crear una nueva versión y un nuevo manifiesto; no se sobrescribe este freeze.

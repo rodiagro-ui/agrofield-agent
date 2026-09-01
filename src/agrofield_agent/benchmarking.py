@@ -357,7 +357,10 @@ def review_readiness(
     }
 
 
-def task_review_metrics(output_review_records: list[dict[str, Any]]) -> dict[str, Any]:
+def task_review_metrics(
+    output_review_records: list[dict[str, Any]],
+    expected_tasks_by_case: dict[str, int] | None = None,
+) -> dict[str, Any]:
     reviews = human_output_reviews(output_review_records)
     counts: Counter[str] = Counter()
     for review in reviews:
@@ -366,10 +369,28 @@ def task_review_metrics(output_review_records: list[dict[str, Any]]) -> dict[str
             if label in TASK_CLASSIFICATIONS:
                 counts[label] += 1
     denominator = sum(counts.values())
+    expected = expected_tasks_by_case or {}
+    complete_cases = 0
+    for case_id, task_count in expected.items():
+        case_reviews = [review for review in reviews if review.get("case_id") == case_id]
+        required_indices = set(range(task_count))
+        if any(
+            required_indices
+            <= {
+                item.get("task_index")
+                for item in review.get("task_labels", [])
+                if item.get("classification") in TASK_CLASSIFICATIONS
+            }
+            for review in case_reviews
+        ):
+            complete_cases += 1
     return {
         "task_precision": round(counts["appropriate"] / denominator, 4) if denominator else None,
         "task_review_counts": {label: counts[label] for label in sorted(TASK_CLASSIFICATIONS)},
         "reviewed_task_labels": denominator,
+        "required_output_review_cases": len(expected),
+        "complete_output_review_cases": complete_cases,
+        "complete": bool(expected) and complete_cases == len(expected),
         "status": "human_output_reviews" if denominator else "pending_human_output_review",
         "invalid_or_nonhuman_records_ignored": len(output_review_records) - len(reviews),
     }
