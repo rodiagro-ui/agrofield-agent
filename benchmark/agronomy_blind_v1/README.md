@@ -34,6 +34,7 @@ benchmark/agronomy_blind_v1/
     blind-review-instructions.md
   templates/
     interview-record.template.md
+    interview-record.template.json
     case-annotation.template.json
     output-review.template.json
     adjudication.template.json
@@ -42,8 +43,10 @@ benchmark/agronomy_blind_v1/
     reviews/
   reports/
     local-candidate-2026-09-01.json
+    local-candidate-preflight-v1.1-2026-09-01.json
   freeze/
     manifest.json
+    manifest-v1.0.0-candidate.json
   authorization/
     README.md
     authorization-request.md
@@ -60,26 +63,28 @@ El directorio `authorization/` prepara el reclutamiento y la revisión, pero no 
 
 1. Obtener consentimiento y realizar 3–5 entrevistas sin mostrar primero la solución.
 2. Sanitizar fuera del repositorio cualquier insumo; conservar aquí solo escenarios reescritos y anónimos.
-3. Revisar los 30 casos de forma independiente usando la rúbrica.
-4. Doble anotar los 10 casos prefijados como `double_review_required`.
-5. Generar salidas sin revelar proveedor ni modelo.
-6. Evaluar hechos, omisiones, prioridad y tareas en archivos separados por revisor.
-7. Calcular desacuerdo bruto, Cohen’s kappa para etiquetas nominales y métricas de producto.
-8. Adjudicar sin borrar el desacuerdo original.
-9. Congelar archivos y hashes antes de una comparación Nemotron.
+3. Generar **Fase A** y entregar solo nota/contexto; revisar los 30 casos usando la rúbrica.
+4. Doble anotar en Fase A los 10 casos prefijados como `double_review_required`.
+5. Validar, bloquear y hashear cada anotación de Fase A.
+6. Generar **Fase B** con salidas sin revelar proveedor, modelo, split ni métricas.
+7. Vincular cada revisión de salida al hash de la anotación Fase A del mismo revisor.
+8. Evaluar salida y todas las tareas: 30 primarias y 10 secundarias completas.
+9. Calcular desacuerdo bruto, Cohen’s kappa para etiquetas nominales y métricas de producto.
+10. Adjudicar sin borrar el desacuerdo original.
+11. Congelar entradas humanas y hashes antes de ejecutar `--require-validated` o comparar Nemotron.
 
 ## Gates para declarar v1 validado
 
 - 3–5 entrevistas consentidas, anonimizadas y resumidas.
 - 30 casos con una revisión humana primaria completa.
-- 10 casos con una segunda revisión independiente.
+- 10 casos con una segunda revisión independiente tanto de referencia como de salida, con todas las tareas etiquetadas.
 - Cero campos identificatorios o coordenadas exactas.
 - Desacuerdo bruto y Cohen’s kappa reportados; no se exige ocultar un acuerdo bajo.
 - Todos los conflictos adjudicados con justificación.
 - `critical_omission_recall >= 0.98` y `decision_gate_safety == 1.0`.
 - `unsupported_assertion_rate <= 0.01` y `task_precision >= 0.90`.
 - Holdout sin usar para modificar extractor, reglas o umbrales.
-- Manifiesto de freeze con hashes verificables.
+- Manifiesto humano distinto del freeze candidato, con hashes verificables, privacidad final aprobada y declaración de que el holdout no se usó para ajustar.
 
 ## Verdad operativa actual
 
@@ -95,13 +100,16 @@ Evaluar el proveedor local contra la referencia candidata:
 python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
 ```
 
-Generar un paquete ciego. El coordinador debe guardar fuera del repositorio el mapa entre alias y proveedor:
+Generar paquetes físicamente separados. El coordinador debe guardar fuera del repositorio el mapa entre alias y proveedor. La Fase B no se libera hasta validar y hashear las anotaciones de Fase A:
 
 ```bash
 python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl \
-  --blind-packet-out blind-packets.jsonl \
+  --reference-packet-out phase-a-reference.jsonl \
+  --output-packet-out phase-b-output.jsonl \
   --system-alias system-k7
 ```
+
+Los dos destinos deben ser archivos diferentes. Fase A no contiene `output`, alias, proveedor, split, referencia, score, tareas ni telemetría.
 
 Incorporar revisiones y exigir todos los gates:
 
@@ -110,10 +118,13 @@ python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl 
   --case-annotations benchmark/agronomy_blind_v1/data/reviews \
   --output-reviews benchmark/agronomy_blind_v1/data/reviews \
   --adjudications benchmark/agronomy_blind_v1/data/reviews/adjudications.jsonl \
+  --interviews benchmark/agronomy_blind_v1/data/reviews/interviews.jsonl \
+  --human-freeze-manifest benchmark/agronomy_blind_v1/freeze/manifest-human-v1.json \
+  --freeze-root . \
   --require-validated
 ```
 
-`--require-validated` termina con código distinto de cero mientras falten revisiones, adjudicaciones, task precision o acuerdo doble. Un resultado exitoso no cambia que el proveedor local y Nemotron deben reportarse por separado.
+`--require-validated` termina con código 2 si falla cualquiera de los gates estructurales, humanos, de privacidad, freeze o métricas. `task_precision` es exclusivamente la precisión primaria: las segundas revisiones miden acuerdo y nunca duplican el denominador. Un resultado exitoso no cambia que el proveedor local y Nemotron deben reportarse por separado.
 
 Verificar el freeze candidato y sus hashes normalizados:
 
@@ -121,4 +132,4 @@ Verificar el freeze candidato y sus hashes normalizados:
 python -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json
 ```
 
-El manifiesto congela artefactos candidatos y explícitamente conserva `human_validated: false`. Cuando lleguen las revisiones se deberá crear una nueva versión y un nuevo manifiesto; no se sobrescribe este freeze.
+`manifest-v1.0.0-candidate.json` conserva el freeze histórico. `manifest.json` apunta al freeze candidato vigente. Ambos declaran `human_validated: false`; cuando lleguen revisiones reales se deberá crear un manifiesto humano nuevo, nunca reetiquetar un freeze candidato.

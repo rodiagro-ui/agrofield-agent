@@ -1,10 +1,10 @@
 # Rúbrica de anotación agronómica ciega
 
-Versión candidata: `1.0.0-candidate`. No modificar después del freeze; cualquier cambio posterior crea una nueva versión.
+Versión candidata: `1.1.0-candidate`. No modificar durante una ronda; cualquier cambio posterior crea una nueva versión y un nuevo manifiesto.
 
 ## Unidad de análisis
 
-Una unidad contiene una nota de campo reescrita, contexto meteorológico sintético, antecedentes no identificables y una salida de sistema con proveedor oculto.
+Una unidad se entrega en dos fases físicas. **Fase A** contiene solo nota de campo reescrita, contexto meteorológico sintético y antecedentes no identificables. **Fase B** contiene además una salida de sistema con proveedor oculto y se libera únicamente después de validar y hashear la anotación de Fase A del mismo revisor.
 
 Los revisores distinguen estrictamente:
 
@@ -64,7 +64,11 @@ Cada tarea recibe exactamente una etiqueta:
 
 También puede usarse `not_assessable` si el texto de la tarea está truncado o no se entregó; esta categoría no cuenta como apropiada y debe aparecer en fallos adversos.
 
-`task_precision = appropriate / (appropriate + premature + unsafe + not_assessable)`.
+La métrica vinculante evita contar dos veces los 10 casos dobles:
+
+`primary_task_precision = appropriate_primary / (appropriate_primary + premature_primary + unsafe_primary + not_assessable_primary)`.
+
+Las etiquetas secundarias no cambian esa precisión. Se usan solo para desacuerdo bruto y Cohen’s kappa de clasificación. `adjudicated_task_precision` se reporta separado y queda `null` mientras no exista una adjudicación de tareas explícita; no se sustituye silenciosamente por el agregado de revisores.
 
 ## Taxonomía de errores
 
@@ -83,6 +87,8 @@ Registrar severidad `minor`, `major` o `critical`, campo/tarea afectada y explic
 
 - Un revisor primario anota los 30 casos.
 - Un revisor secundario anota de forma independiente los 10 casos prefijados.
+- Cada revisor etiqueta en Fase B todas las tareas de sus casos; se requieren 30 salidas primarias y 10 salidas secundarias completas.
+- Cada salida referencia `reference_packet_id` y el `reference_lock_sha256` de la anotación Fase A correspondiente.
 - No intercambian respuestas antes del cierre.
 - El evaluador calcula acuerdo bruto y Cohen’s kappa sobre etiquetas nominales comparables.
 - Valores numéricos se reportan con acuerdo normalizado y desacuerdos, no con kappa nominal engañoso.

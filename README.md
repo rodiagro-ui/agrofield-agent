@@ -19,7 +19,7 @@ Field notes are easy to capture and easy to over-trust. A plausible narrative ca
 - Immutable audit events stored in SQLite.
 - Optional Tavily adapter restricted to authoritative agronomy and weather domains.
 - Offline evaluation harness for extraction, critical omissions, ranking, latency, and estimated inference cost.
-- Blind agronomy benchmark candidate with 30 cases, human-review gates, E1–E8 failure analysis, and reviewer-agreement metrics.
+- Blind agronomy benchmark candidate with 30 cases, physically separated Phase A/B packets, strict human-evidence gates, E1–E8 failure analysis, and reviewer-agreement metrics.
 
 ## Quick start (local, zero API cost)
 
@@ -48,7 +48,7 @@ Run the harder blind-benchmark candidate:
 python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
 ```
 
-The 30-case set is synthetic and currently has **zero human agronomy reviews**. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. See `benchmark/agronomy_blind_v1/README.md` for consent, anonymization, review, agreement, adjudication, and freeze procedures.
+The 30-case set is synthetic and currently has **zero human agronomy reviews and zero real interviews**. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. The five technical P0 preflight blockers are closed and covered by local tests, but human validation remains `NOT_AUTHORIZED`. See `benchmark/agronomy_blind_v1/README.md` for consent, anonymization, review, agreement, adjudication, and freeze procedures.
 
 ## Nebius Token Factory mode
 

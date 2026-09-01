@@ -11,12 +11,12 @@
 
 ## B. Preflight técnico
 
-- [ ] Se resolvieron todos los P0 de `preflight-findings.md`.
-- [ ] Tests nuevos prueban que el paquete de referencia no contiene salida, alias, proveedor, split ni referencia.
-- [ ] Tests prueban que una plantilla vacía/incompleta no cuenta como revisión.
-- [ ] Task precision no duplica etiquetas del segundo revisor.
-- [ ] `--require-validated` verifica entrevistas, privacidad, 30 primarias, 10 dobles de referencia y salida, adjudicación, umbrales y freeze final.
-- [ ] `policy.py` continúa sin cambios.
+- [x] Se resolvieron todos los P0 de `preflight-findings.md` (`4390a4c`, `19ab37f`).
+- [x] Tests nuevos prueban que el paquete de referencia no contiene salida, alias, proveedor, split ni referencia.
+- [x] Tests prueban que una plantilla vacía/incompleta no cuenta como revisión.
+- [x] Task precision no duplica etiquetas del segundo revisor.
+- [x] `--require-validated` verifica entrevistas, privacidad, 30 primarias, 10 dobles de referencia y salida, adjudicación, umbrales y freeze final.
+- [x] `policy.py` continúa sin cambios.
 
 ## C. Reclutamiento
 

@@ -98,6 +98,6 @@ No ve proveedor, modelo, split, referencia ni métricas. Los 10 dobles deben ten
 
 - Entrevistas: si menos de 3 participantes reconocen costo operativo repetido, revisar o abandonar la hipótesis.
 - Revisión: acuerdo bajo se publica; no se excluyen casos/revisores para mejorar números.
-- Task precision final no mezcla ni duplica etiquetas secundarias: se reporta sobre una referencia primaria/adjudicada definida.
+- La métrica vinculante `primary_task_precision` usa solo etiquetas primarias; las secundarias miden acuerdo y una futura precisión adjudicada se reportaría separada.
 - Holdout no se usa para ajustar extractor, `policy.py`, prompt o umbrales.
 - Ninguna salida humana autoriza una decisión agronómica real.

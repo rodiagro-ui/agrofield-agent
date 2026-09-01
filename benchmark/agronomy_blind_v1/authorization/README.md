@@ -47,8 +47,8 @@ La autorización de este paquete no incluye Nebius, Tavily, pagos, publicación,
 
 - [ ] Al menos dos revisores agronómicos independientes confirmados.
 - [ ] Roles `R01`, `R02`, `A01`, `PR01` y coordinador asignados por código.
-- [ ] Hallazgos P0 de `preflight-findings.md` resueltos y probados.
-- [ ] Paquete de referencia sin salida del sistema generado por separado.
+- [x] Hallazgos P0 de `preflight-findings.md` resueltos y probados localmente.
+- [x] Generador de paquete Fase A sin salida del sistema implementado y separado de Fase B.
 - [ ] Alias y mapa de sistemas guardados fuera de Git.
 - [ ] Rúbrica y archivos de la ronda vueltos a congelar si cambiaron.
 

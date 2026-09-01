@@ -2,6 +2,8 @@
 
 > Guardar solo después de aplicar `protocol/consent-and-privacy.md`. No incluir notas originales.
 
+Esta plantilla Markdown sirve para la toma y saneamiento fuera de Git. El único formato ingerible por el evaluador es `interview-record.template.json`, esquema `1.1.0-candidate`; debe contener tres resúmenes reescritos, consentimiento booleano, fecha ISO y una segunda revisión de privacidad en estado `passed`. Una plantilla vacía no cuenta.
+
 ## Control
 
 - participant_id: `P__`

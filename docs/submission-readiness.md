@@ -18,6 +18,8 @@
 - [x] Significant-work changelog dated after 2026-08-26.
 - [x] Human-validation authorization, recruitment, consent, privacy, role, and execution packet prepared with status `NOT_AUTHORIZED`.
 - [x] Preflight risks in blind-packet separation and evaluator readiness documented before human review.
+- [x] Five P0 preflight blockers closed: separate Phase A/B, strict forms, primary-only task precision, complete double-output review, and exhaustive validation gates.
+- [x] Gate contract covered by 41 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 
 ## Requires user authorization or external validation
 
@@ -26,9 +28,9 @@
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
 - [ ] Interview 3–5 Argentine advisers with consent and revise the workflow.
 - [ ] Have an agronomist review all 30 cases, double-annotate the fixed 10, and adjudicate disagreements.
-- [ ] Receive explicit authorization for human outreach and close the P0 preflight findings before review starts.
+- [ ] Receive explicit authorization for human outreach; P0 technical findings are already closed.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.
-- [ ] Freeze the final human-reviewed benchmark; the current freeze is candidate-only.
+- [ ] Freeze the final human-reviewed benchmark; all current freezes remain candidate-only and `benchmark_validated: false`.
 - [ ] Choose a deployment host and approve a spend ceiling.
 - [ ] Deploy a public demo and add monitoring through the judging period.
 - [ ] Create and make the repository public.
