@@ -12,11 +12,11 @@
 - **Repositorio local:** `C:\Users\Fly Agro\Documents\Codex\2026-09-01\nebius-nvidia-agrofield-agent\outputs\agrofield-agent`.
 - **Rama:** `main`.
 - **Commit del MVP vertical:** `32855c4` — `Build AgroField Agent vertical MVP`.
-- **Último commit funcional verificado antes de agregar este resumen:** `ebb45b9` — `Freeze blind agronomy benchmark candidate`.
+- **HEAD verificado antes de esta actualización:** `4c3a269` — `Prepare human validation authorization packet`.
 - **Licencia real:** MIT.
 - **Estado de Git antes de crear este documento:** limpio.
 
-Este archivo puede quedar incluido en un commit documental posterior a `ebb45b9`. La IA que continúe debe ejecutar `git status` y `git log -1` para conocer el HEAD efectivo.
+La IA que continúe debe ejecutar `git status` y `git log -1` para confirmar el HEAD efectivo, ya que la actualización de este mismo documento quedará en un commit posterior.
 
 ## 2. Resumen ejecutivo
 
@@ -35,6 +35,8 @@ El flujo transforma una nota de campo incompleta, ingresada por texto o voz del 
 La diferenciación competitiva no es “hablar con una IA”, sino **probar que se observó lo suficiente antes de decidir**. Un estado rojo de “decisión bloqueada” por falta de duración del anegamiento, cantidad de puntos de muestreo o seguridad de acceso es una función central, no una limitación.
 
 Existe un MVP vertical local funcional, un benchmark agronómico ciego **candidato** de 30 casos, un evaluador ampliado y una congelación criptográfica reproducible. No existe todavía validación agronómica humana ni una evaluación real con Nemotron.
+
+También existe un paquete completo de autorización y reclutamiento humano con estado `NOT_AUTHORIZED`: invitaciones, consentimiento, privacidad, canales, roles, cronograma y checklist. Nadie fue contactado y no se recolectaron datos reales.
 
 ## 3. Reglas que la siguiente IA no puede romper
 
@@ -210,6 +212,8 @@ También se agregó `src/agrofield_agent/freeze.py` para verificar el manifiesto
 | `4019e60` | Conjunto candidato de 30 casos, split y casos de doble revisión. |
 | `16a22ae` | Evaluador ampliado, revisión humana, E1–E8 y acuerdo. |
 | `ebb45b9` | Freeze reproducible del benchmark candidato. |
+| `ed17a5d` | Resumen completo y handoff actualizado para otra IA. |
+| `4c3a269` | Paquete de autorización, contacto, consentimiento, privacidad y preflight humano. |
 
 Entre `32855c4` y `ebb45b9` se agregaron aproximadamente 2.887 líneas y 29 archivos modificados, principalmente benchmark, evaluación, privacidad, pruebas y documentación.
 
@@ -236,7 +240,8 @@ Comando: `python -m agrofield_agent.evaluate fixtures/eval_cases.jsonl`
 | Seguridad de bloqueo | 1,0000 |
 | Integridad de aprobación | 1,0000 |
 | nDCG | 1,0000 |
-| Latencia p50 local de esta ejecución | 0,061 ms |
+| Latencia p50 local de esta ejecución | 0,073 ms |
+| Latencia máxima local | 1,936 ms |
 | Costo estimado | US$0 |
 | Proveedor | `local/deterministic-es-v0.1` |
 
@@ -259,6 +264,8 @@ Comando: `python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/ca
 | Integridad de aprobación | 1,0000 |
 | nDCG | 0,9877 |
 | Task precision humana | no disponible |
+| Latencia p50 local | 0,133 ms |
+| Latencia máxima local | 3,501 ms |
 | Fallos adversos | 53 |
 | Estado | `benchmark_validated: false` |
 
@@ -288,6 +295,33 @@ La **infraestructura y el conjunto candidato** están construidos. El incremento
 - congelar dataset, rúbrica y umbrales finales después de la revisión.
 
 No se contactó a nadie porque eso requiere autorización expresa. **La siguiente IA no debe completar esos casilleros con etiquetas simuladas ni tratar una revisión generada por IA como revisión agronómica humana.**
+
+### Paquete de autorización preparado
+
+El directorio `benchmark/agronomy_blind_v1/authorization/` contiene:
+
+- solicitud de autorización exacta con límites;
+- invitaciones para entrevistas y revisores;
+- addendum de consentimiento;
+- plan de canales y un único recordatorio;
+- roles `R01`, `R02`, `A01`, `PR01` y custodio de datos;
+- separación de identidades/notas crudas fuera de Git;
+- revisión en dos fases para evitar anclaje;
+- checklist desde reclutamiento hasta freeze humano.
+
+Alcance recomendado aún no autorizado: hasta 5 invitaciones para obtener 3–5 entrevistas y hasta 3 profesionales agronómicos para cubrir dos revisores independientes y un adjudicador. Sin grabación, compensación, contacto masivo ni publicación.
+
+### Hallazgos técnicos que deben cerrarse antes de revisar casos
+
+La auditoría del arnés detectó cinco bloqueos P0 documentados en `benchmark/agronomy_blind_v1/authorization/preflight-findings.md`:
+
+1. el paquete ciego actual combina nota y salida, lo que puede anclar la referencia;
+2. `benchmark_validated` no exige todos los umbrales, entrevistas, privacidad y freeze documentados;
+3. formularios estructuralmente vacíos podrían contar;
+4. task precision puede duplicar etiquetas del segundo revisor;
+5. readiness no exige 10 segundas revisiones completas de salida.
+
+Pueden comenzar invitaciones y entrevistas solo tras autorización, pero no debe comenzar la anotación de casos hasta corregir y probar estos P0.
 
 ## 13. Debilidad crítica que impide ganar hoy
 
@@ -319,13 +353,15 @@ Optimizar más código antes de validar con humanos tiene menor retorno y riesgo
 
 ### Paso 1 — autorización y validación humana
 
-Solicitar autorización para contactar o invitar a 3–5 asesores/productores y para que uno o más agrónomos revisen el paquete anonimizado. Definir antes:
+Solicitar autorización para enviar hasta 5 invitaciones y obtener 3–5 entrevistas, y hasta 3 invitaciones a profesionales agronómicos. Hacen falta al menos dos revisores distintos para que las 10 dobles sean independientes. Definir antes:
 
 - canal de contacto;
 - texto de consentimiento;
 - prohibición de nombres, coordenadas y establecimientos;
 - dónde se guardarán las respuestas;
 - responsables de revisión primaria, doble y adjudicación.
+
+Antes de entregar casos, corregir los cinco P0 de preflight, separar paquetes Fase A/Fase B y demostrarlo con tests.
 
 ### Paso 2 — congelar el benchmark humano final
 
@@ -397,6 +433,7 @@ No copiar credenciales al repositorio. Usar únicamente las variables documentad
 - `src/agrofield_agent/static/`: interfaz web móvil.
 - `fixtures/eval_cases.jsonl`: regresión sintética heredada de 12 casos.
 - `benchmark/agronomy_blind_v1/`: benchmark candidato completo.
+- `benchmark/agronomy_blind_v1/authorization/`: autorización, contacto, consentimiento, privacidad, ejecución y preflight.
 - `benchmark/agronomy_blind_v1/data/cases.jsonl`: 30 candidatos.
 - `benchmark/agronomy_blind_v1/freeze/manifest.json`: hashes del freeze candidato.
 - `benchmark/agronomy_blind_v1/reports/local-candidate-2026-09-01.json`: reporte local candidato.
@@ -408,13 +445,15 @@ No copiar credenciales al repositorio. Usar únicamente las variables documentad
 ## 18. Prompt listo para pegar a otra IA
 
 ```text
-Continúa AgroField Agent desde este repositorio. Lee primero, completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; y RESUMEN_COMPLETO_PARA_OTRA_IA.md. Luego ejecuta git status, pytest -q, el baseline de fixtures/eval_cases.jsonl, el benchmark candidato benchmark/agronomy_blind_v1/data/cases.jsonl y la verificación del freeze.
+Continúa AgroField Agent desde este repositorio. Lee primero, completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; y benchmark/agronomy_blind_v1/authorization/README.md. Luego ejecuta git status, pytest -q, el baseline de fixtures/eval_cases.jsonl, el benchmark candidato benchmark/agronomy_blind_v1/data/cases.jsonl y la verificación del freeze.
 
 No sustituyas policy.py ni permitas que un modelo desactive controles deterministas. Separa hechos, inferencias y recomendaciones; exige evidencia y aprobación humana. Distingue siempre local/deterministic-es-v0.1 de cualquier resultado Nemotron. El benchmark actual tiene 30 casos sintéticos pero 0 revisiones humanas y benchmark_validated=false: no inventes etiquetas ni declares validación.
 
 No contactes personas, manejes datos reales, publiques, despliegues, consumas Nebius/Tavily, generes costos, subas video ni registres la submission sin autorización humana expresa. Antes de servicios pagos solicita autorización y límite de gasto.
 
-La prioridad es cerrar la cadena de evidencia: validación con 3–5 usuarios, 30 revisiones agronómicas primarias, 10 dobles y adjudicación; luego congelar el benchmark humano y recién entonces comparar Nemotron contra el baseline local. Reporta hechos verificables, la debilidad más crítica y el siguiente incremento de mayor ROI.
+El paquete humano sigue NOT_AUTHORIZED. No contactes personas ni manejes datos reales sin una autorización expresa que defina canales, cupos y custodio. Antes de la anotación, corrige los P0 de benchmark/agronomy_blind_v1/authorization/preflight-findings.md: separa referencia y salida, endurece validación, evita duplicar task precision y exige 10 dobles de salida.
+
+La prioridad es cerrar la cadena de evidencia: autorización; 3–5 entrevistas; 30 revisiones agronómicas primarias; 10 dobles; acuerdo; adjudicación y freeze humano. Recién entonces compara Nemotron contra el baseline local. Reporta hechos verificables, la debilidad más crítica y el siguiente incremento de mayor ROI.
 ```
 
 ## 19. Definición de victoria
