@@ -1,6 +1,6 @@
 # AgroField Agent — resumen completo para compartir con otra IA
 
-> Snapshot verificable: 1 de septiembre de 2026. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
+> Snapshot verificable: 1 de septiembre de 2026. Cierre reproducido después de resolver los cinco P0. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
 
 ## Resumen ejecutivo
 
@@ -12,11 +12,13 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 
 ## Estado exacto
 
-- Rama: `main`; ejecutar `git log -1 --oneline` para el HEAD efectivo.
+- Rama: `main` y working tree limpio antes de actualizar este resumen.
+- HEAD verificado antes de esta actualización: `7b5c817` — `Refresh AI handoff after P0 closure`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
 - Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; freeze P0-closed `42f4e97`.
 - Licencia: MIT.
 - Tests: 41/41 aprobados.
 - Freeze vigente: 32/32 hashes válidos.
+- Gates del candidato local: 7/17 aprobados; `benchmark_validated: false` por diseño.
 - `policy.py`: intacto desde el MVP.
 - Autorización de validación humana: `NOT_AUTHORIZED`.
 - Personas contactadas: 0.
@@ -35,6 +37,8 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 | Candidato local v1.1 | 30 | 0,9188 | 0,9714 | 0,0050 | 1,0000 | 0,9877 | 53 | No |
 
 Proveedor de ambos: `local/deterministic-es-v0.1`. Task precision humana: no disponible. Son casos sintéticos y no son resultados Nemotron ni validación agronómica.
+
+El candidato todavía falla el umbral de recall de omisiones críticas: `0,9714 < 0,98`. Ese dato es real para la referencia sintética provisional, pero no debe usarse para ajustar el holdout antes de obtener la referencia humana congelada.
 
 ## Qué cambió en el último incremento
 
@@ -93,6 +97,25 @@ Solicitar autorización para la validación humana ya preparada:
 - sin autorización implícita para Nebius, Tavily, publicación o gastos.
 
 Solo después de autorización: 3–5 entrevistas → privacidad `PR01` → Fase A 30/10 → hashes → Fase B 30/10 → desacuerdo/kappa → adjudicación 30/30 → freeze humano → `--require-validated`. Luego solicitar autorización y presupuesto limitado para comparar local vs Nemotron. Tavily se evalúa después mediante ablación y se conserva solo si agrega valor trazable.
+
+El P1 de análisis de sensibilidad por exposición previa y superposición de roles sigue pendiente. No bloquea solicitar autorización, pero debe resolverse o declararse antes del freeze humano final.
+
+## Respuesta exacta requerida para autorizar contactos
+
+Una respuesta genérica como “seguí” no autoriza contacto ni datos reales. Si el usuario decide avanzar, debe completar algo equivalente a:
+
+```text
+AUTORIZO VALIDACIÓN HUMANA AGROFIELD V1.
+Entrevistas: hasta 5 invitaciones para obtener 3–5 entrevistas.
+Revisión: hasta 3 invitaciones a profesionales agronómicos para cubrir R01, R02 y A01.
+Canales autorizados: [correo / WhatsApp / LinkedIn; eliminar los no autorizados].
+Remitente humano: [yo / otra persona humana designada privadamente].
+Custodio privado de identidades y notas crudas: [yo / persona designada privadamente].
+Grabación: NO.
+Compensación: NO.
+La IA y el repositorio recibirán solo registros saneados y anonimizados.
+No autorizo Nebius, Tavily, gastos, publicación, despliegue, video ni submission.
+```
 
 ## Texto listo para reanudar con otra IA
 
