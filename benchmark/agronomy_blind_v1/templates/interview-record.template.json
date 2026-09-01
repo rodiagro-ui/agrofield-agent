@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.1.0-candidate",
+  "interview_origin": "human",
+  "participant_id": "P00",
+  "role": "adviser_or_producer_or_scout_or_other",
+  "experience_band": "0-4_or_5-9_or_10-19_or_20+",
+  "consent_aggregated_insights": false,
+  "consent_sanitized_scenario": false,
+  "recording_authorized": false,
+  "privacy_review_status": "pending",
+  "privacy_reviewer_id": "PR00",
+  "completed_at": "YYYY-MM-DD",
+  "hypothesis_assessment": "supports_or_mixed_or_refutes",
+  "workflow_summary": "",
+  "missing_information_summary": "",
+  "counterevidence_summary": ""
+}

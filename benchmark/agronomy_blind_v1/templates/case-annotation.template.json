@@ -1,9 +1,11 @@
 {
-  "schema_version": "1.0.0-candidate",
+  "schema_version": "1.1.0-candidate",
   "case_id": "bfv1-000",
+  "packet_id": "copy-from-phase-a-packet",
   "review_id": "review-random-id",
   "reviewer_id": "R00",
   "review_origin": "human",
+  "review_assignment": "primary_or_secondary",
   "reviewer_role": "agronomist",
   "experience_band": "5-9",
   "consent_to_anonymous_results": true,
@@ -26,7 +28,7 @@
   "expected_missing": [],
   "policy_disagreement": null,
   "priority_relevance": 0,
-  "ranking_group": null,
-  "privacy_check": "passed",
+  "ranking_group": "ranking-group-required",
+  "privacy_check": "pending",
   "notes": null
 }

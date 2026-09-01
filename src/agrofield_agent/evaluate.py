@@ -13,7 +13,10 @@ from typing import Any
 from agrofield_agent.benchmarking import (
     ERROR_CODES,
     REFERENCE_FIELDS,
+    adjudication_readiness,
     dataset_audit,
+    human_freeze_readiness,
+    interview_readiness,
     load_cases,
     load_records,
     make_output_review_packet,
@@ -42,6 +45,174 @@ NUMERIC_FIELDS = {
     "stem_damage_pct",
     "stand_count_per_m",
 }
+
+
+def _gate(
+    passed: bool, actual: Any, requirement: str, failure: str
+) -> dict[str, Any]:
+    return {
+        "passed": bool(passed),
+        "actual": actual,
+        "requirement": requirement,
+        "failure_reason": None if passed else failure,
+    }
+
+
+def build_validation_gates(
+    *,
+    split: str | None,
+    cases: list[dict[str, Any]],
+    interviews: dict[str, Any],
+    readiness: dict[str, Any],
+    task_metrics: dict[str, Any],
+    adjudication_status: dict[str, Any],
+    agreement: dict[str, Any],
+    reference_status_label: str,
+    freeze_status: dict[str, Any],
+    extraction_micro_f1: float,
+    critical_omission_recall: float,
+    unsupported_assertion_rate: float,
+    evidence_quote_coverage: float,
+    decision_gate_safety: float,
+    priority_ndcg: float | None,
+    human_approval_integrity: float,
+) -> dict[str, dict[str, Any]]:
+    """Build every binding gate; callers cannot bypass one with a partial report."""
+
+    invalid_privacy_records = (
+        interviews["invalid_or_nonhuman_records_ignored"]
+        + readiness["invalid_or_nonhuman_records_ignored"]
+        + task_metrics["invalid_or_nonhuman_records_ignored"]
+        + adjudication_status["invalid_or_nonhuman_records_ignored"]
+    )
+    required_double_cases = sum(
+        bool(case.get("double_review_required")) for case in cases
+    )
+    return {
+        "full_frozen_dataset": _gate(
+            split in (None, "all") and len(cases) >= 30 and required_double_cases >= 10,
+            {
+                "split": split or "all",
+                "cases": len(cases),
+                "double_cases": required_double_cases,
+            },
+            "all split, at least 30 cases and at least 10 fixed double-review cases",
+            "The evaluation is a subset or lacks the required 30/10 benchmark design.",
+        ),
+        "human_interviews": _gate(
+            interviews["complete"],
+            interviews["valid_unique_interviews"],
+            "3-5 unique, consented, sanitized human interviews",
+            "Interview count, consent, sanitization, uniqueness, or privacy review is incomplete.",
+        ),
+        "reference_reviews": _gate(
+            readiness["complete"],
+            {
+                "primary": readiness["primary_reviewed_cases"],
+                "double": readiness["double_reviewed_cases"],
+            },
+            "one primary per case and one independent secondary for every fixed double case",
+            "Primary or independent secondary reference reviews are missing, duplicated, or invalid.",
+        ),
+        "output_reviews": _gate(
+            task_metrics["complete"],
+            {
+                "primary": task_metrics["complete_primary_output_review_cases"],
+                "double": task_metrics["complete_double_output_review_cases"],
+            },
+            "one complete locked primary output review per case and one complete locked secondary per double case",
+            "Output reviews, full task labels, Phase-A locks, or independent double reviews are incomplete.",
+        ),
+        "adjudications": _gate(
+            adjudication_status["complete"],
+            adjudication_status["complete_cases"],
+            "one privacy-passed independent human adjudication per case linked to exact source reviews",
+            "Adjudications are missing, duplicated, invalid, role-overlapping, or linked to the wrong reviews.",
+        ),
+        "reviewer_agreement": _gate(
+            agreement["complete"],
+            {
+                "reference_pairs": agreement["double_annotated_case_pairs"],
+                "output_pairs": agreement["double_reviewed_output_pairs"],
+            },
+            "agreement computed from every fixed reference and output pair",
+            "At least one required reference or complete output pair is missing.",
+        ),
+        "adjudicated_reference": _gate(
+            reference_status_label == "adjudicated_human_reference",
+            reference_status_label,
+            "all evaluation references are valid human adjudications",
+            "At least one metric still uses a candidate or preliminary reference.",
+        ),
+        "privacy_controls": _gate(
+            invalid_privacy_records == 0 and freeze_status["metadata_valid"],
+            {
+                "invalid_records": invalid_privacy_records,
+                "freeze_metadata": freeze_status["metadata_valid"],
+            },
+            "all counted records privacy-passed plus independent final privacy status in the human freeze",
+            "A supplied record is invalid/nonhuman or the final freeze lacks passed privacy metadata.",
+        ),
+        "human_input_freeze": _gate(
+            freeze_status["complete"],
+            {
+                "hashes_valid": freeze_status["manifest_hashes_valid"],
+                "metadata_valid": freeze_status["metadata_valid"],
+                "missing_files": freeze_status["required_files_missing_from_manifest"],
+            },
+            "distinct human input files listed in a valid human-reviewed freeze with holdout declaration",
+            "The human-input manifest, hashes, file coverage, privacy status, or holdout declaration is incomplete.",
+        ),
+        "extraction_micro_f1": _gate(
+            extraction_micro_f1 >= 0.90,
+            extraction_micro_f1,
+            ">= 0.90",
+            "Extraction micro-F1 is below 0.90.",
+        ),
+        "critical_omission_recall": _gate(
+            critical_omission_recall >= 0.98,
+            critical_omission_recall,
+            ">= 0.98",
+            "Critical omission recall is below 0.98.",
+        ),
+        "unsupported_assertion_rate": _gate(
+            unsupported_assertion_rate <= 0.01,
+            unsupported_assertion_rate,
+            "<= 0.01",
+            "Unsupported assertion rate exceeds 0.01.",
+        ),
+        "evidence_quote_coverage": _gate(
+            evidence_quote_coverage >= 1.0,
+            evidence_quote_coverage,
+            "== 1.00",
+            "At least one extracted fact lacks a literal evidence quote.",
+        ),
+        "decision_gate_safety": _gate(
+            decision_gate_safety >= 1.0,
+            decision_gate_safety,
+            "== 1.00",
+            "At least one critical omission was not blocked.",
+        ),
+        "priority_ndcg": _gate(
+            priority_ndcg is not None and priority_ndcg >= 0.90,
+            priority_ndcg,
+            ">= 0.90",
+            "Priority nDCG is unavailable or below 0.90.",
+        ),
+        "primary_task_precision": _gate(
+            task_metrics["primary_task_precision"] is not None
+            and task_metrics["primary_task_precision"] >= 0.90,
+            task_metrics["primary_task_precision"],
+            ">= 0.90 using primary reviews only",
+            "Primary task precision is unavailable or below 0.90.",
+        ),
+        "human_approval_integrity": _gate(
+            human_approval_integrity >= 1.0,
+            human_approval_integrity,
+            "== 1.00",
+            "At least one task bypassed mandatory pending human approval.",
+        ),
+    }
 
 
 def _equal(predicted: Any, gold: Any) -> bool:
@@ -158,6 +329,9 @@ async def run(
     case_annotations_path: Path | None = None,
     output_reviews_path: Path | None = None,
     adjudications_path: Path | None = None,
+    interview_records_path: Path | None = None,
+    human_freeze_manifest_path: Path | None = None,
+    freeze_root: Path | None = None,
     reference_packet_out: Path | None = None,
     output_packet_out: Path | None = None,
     system_alias: str = "system-unlabeled",
@@ -174,6 +348,7 @@ async def run(
     case_annotations = load_records(case_annotations_path)
     output_reviews = load_records(output_reviews_path)
     adjudications = load_records(adjudications_path)
+    interview_records = load_records(interview_records_path)
 
     provider = LocalExtractionProvider()
     tp = fp = fn = unsupported = predicted_non_null = 0
@@ -344,7 +519,9 @@ async def run(
     if output_packet_out is not None:
         write_jsonl(output_packet_out, output_packets)
 
-    task_metrics = task_review_metrics(output_reviews, expected_task_counts)
+    task_metrics = task_review_metrics(
+        cases, output_reviews, expected_task_counts, case_annotations
+    )
     human_error_counts, human_failures = reviewed_errors(output_reviews)
     automatic_error_counts = {
         code: sum(
@@ -371,35 +548,76 @@ async def run(
 
     status_label, status_counts = reference_status(source_labels)
     readiness = review_readiness(cases, case_annotations)
-    agreement = reviewer_agreement(case_annotations, output_reviews)
-    benchmark_validated = (
-        readiness["complete"]
-        and status_label == "adjudicated_human_reference"
-        and task_metrics["complete"]
-        and agreement["status"] == "available"
+    agreement = reviewer_agreement(
+        cases, case_annotations, output_reviews, expected_task_counts
     )
+    interviews = interview_readiness(interview_records)
+    adjudication_status = adjudication_readiness(
+        cases, case_annotations, adjudications
+    )
+    freeze_status = human_freeze_readiness(
+        human_freeze_manifest_path,
+        freeze_root or Path.cwd(),
+        {
+            "dataset": path,
+            "interviews": interview_records_path,
+            "case_annotations": case_annotations_path,
+            "output_reviews": output_reviews_path,
+            "adjudications": adjudications_path,
+        },
+    )
+
+    rounded_precision = round(precision, 4)
+    rounded_recall = round(recall, 4)
+    rounded_f1 = round(f1, 4)
+    rounded_omission_recall = round(omission_recall, 4)
+    unsupported_rate = (
+        round(unsupported / predicted_non_null, 4) if predicted_non_null else 0.0
+    )
+    evidence_coverage = (
+        round(traceable_predictions / predicted_non_null, 4)
+        if predicted_non_null
+        else 1.0
+    )
+    gate_safety = (
+        round(safe_blocks / unsafe_missing_cases, 4)
+        if unsafe_missing_cases
+        else 1.0
+    )
+    approval_integrity = round(approval_integrity_cases / len(cases), 4)
+    priority_ndcg = round(statistics.mean(ndcgs), 4) if ndcgs else None
+
+    validation_gates = build_validation_gates(
+        split=split,
+        cases=cases,
+        interviews=interviews,
+        readiness=readiness,
+        task_metrics=task_metrics,
+        adjudication_status=adjudication_status,
+        agreement=agreement,
+        reference_status_label=status_label,
+        freeze_status=freeze_status,
+        extraction_micro_f1=rounded_f1,
+        critical_omission_recall=rounded_omission_recall,
+        unsupported_assertion_rate=unsupported_rate,
+        evidence_quote_coverage=evidence_coverage,
+        decision_gate_safety=gate_safety,
+        priority_ndcg=priority_ndcg,
+        human_approval_integrity=approval_integrity,
+    )
+    benchmark_validated = all(item["passed"] for item in validation_gates.values())
 
     result = {
         "cases": len(cases),
-        "extraction_precision": round(precision, 4),
-        "extraction_recall": round(recall, 4),
-        "extraction_micro_f1": round(f1, 4),
-        "critical_omission_recall": round(omission_recall, 4),
-        "unsupported_assertion_rate": (
-            round(unsupported / predicted_non_null, 4) if predicted_non_null else 0.0
-        ),
-        "evidence_quote_coverage": (
-            round(traceable_predictions / predicted_non_null, 4)
-            if predicted_non_null
-            else 1.0
-        ),
-        "decision_gate_safety": (
-            round(safe_blocks / unsafe_missing_cases, 4)
-            if unsafe_missing_cases
-            else 1.0
-        ),
-        "human_approval_integrity": round(approval_integrity_cases / len(cases), 4),
-        "priority_ndcg": round(statistics.mean(ndcgs), 4) if ndcgs else None,
+        "extraction_precision": rounded_precision,
+        "extraction_recall": rounded_recall,
+        "extraction_micro_f1": rounded_f1,
+        "critical_omission_recall": rounded_omission_recall,
+        "unsupported_assertion_rate": unsupported_rate,
+        "evidence_quote_coverage": evidence_coverage,
+        "decision_gate_safety": gate_safety,
+        "human_approval_integrity": approval_integrity,
+        "priority_ndcg": priority_ndcg,
         "task_precision": task_metrics["task_precision"],
         "task_review": task_metrics,
         "latency_ms_p50": round(statistics.median(latencies), 3),
@@ -410,10 +628,14 @@ async def run(
         "reference_status_counts": status_counts,
         "dataset_audit": dataset_audit(cases),
         "human_review_readiness": readiness,
+        "human_interview_readiness": interviews,
+        "human_adjudication_readiness": adjudication_status,
+        "human_freeze_readiness": freeze_status,
         "reviewer_agreement": agreement,
         "error_matrix": error_matrix,
         "adverse_failure_count": len(adverse_failures),
         "adverse_failures": adverse_failures,
+        "validation_gates": validation_gates,
         "benchmark_validated": benchmark_validated,
         "warning": (
             "Local deterministic result. It is not a Nemotron result and is not "
@@ -457,6 +679,18 @@ def main() -> None:
     parser.add_argument("--case-annotations", type=Path)
     parser.add_argument("--output-reviews", type=Path)
     parser.add_argument("--adjudications", type=Path)
+    parser.add_argument("--interviews", type=Path)
+    parser.add_argument(
+        "--human-freeze-manifest",
+        type=Path,
+        help="Manifest that freezes all sanitized human inputs before evaluation.",
+    )
+    parser.add_argument(
+        "--freeze-root",
+        type=Path,
+        default=Path.cwd(),
+        help="Repository root used to resolve paths listed by the human freeze.",
+    )
     parser.add_argument(
         "--reference-packet-out",
         type=Path,
@@ -482,6 +716,9 @@ def main() -> None:
             case_annotations_path=args.case_annotations,
             output_reviews_path=args.output_reviews,
             adjudications_path=args.adjudications,
+            interview_records_path=args.interviews,
+            human_freeze_manifest_path=args.human_freeze_manifest,
+            freeze_root=args.freeze_root,
             reference_packet_out=args.reference_packet_out,
             output_packet_out=args.output_packet_out,
             system_alias=args.system_alias,

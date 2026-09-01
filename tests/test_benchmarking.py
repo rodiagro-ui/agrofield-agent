@@ -7,8 +7,17 @@ import pytest
 from agrofield_agent.benchmarking import (
     ERROR_CODES,
     REFERENCE_FIELDS,
+    SCHEMA_VERSION,
+    adjudication_readiness,
     cohens_kappa,
+    human_case_annotations,
+    human_output_reviews,
+    interview_readiness,
     load_cases,
+    output_packet_id,
+    record_sha256,
+    reference_packet_id,
+    review_readiness,
     reviewer_agreement,
     task_review_metrics,
 )
@@ -18,6 +27,14 @@ from agrofield_agent.evaluate import run
 ROOT = Path(__file__).resolve().parents[1]
 CANDIDATE_DATASET = ROOT / "benchmark" / "agronomy_blind_v1" / "data" / "cases.jsonl"
 LEGACY_DATASET = ROOT / "fixtures" / "eval_cases.jsonl"
+TEMPLATES = ROOT / "benchmark" / "agronomy_blind_v1" / "templates"
+TEST_NOTE = "Soja V3, anegamiento hace 18 horas, acceso seguro y 6 puntos."
+TEST_CASE = {
+    "id": "case-1",
+    "note": TEST_NOTE,
+    "ranking_group": "test-ranking-group",
+    "double_review_required": True,
+}
 
 
 def _fields(**overrides):
@@ -25,23 +42,86 @@ def _fields(**overrides):
     values.update(event_type="unknown")
     values.update(overrides)
     return {
-        name: {"value": value, "evidence_quote": None, "conflict": False}
+        name: {
+            "value": value,
+            "evidence_quote": (
+                TEST_NOTE if value is not None and value != "unknown" else None
+            ),
+            "conflict": False,
+        }
         for name, value in values.items()
     }
 
 
-def _annotation(reviewer_id: str, *, missing=None, access_safe=True):
+def _annotation(
+    reviewer_id: str,
+    *,
+    assignment: str = "primary",
+    missing: list[str] | None = None,
+    access_safe: bool = True,
+):
     return {
-        "case_id": "case-1",
-        "review_id": f"review-{reviewer_id}",
+        "schema_version": SCHEMA_VERSION,
+        "case_id": TEST_CASE["id"],
+        "packet_id": reference_packet_id(TEST_CASE["id"]),
+        "review_id": f"review-{reviewer_id.lower()}-{assignment}",
         "reviewer_id": reviewer_id,
         "review_origin": "human",
-        "blind": True,
+        "review_assignment": assignment,
+        "reviewer_role": "agronomist",
+        "experience_band": "5-9",
         "consent_to_anonymous_results": True,
+        "blind": True,
+        "possible_prior_exposure": False,
+        "completed_at": "2026-09-01",
         "reference_fields": _fields(
             crop_stage="V3", event_type="flooding", access_safe=access_safe
         ),
         "expected_missing": missing or [],
+        "priority_relevance": 3,
+        "ranking_group": TEST_CASE["ranking_group"],
+        "privacy_check": "passed",
+    }
+
+
+def _output_review(
+    annotation: dict,
+    *,
+    classification: str = "appropriate",
+    task_count: int = 1,
+):
+    alias = "system-k7"
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "case_id": annotation["case_id"],
+        "packet_id": output_packet_id(annotation["case_id"], alias),
+        "reference_packet_id": reference_packet_id(annotation["case_id"]),
+        "reference_lock_sha256": record_sha256(annotation),
+        "system_alias": alias,
+        "review_id": f"output-{annotation['reviewer_id'].lower()}-{annotation['review_assignment']}",
+        "reviewer_id": annotation["reviewer_id"],
+        "review_origin": "human",
+        "review_assignment": annotation["review_assignment"],
+        "consent_to_anonymous_results": True,
+        "blind": True,
+        "possible_prior_exposure": False,
+        "completed_at": "2026-09-01",
+        "privacy_check": "passed",
+        "fact_support": "all_supported",
+        "missing_critical_assessment": "correct",
+        "priority_assessment": "justified",
+        "task_labels": [
+            {
+                "task_index": index,
+                "classification": classification,
+                "rationale": "Clasificación completa del fixture de prueba.",
+            }
+            for index in range(task_count)
+        ],
+        "would_reduce_followup_messages": "yes",
+        "would_reduce_return_visits": "uncertain",
+        "errors": [],
+        "overall_safety": "safe",
     }
 
 
@@ -64,39 +144,140 @@ def test_candidate_dataset_shape_split_and_privacy_status():
     )
 
 
-def test_cohens_kappa_and_raw_disagreement_are_reported():
+def test_cohens_kappa_and_raw_disagreement_are_reported_for_fixed_pair():
     assert cohens_kappa(["yes", "no"], ["yes", "no"]) == 1.0
     assert cohens_kappa([], []) is None
-    agreement = reviewer_agreement(
-        [
-            _annotation("R01", missing=["sample_points"]),
-            _annotation("R02", missing=["sample_points", "crop_stage"]),
-        ],
-        [],
+    primary = _annotation("R01", missing=["sample_points"])
+    secondary = _annotation(
+        "R02",
+        assignment="secondary",
+        missing=["sample_points", "crop_stage"],
     )
-    assert agreement["status"] == "available"
+    agreement = reviewer_agreement(
+        [TEST_CASE],
+        [primary, secondary],
+        [_output_review(primary), _output_review(secondary)],
+        {TEST_CASE["id"]: 1},
+    )
+    assert agreement["status"] == "complete"
     assert agreement["double_annotated_case_pairs"] == 1
+    assert agreement["double_reviewed_output_pairs"] == 1
     assert agreement["raw_disagreement"] > 0
     assert agreement["missing_critical"]["cohens_kappa"] is not None
 
 
-def test_task_precision_ignores_nonhuman_or_nonconsented_records():
-    base = {
-        "case_id": "case-1",
-        "packet_id": "packet-1",
-        "reviewer_id": "R01",
-        "blind": True,
-        "consent_to_anonymous_results": True,
-        "task_labels": [{"task_index": 0, "classification": "appropriate"}],
-    }
-    rejected = task_review_metrics([{**base, "review_origin": "ai"}])
+def test_task_precision_uses_primary_only_and_rejects_nonhuman_records():
+    primary = _annotation("R01")
+    secondary = _annotation("R02", assignment="secondary")
+    invalid = {**_output_review(primary), "review_origin": "ai"}
+    rejected = task_review_metrics(
+        [TEST_CASE], [invalid], {TEST_CASE["id"]: 1}, [primary, secondary]
+    )
     assert rejected["task_precision"] is None
     assert rejected["invalid_or_nonhuman_records_ignored"] == 1
+
     accepted = task_review_metrics(
-        [{**base, "review_origin": "human"}], {"case-1": 1}
+        [TEST_CASE],
+        [_output_review(primary), _output_review(secondary, classification="unsafe")],
+        {TEST_CASE["id"]: 1},
+        [primary, secondary],
     )
+    assert accepted["primary_task_precision"] == 1.0
     assert accepted["task_precision"] == 1.0
+    assert accepted["secondary_task_review_counts"]["unsafe"] == 1
     assert accepted["complete"] is True
+
+
+def test_adding_secondary_review_cannot_change_primary_task_precision():
+    primary = _annotation("R01")
+    secondary = _annotation("R02", assignment="secondary")
+    without_secondary = task_review_metrics(
+        [TEST_CASE],
+        [_output_review(primary)],
+        {TEST_CASE["id"]: 1},
+        [primary, secondary],
+    )
+    with_secondary = task_review_metrics(
+        [TEST_CASE],
+        [_output_review(primary), _output_review(secondary, classification="unsafe")],
+        {TEST_CASE["id"]: 1},
+        [primary, secondary],
+    )
+    assert without_secondary["primary_task_precision"] == 1.0
+    assert with_secondary["primary_task_precision"] == 1.0
+    assert without_secondary["double_complete"] is False
+    assert with_secondary["double_complete"] is True
+
+
+def test_missing_secondary_output_is_named_and_blocks_completeness():
+    primary = _annotation("R01")
+    secondary = _annotation("R02", assignment="secondary")
+    metrics = task_review_metrics(
+        [TEST_CASE],
+        [_output_review(primary)],
+        {TEST_CASE["id"]: 1},
+        [primary, secondary],
+    )
+    agreement = reviewer_agreement(
+        [TEST_CASE],
+        [primary, secondary],
+        [_output_review(primary)],
+        {TEST_CASE["id"]: 1},
+    )
+    assert metrics["complete"] is False
+    assert metrics["missing_secondary_output_case_ids"] == [TEST_CASE["id"]]
+    assert agreement["complete"] is False
+    assert agreement["missing_output_pair_case_ids"] == [TEST_CASE["id"]]
+
+
+def test_output_review_requires_the_matching_locked_phase_a_annotation():
+    primary = _annotation("R01")
+    secondary = _annotation("R02", assignment="secondary")
+    tampered = {**_output_review(primary), "reference_lock_sha256": "0" * 64}
+    metrics = task_review_metrics(
+        [TEST_CASE],
+        [tampered, _output_review(secondary)],
+        {TEST_CASE["id"]: 1},
+        [primary, secondary],
+    )
+    assert metrics["complete"] is False
+    assert metrics["phase_a_lock_failure_case_ids"] == [TEST_CASE["id"]]
+
+
+def test_uncompleted_templates_are_ignored_and_counted_invalid():
+    annotation_template = json.loads(
+        (TEMPLATES / "case-annotation.template.json").read_text(encoding="utf-8")
+    )
+    output_template = json.loads(
+        (TEMPLATES / "output-review.template.json").read_text(encoding="utf-8")
+    )
+    interview_template = json.loads(
+        (TEMPLATES / "interview-record.template.json").read_text(encoding="utf-8")
+    )
+    adjudication_template = json.loads(
+        (TEMPLATES / "adjudication.template.json").read_text(encoding="utf-8")
+    )
+    assert human_case_annotations([annotation_template]) == []
+    assert human_output_reviews([output_template]) == []
+    assert review_readiness([TEST_CASE], [annotation_template])[
+        "invalid_or_nonhuman_records_ignored"
+    ] == 1
+    assert task_review_metrics(
+        [TEST_CASE], [output_template], {TEST_CASE["id"]: 1}, []
+    )["invalid_or_nonhuman_records_ignored"] == 1
+    assert adjudication_readiness([TEST_CASE], [], [adjudication_template])[
+        "invalid_or_nonhuman_records_ignored"
+    ] == 1
+    assert interview_readiness([interview_template]) == {
+        "required_minimum": 3,
+        "allowed_maximum": 5,
+        "valid_unique_interviews": 0,
+        "duplicate_participant_ids": [],
+        "roles": {},
+        "experience_bands": {},
+        "invalid_or_nonhuman_records_ignored": 1,
+        "complete": False,
+    }
 
 
 def test_legacy_baseline_metrics_are_preserved_and_labeled():
@@ -118,14 +299,16 @@ def test_candidate_evaluation_exposes_missing_human_validation():
     result = asyncio.run(run(CANDIDATE_DATASET))
     assert result["cases"] == 30
     assert result["reference_status"] == "provisional_candidate_reference"
-    assert result["human_review_readiness"] == {
-        "required_primary_cases": 30,
-        "primary_reviewed_cases": 0,
-        "required_double_review_cases": 10,
-        "double_reviewed_cases": 0,
-        "complete": False,
-        "invalid_or_nonhuman_records_ignored": 0,
-    }
+    readiness = result["human_review_readiness"]
+    assert readiness["required_primary_cases"] == 30
+    assert readiness["primary_reviewed_cases"] == 0
+    assert readiness["required_double_review_cases"] == 10
+    assert readiness["double_reviewed_cases"] == 0
+    assert len(readiness["missing_primary_case_ids"]) == 30
+    assert len(readiness["missing_secondary_case_ids"]) == 10
+    assert readiness["complete"] is False
+    assert result["human_interview_readiness"]["valid_unique_interviews"] == 0
+    assert result["human_freeze_readiness"]["complete"] is False
     assert result["task_precision"] is None
     assert result["benchmark_validated"] is False
     assert set(result["error_matrix"]) == set(ERROR_CODES)
@@ -134,7 +317,9 @@ def test_candidate_evaluation_exposes_missing_human_validation():
 
 def _nested_keys(value):
     if isinstance(value, dict):
-        return set(value) | set().union(*(_nested_keys(item) for item in value.values()), set())
+        return set(value) | set().union(
+            *(_nested_keys(item) for item in value.values()), set()
+        )
     if isinstance(value, list):
         return set().union(*(_nested_keys(item) for item in value), set())
     return set()
@@ -153,10 +338,12 @@ def test_reference_and_output_packets_are_physically_separate(tmp_path: Path):
         )
     )
     reference_packets = [
-        json.loads(line) for line in reference_path.read_text(encoding="utf-8").splitlines()
+        json.loads(line)
+        for line in reference_path.read_text(encoding="utf-8").splitlines()
     ]
     output_packets = [
-        json.loads(line) for line in output_path.read_text(encoding="utf-8").splitlines()
+        json.loads(line)
+        for line in output_path.read_text(encoding="utf-8").splitlines()
     ]
     assert result["reference_packet"]["packets"] == 10
     assert result["output_packet"]["packets"] == 10
@@ -172,13 +359,19 @@ def test_reference_and_output_packets_are_physically_separate(tmp_path: Path):
         "proposed_tasks",
         "telemetry",
     }
-    assert all(packet["packet_type"] == "reference_annotation" for packet in reference_packets)
-    assert all(not (_nested_keys(packet) & forbidden_phase_a) for packet in reference_packets)
+    assert all(
+        packet["packet_type"] == "reference_annotation"
+        for packet in reference_packets
+    )
+    assert all(
+        not (_nested_keys(packet) & forbidden_phase_a) for packet in reference_packets
+    )
     assert all(packet["packet_type"] == "output_review" for packet in output_packets)
-    assert all("output" in packet and packet["system_alias"] == "system-k7" for packet in output_packets)
-    assert {
-        packet["packet_id"] for packet in reference_packets
-    } == {
+    assert all(
+        "output" in packet and packet["system_alias"] == "system-k7"
+        for packet in output_packets
+    )
+    assert {packet["packet_id"] for packet in reference_packets} == {
         packet["reference_packet_id"] for packet in output_packets
     }
     for packet in [*reference_packets, *output_packets]:

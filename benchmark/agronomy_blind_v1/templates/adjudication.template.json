@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0-candidate",
+  "schema_version": "1.1.0-candidate",
   "adjudication_id": "adjudication-random-id",
   "case_id": "bfv1-000",
   "status": "adjudicated",
@@ -8,6 +8,7 @@
   "consent_to_anonymous_results": true,
   "source_review_ids": ["review-id-1", "review-id-2"],
   "completed_at": "YYYY-MM-DD",
+  "privacy_check": "pending",
   "final_reference_fields": {
     "crop_stage": {"value": null, "evidence_quote": null, "conflict": false},
     "event_type": {"value": "unknown", "evidence_quote": null, "conflict": false},
