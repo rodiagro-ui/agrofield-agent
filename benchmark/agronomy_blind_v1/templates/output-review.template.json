@@ -5,6 +5,8 @@
   "system_alias": "system-random-alias",
   "review_id": "review-random-id",
   "reviewer_id": "R00",
+  "review_origin": "human",
+  "consent_to_anonymous_results": true,
   "blind": true,
   "possible_prior_exposure": false,
   "fact_support": "all_supported",

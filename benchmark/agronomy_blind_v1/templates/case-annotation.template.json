@@ -3,6 +3,7 @@
   "case_id": "bfv1-000",
   "review_id": "review-random-id",
   "reviewer_id": "R00",
+  "review_origin": "human",
   "reviewer_role": "agronomist",
   "experience_band": "5-9",
   "consent_to_anonymous_results": true,

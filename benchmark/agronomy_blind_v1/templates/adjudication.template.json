@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0-candidate",
+  "adjudication_id": "adjudication-random-id",
+  "case_id": "bfv1-000",
+  "status": "adjudicated",
+  "adjudicator_id": "A00",
+  "adjudication_origin": "human",
+  "consent_to_anonymous_results": true,
+  "source_review_ids": ["review-id-1", "review-id-2"],
+  "completed_at": "YYYY-MM-DD",
+  "final_reference_fields": {
+    "crop_stage": {"value": null, "evidence_quote": null, "conflict": false},
+    "event_type": {"value": "unknown", "evidence_quote": null, "conflict": false},
+    "event_hours_ago": {"value": null, "evidence_quote": null, "conflict": false},
+    "access_safe": {"value": null, "evidence_quote": null, "conflict": false},
+    "sample_points": {"value": null, "evidence_quote": null, "conflict": false},
+    "affected_area_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "standing_water_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "water_duration_hours": {"value": null, "evidence_quote": null, "conflict": false},
+    "lodging_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "stem_damage_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "stand_count_per_m": {"value": null, "evidence_quote": null, "conflict": false}
+  },
+  "expected_missing": [],
+  "priority_relevance": 0,
+  "decisions": [
+    {
+      "target": "field_or_policy",
+      "decision": "",
+      "rationale": ""
+    }
+  ]
+}
