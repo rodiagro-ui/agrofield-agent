@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0-candidate",
+  "case_id": "bfv1-000",
+  "review_id": "review-random-id",
+  "reviewer_id": "R00",
+  "reviewer_role": "agronomist",
+  "experience_band": "5-9",
+  "consent_to_anonymous_results": true,
+  "blind": true,
+  "possible_prior_exposure": false,
+  "completed_at": "YYYY-MM-DD",
+  "reference_fields": {
+    "crop_stage": {"value": null, "evidence_quote": null, "conflict": false},
+    "event_type": {"value": "unknown", "evidence_quote": null, "conflict": false},
+    "event_hours_ago": {"value": null, "evidence_quote": null, "conflict": false},
+    "access_safe": {"value": null, "evidence_quote": null, "conflict": false},
+    "sample_points": {"value": null, "evidence_quote": null, "conflict": false},
+    "affected_area_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "standing_water_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "water_duration_hours": {"value": null, "evidence_quote": null, "conflict": false},
+    "lodging_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "stem_damage_pct": {"value": null, "evidence_quote": null, "conflict": false},
+    "stand_count_per_m": {"value": null, "evidence_quote": null, "conflict": false}
+  },
+  "expected_missing": [],
+  "policy_disagreement": null,
+  "priority_relevance": 0,
+  "ranking_group": null,
+  "privacy_check": "passed",
+  "notes": null
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0-candidate",
+  "case_id": "bfv1-000",
+  "packet_id": "packet-random-id",
+  "system_alias": "system-random-alias",
+  "review_id": "review-random-id",
+  "reviewer_id": "R00",
+  "blind": true,
+  "possible_prior_exposure": false,
+  "fact_support": "all_supported",
+  "missing_critical_assessment": "correct",
+  "priority_assessment": "justified",
+  "task_labels": [
+    {
+      "task_index": 0,
+      "classification": "appropriate",
+      "rationale": ""
+    }
+  ],
+  "would_reduce_followup_messages": "uncertain",
+  "would_reduce_return_visits": "uncertain",
+  "errors": [
+    {
+      "code": "E1",
+      "severity": "minor",
+      "target": "field_or_task",
+      "rationale": ""
+    }
+  ],
+  "overall_safety": "safe",
+  "notes": null
+}
