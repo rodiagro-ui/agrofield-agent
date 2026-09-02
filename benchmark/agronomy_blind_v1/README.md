@@ -1,6 +1,6 @@
 # Benchmark Agronómico Ciego v1
 
-> **Estado: candidato no validado.** Al 2026-09-01 no hay entrevistas ni revisiones humanas cargadas. Ninguna etiqueta de este paquete puede describirse como “validada por agrónomos” hasta que se cumplan todos los gates de este documento.
+> **Estado: candidato prehumano v1.2 no validado.** Al 2026-09-02 existe autorización limitada para contacto por correo, pero no hay personas contactadas, entrevistas ni revisiones humanas cargadas. Ninguna etiqueta puede describirse como “validada por agrónomos” hasta que se cumplan todos los gates.
 
 Este paquete convierte la evaluación sintética inicial de AgroField Agent en un protocolo auditable para medir extracción, omisiones críticas, seguridad, priorización y tareas con revisión humana ciega.
 
@@ -44,20 +44,24 @@ benchmark/agronomy_blind_v1/
   reports/
     local-candidate-2026-09-01.json
     local-candidate-preflight-v1.1-2026-09-01.json
+    local-candidate-prehuman-v1.2-2026-09-02.json
   freeze/
     manifest.json
     manifest-v1.0.0-candidate.json
+    manifest-v1.1.0-candidate.json
   authorization/
     README.md
     authorization-request.md
+    authorization-decision-2026-09-02.md
     contact-and-review-plan.md
     invitation-and-consent-scripts.md
+    email-outreach-pack.md
     privacy-controls.md
     execution-checklist.md
     preflight-findings.md
 ```
 
-El directorio `authorization/` prepara el reclutamiento y la revisión, pero no autoriza contacto por sí mismo. Su estado inicial es `NOT_AUTHORIZED` y contiene los bloqueos técnicos que deben cerrarse antes de mostrar salidas a revisores.
+El directorio `authorization/` registra el alcance `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`. Solo el usuario puede enviar correos y custodiar identidades. Los P0/P1 técnicos están cerrados, pero el primer envío espera que el usuario complete privadamente el aviso y los controles indicados en `email-outreach-pack.md`.
 
 ## Flujo de trabajo
 
@@ -69,7 +73,7 @@ El directorio `authorization/` prepara el reclutamiento y la revisión, pero no 
 6. Generar **Fase B** con salidas sin revelar proveedor, modelo, split ni métricas.
 7. Vincular cada revisión de salida al hash de la anotación Fase A del mismo revisor.
 8. Evaluar salida y todas las tareas: 30 primarias y 10 secundarias completas.
-9. Calcular desacuerdo bruto, Cohen’s kappa para etiquetas nominales y métricas de producto.
+9. Calcular desacuerdo bruto, Cohen’s kappa para etiquetas nominales y sensibilidad separada sin pares con exposición previa declarada.
 10. Adjudicar sin borrar el desacuerdo original.
 11. Congelar entradas humanas y hashes antes de ejecutar `--require-validated` o comparar Nemotron.
 
@@ -78,6 +82,7 @@ El directorio `authorization/` prepara el reclutamiento y la revisión, pero no 
 - 3–5 entrevistas consentidas, anonimizadas y resumidas.
 - 30 casos con una revisión humana primaria completa.
 - 10 casos con una segunda revisión independiente tanto de referencia como de salida, con todas las tareas etiquetadas.
+- IDs primario/secundario globalmente distintos y adjudicador distinto de todos los revisores.
 - Cero campos identificatorios o coordenadas exactas.
 - Desacuerdo bruto y Cohen’s kappa reportados; no se exige ocultar un acuerdo bajo.
 - Todos los conflictos adjudicados con justificación.
@@ -132,4 +137,4 @@ Verificar el freeze candidato y sus hashes normalizados:
 python -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json
 ```
 
-`manifest-v1.0.0-candidate.json` conserva el freeze histórico. `manifest.json` apunta al freeze candidato vigente. Ambos declaran `human_validated: false`; cuando lleguen revisiones reales se deberá crear un manifiesto humano nuevo, nunca reetiquetar un freeze candidato.
+`manifest-v1.0.0-candidate.json` y `manifest-v1.1.0-candidate.json` conservan freezes históricos. `manifest.json` apunta al freeze candidato prehumano vigente. Todos declaran `human_validated: false`; cuando lleguen revisiones reales se deberá crear un manifiesto humano nuevo, nunca reetiquetar un freeze candidato.

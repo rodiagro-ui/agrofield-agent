@@ -1,0 +1,1159 @@
+{
+  "cases": 30,
+  "extraction_precision": 0.9851,
+  "extraction_recall": 0.8609,
+  "extraction_micro_f1": 0.9188,
+  "critical_omission_recall": 0.9714,
+  "unsupported_assertion_rate": 0.005,
+  "evidence_quote_coverage": 1.0,
+  "decision_gate_safety": 1.0,
+  "human_approval_integrity": 1.0,
+  "priority_ndcg": 0.9877,
+  "task_precision": null,
+  "task_review": {
+    "task_precision": null,
+    "binding_metric": "primary_task_precision",
+    "primary_task_precision": null,
+    "adjudicated_task_precision": null,
+    "adjudicated_task_precision_status": "not_collected_binding_metric_is_primary",
+    "primary_task_review_counts": {
+      "appropriate": 0,
+      "not_assessable": 0,
+      "premature": 0,
+      "unsafe": 0
+    },
+    "secondary_task_review_counts": {
+      "appropriate": 0,
+      "not_assessable": 0,
+      "premature": 0,
+      "unsafe": 0
+    },
+    "primary_reviewed_task_labels": 0,
+    "secondary_reviewed_task_labels": 0,
+    "required_primary_output_review_cases": 30,
+    "complete_primary_output_review_cases": 0,
+    "missing_primary_output_case_ids": [
+      "bfv1-001",
+      "bfv1-002",
+      "bfv1-003",
+      "bfv1-004",
+      "bfv1-005",
+      "bfv1-006",
+      "bfv1-007",
+      "bfv1-008",
+      "bfv1-009",
+      "bfv1-010",
+      "bfv1-011",
+      "bfv1-012",
+      "bfv1-013",
+      "bfv1-014",
+      "bfv1-015",
+      "bfv1-016",
+      "bfv1-017",
+      "bfv1-018",
+      "bfv1-019",
+      "bfv1-020",
+      "bfv1-021",
+      "bfv1-022",
+      "bfv1-023",
+      "bfv1-024",
+      "bfv1-025",
+      "bfv1-026",
+      "bfv1-027",
+      "bfv1-028",
+      "bfv1-029",
+      "bfv1-030"
+    ],
+    "duplicate_primary_output_case_ids": [],
+    "required_double_output_review_cases": 10,
+    "complete_double_output_review_cases": 0,
+    "missing_secondary_output_case_ids": [
+      "bfv1-003",
+      "bfv1-007",
+      "bfv1-011",
+      "bfv1-014",
+      "bfv1-016",
+      "bfv1-019",
+      "bfv1-023",
+      "bfv1-025",
+      "bfv1-028",
+      "bfv1-030"
+    ],
+    "duplicate_secondary_output_case_ids": [],
+    "pair_mismatch_case_ids": [],
+    "phase_a_lock_failure_case_ids": [],
+    "unexpected_secondary_output_case_ids": [],
+    "unknown_case_ids": [],
+    "duplicate_review_ids": [],
+    "valid_human_records": 0,
+    "invalid_or_nonhuman_records_ignored": 0,
+    "primary_complete": false,
+    "double_complete": false,
+    "complete": false,
+    "status": "pending_or_incomplete_human_output_review"
+  },
+  "latency_ms_p50": 0.062,
+  "latency_ms_max": 4.074,
+  "provider": "local/deterministic-es-v0.1",
+  "estimated_cost_usd": 0.0,
+  "reference_status": "provisional_candidate_reference",
+  "reference_status_counts": {
+    "provisional_candidate_reference": 30
+  },
+  "dataset_audit": {
+    "cases": 30,
+    "splits": {
+      "development": 20,
+      "holdout": 10
+    },
+    "double_review_required": 10,
+    "human_review_statuses_declared_by_cases": {
+      "candidate": 30
+    },
+    "privacy_statuses": {
+      "synthetic_no_real_data": 30
+    }
+  },
+  "human_review_readiness": {
+    "required_primary_cases": 30,
+    "primary_reviewed_cases": 0,
+    "missing_primary_case_ids": [
+      "bfv1-001",
+      "bfv1-002",
+      "bfv1-003",
+      "bfv1-004",
+      "bfv1-005",
+      "bfv1-006",
+      "bfv1-007",
+      "bfv1-008",
+      "bfv1-009",
+      "bfv1-010",
+      "bfv1-011",
+      "bfv1-012",
+      "bfv1-013",
+      "bfv1-014",
+      "bfv1-015",
+      "bfv1-016",
+      "bfv1-017",
+      "bfv1-018",
+      "bfv1-019",
+      "bfv1-020",
+      "bfv1-021",
+      "bfv1-022",
+      "bfv1-023",
+      "bfv1-024",
+      "bfv1-025",
+      "bfv1-026",
+      "bfv1-027",
+      "bfv1-028",
+      "bfv1-029",
+      "bfv1-030"
+    ],
+    "duplicate_primary_case_ids": [],
+    "required_double_review_cases": 10,
+    "double_reviewed_cases": 0,
+    "missing_secondary_case_ids": [
+      "bfv1-003",
+      "bfv1-007",
+      "bfv1-011",
+      "bfv1-014",
+      "bfv1-016",
+      "bfv1-019",
+      "bfv1-023",
+      "bfv1-025",
+      "bfv1-028",
+      "bfv1-030"
+    ],
+    "duplicate_secondary_case_ids": [],
+    "reviewer_independence_failure_case_ids": [],
+    "primary_reviewer_ids": [],
+    "secondary_reviewer_ids": [],
+    "reviewer_assignment_overlap_ids": [],
+    "reviewer_role_independence_complete": true,
+    "unexpected_secondary_case_ids": [],
+    "evidence_quote_failure_case_ids": [],
+    "context_mismatch_case_ids": [],
+    "unknown_case_ids": [],
+    "duplicate_review_ids": [],
+    "valid_human_records": 0,
+    "invalid_or_nonhuman_records_ignored": 0,
+    "complete": false
+  },
+  "human_interview_readiness": {
+    "required_minimum": 3,
+    "allowed_maximum": 5,
+    "valid_unique_interviews": 0,
+    "duplicate_participant_ids": [],
+    "roles": {},
+    "experience_bands": {},
+    "invalid_or_nonhuman_records_ignored": 0,
+    "complete": false
+  },
+  "human_adjudication_readiness": {
+    "required_cases": 30,
+    "complete_cases": 0,
+    "missing_case_ids": [
+      "bfv1-001",
+      "bfv1-002",
+      "bfv1-003",
+      "bfv1-004",
+      "bfv1-005",
+      "bfv1-006",
+      "bfv1-007",
+      "bfv1-008",
+      "bfv1-009",
+      "bfv1-010",
+      "bfv1-011",
+      "bfv1-012",
+      "bfv1-013",
+      "bfv1-014",
+      "bfv1-015",
+      "bfv1-016",
+      "bfv1-017",
+      "bfv1-018",
+      "bfv1-019",
+      "bfv1-020",
+      "bfv1-021",
+      "bfv1-022",
+      "bfv1-023",
+      "bfv1-024",
+      "bfv1-025",
+      "bfv1-026",
+      "bfv1-027",
+      "bfv1-028",
+      "bfv1-029",
+      "bfv1-030"
+    ],
+    "duplicate_case_ids": [],
+    "source_mismatch_case_ids": [],
+    "adjudicator_reviewer_overlap_case_ids": [],
+    "reviewer_ids": [],
+    "adjudicator_ids": [],
+    "reviewer_adjudicator_overlap_ids": [],
+    "role_independence_complete": true,
+    "unknown_case_ids": [],
+    "duplicate_adjudication_ids": [],
+    "valid_human_records": 0,
+    "invalid_or_nonhuman_records_ignored": 0,
+    "complete": false
+  },
+  "human_freeze_readiness": {
+    "manifest": null,
+    "required_input_categories": [
+      "adjudications",
+      "case_annotations",
+      "dataset",
+      "interviews",
+      "output_reviews"
+    ],
+    "missing_input_categories": [
+      "adjudications",
+      "case_annotations",
+      "interviews",
+      "output_reviews"
+    ],
+    "input_paths_are_distinct": false,
+    "required_files": [],
+    "required_files_missing_from_manifest": [],
+    "manifest_hashes_valid": false,
+    "metadata_valid": false,
+    "complete": false
+  },
+  "reviewer_agreement": {
+    "status": "pending_human_double_review",
+    "required_double_review_cases": 10,
+    "double_annotated_case_pairs": 0,
+    "double_reviewed_output_pairs": 0,
+    "missing_reference_pair_case_ids": [
+      "bfv1-003",
+      "bfv1-007",
+      "bfv1-011",
+      "bfv1-014",
+      "bfv1-016",
+      "bfv1-019",
+      "bfv1-023",
+      "bfv1-025",
+      "bfv1-028",
+      "bfv1-030"
+    ],
+    "missing_output_pair_case_ids": [
+      "bfv1-003",
+      "bfv1-007",
+      "bfv1-011",
+      "bfv1-014",
+      "bfv1-016",
+      "bfv1-019",
+      "bfv1-023",
+      "bfv1-025",
+      "bfv1-028",
+      "bfv1-030"
+    ],
+    "complete": false,
+    "raw_disagreement": null,
+    "missing_critical": {
+      "paired_items": 0,
+      "raw_agreement": null,
+      "raw_disagreement": null,
+      "cohens_kappa": null
+    },
+    "categorical_fields": {
+      "crop_stage": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      },
+      "event_type": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      },
+      "access_safe": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      }
+    },
+    "numeric_fields": {
+      "paired_items": 0,
+      "raw_agreement": null,
+      "raw_disagreement": null,
+      "cohens_kappa": null
+    },
+    "output_judgements": {
+      "fact_support": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      },
+      "missing_critical_assessment": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      },
+      "priority_assessment": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      },
+      "overall_safety": {
+        "paired_items": 0,
+        "raw_agreement": null,
+        "raw_disagreement": null,
+        "cohens_kappa": null
+      }
+    },
+    "task_classification": {
+      "paired_items": 0,
+      "raw_agreement": null,
+      "raw_disagreement": null,
+      "cohens_kappa": null
+    },
+    "exposure_sensitivity": {
+      "binding_metrics_include_all_complete_pairs": true,
+      "reference": {
+        "all_pair_count": 0,
+        "all_pair_case_ids": [],
+        "without_possible_prior_exposure_pair_count": 0,
+        "excluded_possible_prior_exposure_case_ids": [],
+        "all_pair_metrics": {
+          "raw_disagreement": null,
+          "missing_critical": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          },
+          "categorical_fields": {
+            "crop_stage": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "event_type": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "access_safe": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            }
+          },
+          "numeric_fields": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          }
+        },
+        "without_possible_prior_exposure_metrics": {
+          "raw_disagreement": null,
+          "missing_critical": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          },
+          "categorical_fields": {
+            "crop_stage": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "event_type": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "access_safe": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            }
+          },
+          "numeric_fields": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          }
+        }
+      },
+      "output": {
+        "all_pair_count": 0,
+        "all_pair_case_ids": [],
+        "without_possible_prior_exposure_pair_count": 0,
+        "excluded_possible_prior_exposure_case_ids": [],
+        "all_pair_metrics": {
+          "output_judgements": {
+            "fact_support": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "missing_critical_assessment": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "priority_assessment": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "overall_safety": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            }
+          },
+          "task_classification": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          }
+        },
+        "without_possible_prior_exposure_metrics": {
+          "output_judgements": {
+            "fact_support": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "missing_critical_assessment": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "priority_assessment": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            },
+            "overall_safety": {
+              "paired_items": 0,
+              "raw_agreement": null,
+              "raw_disagreement": null,
+              "cohens_kappa": null
+            }
+          },
+          "task_classification": {
+            "paired_items": 0,
+            "raw_agreement": null,
+            "raw_disagreement": null,
+            "cohens_kappa": null
+          }
+        }
+      }
+    }
+  },
+  "error_matrix": {
+    "E1": {
+      "automated": 0,
+      "human_review": 0,
+      "total": 0
+    },
+    "E2": {
+      "automated": 2,
+      "human_review": 0,
+      "total": 2
+    },
+    "E3": {
+      "automated": 2,
+      "human_review": 0,
+      "total": 2
+    },
+    "E4": {
+      "automated": 1,
+      "human_review": 0,
+      "total": 1
+    },
+    "E5": {
+      "automated": 31,
+      "human_review": 0,
+      "total": 31
+    },
+    "E6": {
+      "automated": 17,
+      "human_review": 0,
+      "total": 17
+    },
+    "E7": {
+      "automated": 0,
+      "human_review": 0,
+      "total": 0
+    },
+    "E8": {
+      "automated": 0,
+      "human_review": 0,
+      "total": 0
+    }
+  },
+  "adverse_failure_count": 53,
+  "adverse_failures": [
+    {
+      "case_id": "bfv1-003",
+      "code": "E5",
+      "target": "event_hours_ago",
+      "expected": 12,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-003",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 0,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-004",
+      "code": "E5",
+      "target": "stand_count_per_m",
+      "expected": 13,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-005",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 4,
+      "predicted": 3,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-007",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 30,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-009",
+      "code": "E2",
+      "target": "affected_area_pct",
+      "expected": 36,
+      "predicted": 32.0,
+      "rationale": "El valor extraído no coincide con la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-009",
+      "code": "E3",
+      "target": "affected_area_pct",
+      "expected": 36,
+      "predicted": 32.0,
+      "rationale": "El valor coincide con otro campo de la referencia y puede estar mal atribuido.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-009",
+      "code": "E5",
+      "target": "lodging_pct",
+      "expected": 32,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-009",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 4,
+      "predicted": 3,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-010",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 7,
+      "predicted": 5,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-011",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 3,
+      "predicted": 4,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-012",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 15,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-013",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 25,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-013",
+      "code": "E5",
+      "target": "standing_water_pct",
+      "expected": 25,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-014",
+      "code": "E5",
+      "target": "access_safe",
+      "expected": true,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-014",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 6,
+      "predicted": 4,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-015",
+      "code": "E5",
+      "target": "lodging_pct",
+      "expected": 25,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-016",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 30,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-016",
+      "code": "E5",
+      "target": "lodging_pct",
+      "expected": 18,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-016",
+      "code": "E5",
+      "target": "stem_damage_pct",
+      "expected": 4,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-016",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 3,
+      "predicted": 6,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-017",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 5,
+      "predicted": 7,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-018",
+      "code": "E2",
+      "target": "affected_area_pct",
+      "expected": 45,
+      "predicted": 30.0,
+      "rationale": "El valor extraído no coincide con la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-018",
+      "code": "E3",
+      "target": "affected_area_pct",
+      "expected": 45,
+      "predicted": 30.0,
+      "rationale": "El valor coincide con otro campo de la referencia y puede estar mal atribuido.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-019",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 30,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-020",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 0,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-021",
+      "code": "E5",
+      "target": "event_type",
+      "expected": "hail",
+      "predicted": "unknown",
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-021",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 5,
+      "predicted": 4,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "event_hours_ago",
+      "expected": 12,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "sample_points",
+      "expected": 6,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 20,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "standing_water_pct",
+      "expected": 20,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "water_duration_hours",
+      "expected": 8,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E5",
+      "target": "stand_count_per_m",
+      "expected": 10,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-022",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 9,
+      "predicted": 10,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-023",
+      "code": "E5",
+      "target": "event_hours_ago",
+      "expected": 48,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-023",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 2,
+      "predicted": 1,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-024",
+      "code": "E5",
+      "target": "crop_stage",
+      "expected": "flagged_missing",
+      "predicted": "not_flagged",
+      "rationale": "Una omisión crítica esperada no fue señalada.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-024",
+      "code": "E4",
+      "target": "crop_stage",
+      "expected": null,
+      "predicted": "V3",
+      "rationale": "El sistema produjo un valor donde la referencia no contiene un hecho.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-024",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 18,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-024",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 8,
+      "predicted": 7,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-025",
+      "code": "E5",
+      "target": "water_duration_hours",
+      "expected": 18,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-025",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 4,
+      "predicted": 5,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-026",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 3,
+      "predicted": 2,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-027",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 7,
+      "predicted": 3,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-028",
+      "code": "E5",
+      "target": "access_safe",
+      "expected": false,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-028",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 1,
+      "predicted": 6,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-029",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 24,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-029",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 6,
+      "predicted": 8,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-030",
+      "code": "E5",
+      "target": "affected_area_pct",
+      "expected": 0,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-030",
+      "code": "E5",
+      "target": "lodging_pct",
+      "expected": 0,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-030",
+      "code": "E5",
+      "target": "stem_damage_pct",
+      "expected": 0,
+      "predicted": null,
+      "rationale": "El sistema omitió un hecho presente en la referencia.",
+      "source": "automated_comparison"
+    },
+    {
+      "case_id": "bfv1-030",
+      "code": "E6",
+      "target": "priority_rank",
+      "expected": 10,
+      "predicted": 9,
+      "rationale": "La posición prevista difiere del orden de referencia dentro del grupo.",
+      "source": "automated_comparison"
+    }
+  ],
+  "validation_gates": {
+    "full_frozen_dataset": {
+      "passed": true,
+      "actual": {
+        "split": "all",
+        "cases": 30,
+        "double_cases": 10
+      },
+      "requirement": "all split, at least 30 cases and at least 10 fixed double-review cases",
+      "failure_reason": null
+    },
+    "human_interviews": {
+      "passed": false,
+      "actual": 0,
+      "requirement": "3-5 unique, consented, sanitized human interviews",
+      "failure_reason": "Interview count, consent, sanitization, uniqueness, or privacy review is incomplete."
+    },
+    "reference_reviews": {
+      "passed": false,
+      "actual": {
+        "primary": 0,
+        "double": 0
+      },
+      "requirement": "one primary per case and one independent secondary for every fixed double case",
+      "failure_reason": "Primary or independent secondary reference reviews are missing, duplicated, or invalid."
+    },
+    "output_reviews": {
+      "passed": false,
+      "actual": {
+        "primary": 0,
+        "double": 0
+      },
+      "requirement": "one complete locked primary output review per case and one complete locked secondary per double case",
+      "failure_reason": "Output reviews, full task labels, Phase-A locks, or independent double reviews are incomplete."
+    },
+    "adjudications": {
+      "passed": false,
+      "actual": 0,
+      "requirement": "one privacy-passed independent human adjudication per case linked to exact source reviews",
+      "failure_reason": "Adjudications are missing, duplicated, invalid, role-overlapping, or linked to the wrong reviews."
+    },
+    "reviewer_agreement": {
+      "passed": false,
+      "actual": {
+        "reference_pairs": 0,
+        "output_pairs": 0
+      },
+      "requirement": "agreement computed from every fixed reference and output pair",
+      "failure_reason": "At least one required reference or complete output pair is missing."
+    },
+    "adjudicated_reference": {
+      "passed": false,
+      "actual": "provisional_candidate_reference",
+      "requirement": "all evaluation references are valid human adjudications",
+      "failure_reason": "At least one metric still uses a candidate or preliminary reference."
+    },
+    "privacy_controls": {
+      "passed": false,
+      "actual": {
+        "invalid_records": 0,
+        "freeze_metadata": false
+      },
+      "requirement": "all counted records privacy-passed plus independent final privacy status in the human freeze",
+      "failure_reason": "A supplied record is invalid/nonhuman or the final freeze lacks passed privacy metadata."
+    },
+    "human_input_freeze": {
+      "passed": false,
+      "actual": {
+        "hashes_valid": false,
+        "metadata_valid": false,
+        "missing_files": []
+      },
+      "requirement": "distinct human input files listed in a valid human-reviewed freeze with holdout declaration",
+      "failure_reason": "The human-input manifest, hashes, file coverage, privacy status, or holdout declaration is incomplete."
+    },
+    "extraction_micro_f1": {
+      "passed": true,
+      "actual": 0.9188,
+      "requirement": ">= 0.90",
+      "failure_reason": null
+    },
+    "critical_omission_recall": {
+      "passed": false,
+      "actual": 0.9714,
+      "requirement": ">= 0.98",
+      "failure_reason": "Critical omission recall is below 0.98."
+    },
+    "unsupported_assertion_rate": {
+      "passed": true,
+      "actual": 0.005,
+      "requirement": "<= 0.01",
+      "failure_reason": null
+    },
+    "evidence_quote_coverage": {
+      "passed": true,
+      "actual": 1.0,
+      "requirement": "== 1.00",
+      "failure_reason": null
+    },
+    "decision_gate_safety": {
+      "passed": true,
+      "actual": 1.0,
+      "requirement": "== 1.00",
+      "failure_reason": null
+    },
+    "priority_ndcg": {
+      "passed": true,
+      "actual": 0.9877,
+      "requirement": ">= 0.90",
+      "failure_reason": null
+    },
+    "primary_task_precision": {
+      "passed": false,
+      "actual": null,
+      "requirement": ">= 0.90 using primary reviews only",
+      "failure_reason": "Primary task precision is unavailable or below 0.90."
+    },
+    "human_approval_integrity": {
+      "passed": true,
+      "actual": 1.0,
+      "requirement": "== 1.00",
+      "failure_reason": null
+    }
+  },
+  "benchmark_validated": false,
+  "warning": "Local deterministic result. It is not a Nemotron result and is not an agronomist-validated benchmark."
+}
