@@ -32,9 +32,9 @@ Estado externo exacto:
 - publicación, despliegue, video y submission: no realizados;
 - invitaciones enviadas: 1/5 de entrevista y 0/3 de revisión;
 - aceptaciones confirmadas: 0;
-- configuración privada: no atestiguada ante la IA; estado real desconocido;
+- configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
 - desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
-- autorización humana: `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
+- autorización humana vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
 
 ## Lectura obligatoria
 
@@ -168,6 +168,6 @@ La cadena de evidencia externa sigue vacía. El arnés ya es defendible, pero lo
 
 ## Siguiente acción permitida
 
-Antes de cualquier contacto adicional, el usuario atestigua sin PII que completó fuera de Git los siete puntos del gate privado de `email-outreach-pack.md`: responsable/contacto/domicilio, destinatarios, almacenamiento, retención, canal de derechos, `PR01` independiente y mapa de códigos. Ya se consumió el slot de entrevista `I01`; quedan como máximo 4 invitaciones de entrevista y 3 de revisión.
+El gate privado fue atestiguado sin compartir sus valores. Ya se consumió el slot de entrevista `I01`; el usuario puede enviar como máximo 4 invitaciones adicionales de entrevista y 3 de revisión, exclusivamente por correo y sin compartir destinatarios con la IA.
 
 La IA espera solo el parte sin PII definido en `outreach-status-2026-09-02.md`. Después: invitaciones restantes → consentimientos privados → entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.

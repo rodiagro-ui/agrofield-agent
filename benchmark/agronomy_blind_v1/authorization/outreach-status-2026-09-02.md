@@ -17,24 +17,32 @@ La invitación `I01` fue enviada individualmente por correo desde la cuenta del 
 
 ## Control de proceso
 
-La IA no recibió el parte saneado que confirma que los siete puntos del gate privado fueron completados antes del primer envío. Esto significa **estado desconocido**, no evidencia de que el setup no se haya completado. Se registra la desviación de control `DV-OUTREACH-001`: el envío fue asistido antes de que la atestación anónima quedara documentada y una dirección real fue expuesta transitoriamente a la IA para ejecutarlo.
+El usuario atestiguó el 2026-09-02, sin compartir PII adicional, que completó la configuración privada. El estado operativo vigente es `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
+
+La atestación cubre los siete controles privados: responsable y contacto; clases de destinatarios; almacenamiento y acceso; retención; canal de derechos; `PR01` distinto de quien sanea; selección legítima y mapa privado de códigos. La IA no conoce sus valores.
+
+Se conserva la desviación de control `DV-OUTREACH-001`: la invitación `I01` fue asistida antes de que la atestación anónima quedara documentada y una dirección real fue expuesta transitoriamente a la IA para ejecutarla. La atestación posterior cierra el bloqueo operativo, pero no borra el historial.
 
 Mitigación vinculante:
 
-1. no enviar invitaciones adicionales ni recolectar respuestas sustantivas hasta recibir la atestación saneada;
+1. los correos restantes son enviados únicamente por el usuario, sin compartir destinatarios con la IA;
 2. no copiar al chat ni a Git identidades, direcciones, firmas, calendarios o respuestas crudas;
-3. si `I01` responde, enviar primero el aviso privado y obtener los consentimientos separados antes de entrevistar;
+3. si una persona responde, enviar primero el aviso privado y obtener los consentimientos separados antes de entrevistar o revisar;
 4. conservar el freeze prehumano vigente como snapshot histórico con `outreach_executed: false` y registrar la actividad posterior únicamente fuera de ese manifiesto.
 
-## Parte requerido para reanudar
+## Cupos habilitados y próximo parte
+
+Quedan habilitadas como máximo **4 invitaciones de entrevista** (`I02`–`I05`) y **3 invitaciones de revisión** (`AR01`, `AR02`, `AA01`). No se habilita ningún canal distinto de correo ni un segundo recordatorio.
+
+Después de actuar, el usuario informa únicamente:
 
 ```text
-CONFIGURACIÓN PRIVADA COMPLETA. No comparto PII adicional.
-Invitaciones de entrevista enviadas: 1/5.
-Invitaciones de revisión enviadas: 0/3.
-Aceptaciones de entrevista: 0.
-Roles de revisión confirmados por código: ninguno.
-Retiros o rechazos: 0.
+ACTUALIZACIÓN SANEADA. No comparto PII adicional.
+Invitaciones de entrevista enviadas: [1–5]/5.
+Invitaciones de revisión enviadas: [0–3]/3.
+Aceptaciones de entrevista: [conteo].
+Roles de revisión confirmados por código: [ninguno / R01 / R02 / A01].
+Retiros o rechazos: [conteo].
 PII incorporada a Git: 0.
 Datos agronómicos reales enviados a IA o Git: 0.
 ```

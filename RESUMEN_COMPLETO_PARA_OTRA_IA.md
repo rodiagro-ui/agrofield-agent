@@ -20,11 +20,11 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Freeze vigente: 34/34 hashes válidos, versión `1.2.1-authorized-prehuman`.
 - Gates del candidato local: 7/17 aprobados; `benchmark_validated: false` por diseño.
 - `policy.py`: intacto desde el MVP.
-- Autorización: `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
+- Autorización vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
 - Alcance original: el usuario puede enviar hasta 5 + 3 invitaciones por correo después del setup privado. En `DV-OUTREACH-001`, una dirección fue compartida transitoriamente y el envío fue asistido por IA; no se persistió PII en Git y no deben compartirse nuevos destinatarios.
 - Personas contactadas mediante invitación: 1.
 - Invitaciones: 1/5 de entrevista y 0/3 de revisión; aceptaciones confirmadas: 0.
-- Setup privado: no atestiguado ante la IA; estado real desconocido. Contactos adicionales pausados.
+- Setup privado: atestiguado por el usuario sin PII adicional el 2026-09-02.
 - Entrevistas reales: 0.
 - Revisiones humanas: 0/30 primarias y 0/10 secundarias.
 - Revisiones humanas de salida: 0/30 primarias y 0/10 secundarias.
@@ -95,15 +95,15 @@ La evidencia externa sigue en cero. La ingeniería del benchmark ya evita contam
 
 ## Próximo incremento de máximo impacto
 
-El usuario debe atestiguar que completó privadamente los siete puntos de `email-outreach-pack.md` antes de cualquier contacto adicional. El slot `I01` ya fue utilizado; no debe compartir con la IA nombres, emails, firmas, organizaciones, localidades, calendarios o notas crudas. El único parte esperado es:
+El gate privado ya fue atestiguado. El slot `I01` fue utilizado y quedan hasta 4 invitaciones de entrevista y 3 de revisión, enviadas únicamente por el usuario. No debe compartir con la IA nombres, emails, firmas, organizaciones, localidades, calendarios o notas crudas. El próximo parte esperado es:
 
 ```text
-CONFIGURACIÓN PRIVADA COMPLETA. No comparto PII adicional.
-Invitaciones de entrevista enviadas: 1/5.
-Invitaciones de revisión enviadas: 0/3.
-Aceptaciones de entrevista: 0.
-Roles de revisión confirmados por código: ninguno.
-Retiros o rechazos: 0.
+ACTUALIZACIÓN SANEADA. No comparto PII adicional.
+Invitaciones de entrevista enviadas: [1–5]/5.
+Invitaciones de revisión enviadas: [0–3]/3.
+Aceptaciones de entrevista: [conteo].
+Roles de revisión confirmados por código: [ninguno / R01 / R02 / A01].
+Retiros o rechazos: [conteo].
 PII incorporada a Git: 0.
 Datos agronómicos reales enviados a IA o Git: 0.
 ```
@@ -115,5 +115,5 @@ Después: 3–5 entrevistas → privacidad `DS01`/`PR01` → Fase A 30/10 → ha
 ```text
 Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. Se envió 1/5 invitación de entrevista, pero hay 0 aceptaciones, 0 entrevistas/revisiones humanas y benchmark_validated=false. El setup privado no fue atestiguado ante la IA; no inferir que está incompleto, pero pausar contactos adicionales hasta recibir el parte saneado. Una dirección real ya fue compartida transitoriamente para `I01`; no revelar nuevos identificadores ni persistir PII en Git. Nunca atribuyas a humanos los fixtures. No modifiques policy.py ni uses Nebius/Tavily, gastes, publiques, despliegues, subas video o envíes la submission sin autorización expresa separada.
+Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. Se envió 1/5 invitación de entrevista, pero hay 0 aceptaciones, 0 entrevistas/revisiones humanas y benchmark_validated=false. El setup privado fue atestiguado sin PII adicional; el usuario puede ejecutar los correos restantes dentro de los cupos. Una dirección real ya fue compartida transitoriamente para `I01`; no revelar nuevos identificadores ni persistir PII en Git. Nunca atribuyas a humanos los fixtures. No modifiques policy.py ni uses Nebius/Tavily, gastes, publiques, despliegues, subas video o envíes la submission sin autorización expresa separada.
 ```
