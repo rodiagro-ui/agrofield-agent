@@ -2,12 +2,12 @@
 
 ## A. Autorización
 
-- [ ] El usuario respondió con autorización expresa y límites.
-- [ ] Máximo de invitaciones y canales quedaron definidos.
-- [ ] Remitente humano y custodio privado fueron designados.
+- [x] El usuario respondió con autorización expresa y límites el 2026-09-02.
+- [x] Máximo de 5 invitaciones de entrevista, 3 de revisión y canal correo quedaron definidos.
+- [x] El usuario es remitente humano y custodio privado.
 - [ ] Responsable, contacto, domicilio, destinatarios y retención se completaron fuera de Git.
-- [ ] Grabación y compensación están en `NO` o tienen autorización separada.
-- [ ] Se confirmó que esta autorización no incluye servicios pagos ni publicación.
+- [x] Grabación y compensación están en `NO`.
+- [x] Se confirmó que esta autorización no incluye servicios pagos ni publicación.
 
 ## B. Preflight técnico
 
@@ -16,6 +16,8 @@
 - [x] Tests prueban que una plantilla vacía/incompleta no cuenta como revisión.
 - [x] Task precision no duplica etiquetas del segundo revisor.
 - [x] `--require-validated` verifica entrevistas, privacidad, 30 primarias, 10 dobles de referencia y salida, adjudicación, umbrales y freeze final.
+- [x] El acuerdo reporta sensibilidad por exposición previa sin alterar el resultado vinculante.
+- [x] Cruces globales primario/secundario o revisor/adjudicador se informan y bloquean readiness.
 - [x] `policy.py` continúa sin cambios.
 
 ## C. Reclutamiento
@@ -26,7 +28,7 @@
 - [ ] Rechazos y retiros se cerraron sin insistencia.
 - [ ] Hay 3–5 entrevistas confirmadas.
 - [ ] Hay dos revisores agronómicos independientes confirmados.
-- [ ] Hay un adjudicador distinto o se documentó la limitación de adjudicación conjunta.
+- [ ] Hay un adjudicador distinto de todos los revisores; una superposición mantiene cerrado el gate.
 
 ## D. Entrevistas
 
@@ -41,7 +43,7 @@
 
 ## E. Ronda ciega — Fase A
 
-- [ ] `R01` y `R02` aceptaron publicación anónima de resultados.
+- [ ] `R01` y `R02` aceptaron el posible uso futuro anónimo/agregado; la publicación sigue requiriendo autorización separada del usuario.
 - [ ] Se asignaron IDs aleatorios sin iniciales.
 - [ ] Se entregaron únicamente nota, contexto sintético y rúbrica.
 - [ ] No se mostró salida, alias, split ni referencia candidata.

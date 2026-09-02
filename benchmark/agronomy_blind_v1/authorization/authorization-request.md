@@ -1,5 +1,7 @@
 # Solicitud de autorización expresa
 
+> Solicitud histórica satisfecha el 2026-09-02 con alcance limitado a correo. La decisión vigente está en `authorization-decision-2026-09-02.md`; este archivo se conserva como plantilla y no amplía esa autorización.
+
 ## Alcance recomendado
 
 Se solicita autorización únicamente para preparar y ejecutar validación humana bajo estas condiciones:

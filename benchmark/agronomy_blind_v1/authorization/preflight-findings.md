@@ -1,6 +1,6 @@
 # Hallazgos de preflight antes de revisión humana
 
-> Estado al 2026-09-01: **5/5 P0 cerrados técnicamente; validación humana todavía `NOT_AUTHORIZED`.** Son controles del arnés, no resultados agronómicos. Ningún test o fixture sintético cuenta como revisión humana.
+> Estado al 2026-09-02: **5/5 P0 y P1 cerrados técnicamente; alcance humano `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.** Son controles del arnés, no resultados agronómicos. Ningún test o fixture sintético cuenta como revisión humana y todavía no se contactó a ninguna persona.
 
 ## P0-1 — La referencia puede quedar anclada por la salida
 

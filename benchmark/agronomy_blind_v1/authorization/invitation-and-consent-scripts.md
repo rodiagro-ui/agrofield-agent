@@ -1,6 +1,6 @@
 # Textos de invitación y consentimiento
 
-> Plantillas. Completar los campos entre corchetes fuera de Git. No enviar hasta recibir autorización expresa.
+> Autorizadas el 2026-09-02 únicamente para envío por correo del usuario humano, después de completar el setup privado. El texto final listo para ejecutar está en `email-outreach-pack.md`. Ninguna publicación futura está autorizada por esta decisión.
 
 ## Invitación breve para entrevista
 
@@ -12,13 +12,11 @@ Hola. Estoy validando cómo se organiza una recorrida de soja después de lluvia
 
 Busco conversar 25–35 minutos con personas que hayan participado directamente en ese flujo. No necesito nombres de clientes, establecimientos, coordenadas, superficies, importes ni decisiones comerciales. La conversación es voluntaria, no se graba y puede interrumpirse en cualquier momento. Primero preguntaremos por el proceso real; recién al final describiremos un prototipo no prescriptivo.
 
-La participación es [NO REMUNERADA / CONDICIÓN APROBADA POR SEPARADO]. Si te interesa, ¿podemos coordinar por [CANAL] dentro de [VENTANA]?
+La participación es NO REMUNERADA. Si te interesa, respondeme por este correo y te enviaré el alcance y el consentimiento antes de coordinar.
 
 [FIRMA DEL REMITENTE HUMANO]
 
-### WhatsApp o LinkedIn
-
-Hola. Estoy haciendo una validación breve sobre cómo se organizan recorridas de soja después de lluvia, granizo o viento y qué datos suelen faltar. Busco una conversación voluntaria de 25–35 min, sin grabación y sin pedir nombres, establecimientos, coordenadas ni cifras comerciales. ¿Te interesaría participar? Antes de empezar te compartiría el alcance y el consentimiento completo.
+WhatsApp, LinkedIn y publicaciones abiertas no están autorizados en esta ronda.
 
 ## Invitación a revisor agronómico
 
@@ -26,7 +24,7 @@ Hola. Estoy haciendo una validación breve sobre cómo se organizan recorridas d
 
 Hola. Estamos preparando una evaluación ciega de un sistema que estructura notas de recorridas de soja posteriores a lluvia, granizo o viento. Buscamos profesionales agronómicos que etiqueten hechos explícitos, omisiones, prioridad y seguridad de tareas sobre casos completamente sintéticos.
 
-No se solicita diagnóstico, prescripción ni datos de clientes. No se revela el proveedor/modelo y las respuestas se publican solo de forma anónima y agregada. El revisor primario cubre 30 casos en bloques; el secundario cubre 10 prefijados. Antes de comenzar habrá una orientación de formato que no usa casos evaluados. La participación es [NO REMUNERADA / CONDICIÓN APROBADA POR SEPARADO].
+No se solicita diagnóstico, prescripción ni datos de clientes. No se revela el proveedor/modelo. Cualquier uso público futuro sería solo anónimo o agregado y requiere una autorización de publicación separada. El revisor primario cubre 30 casos en bloques; el secundario cubre 10 prefijados; el adjudicador trabaja después del cálculo de desacuerdo. Antes de comenzar habrá una orientación de formato que no usa casos evaluados. La participación es NO REMUNERADA.
 
 ¿Te interesaría recibir el protocolo, la carga estimada después de un piloto de tres casos y el consentimiento completo?
 
@@ -67,7 +65,7 @@ Un `NO` al primer punto detiene la entrevista. Los demás alcances son independi
 
 ## Consentimiento del revisor
 
-> La revisión cubre casos sintéticos y no solicita datos de clientes. Su identidad y contacto quedan fuera del repositorio; se publican solo un ID aleatorio, rol, banda de experiencia, métricas agregadas y desacuerdos anonimizados. Participar es voluntario. Puede retirarse antes del freeze; las respuestas cerradas no se modificarán sin conservar el historial. No debe compartir el paquete ni intentar identificar proveedor o split. Puede informar exposición previa o conflicto de interés sin penalización. No se usa su revisión para tomar decisiones agronómicas reales.
+> La revisión cubre casos sintéticos y no solicita datos de clientes. Su identidad y contacto quedan fuera del repositorio. Solo un ID aleatorio, rol, banda de experiencia, métricas agregadas y desacuerdos anonimizados podrían usarse en una publicación futura, sujeto a su consentimiento y a una autorización de publicación separada del usuario. Participar es voluntario. Puede retirarse antes del freeze; las respuestas cerradas no se modificarán sin conservar el historial. No debe compartir el paquete ni intentar identificar proveedor o split. Puede informar exposición previa o conflicto de interés sin penalización. No se usa su revisión para tomar decisiones agronómicas reales.
 
 Registrar de forma inequívoca:
 

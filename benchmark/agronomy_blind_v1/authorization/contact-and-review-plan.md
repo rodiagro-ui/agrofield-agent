@@ -18,23 +18,17 @@ Buscar variación en rol y banda de experiencia. No pedir cliente, empresa, matr
 
 No incluir a una persona que no pueda consentir, que quiera compartir datos identificables o que solo conozca el flujo de manera indirecta. Si menos de 3 de las 5 invitaciones se convierten en entrevistas, detenerse y pedir autorización para ampliar; no aumentar el cupo por cuenta propia.
 
-### Revisión: mínimo 2, ideal 3 profesionales
+### Revisión: 3 profesionales independientes
 
 - `R01`: profesional agronómico primario; anota los 30 casos y revisa todas sus salidas.
 - `R02`: segundo profesional independiente; anota los 10 casos prefijados y revisa sus salidas.
-- `A01`: adjudicador, idealmente un tercer profesional; firma una referencia final para los 30 casos después del cálculo de desacuerdo.
+- `A01`: tercer profesional independiente; firma una referencia final para los 30 casos después del cálculo de desacuerdo.
 
-Una sola persona no puede producir una doble anotación independiente. Si solo hay dos profesionales, ambos pueden adjudicar conjuntamente después de bloquear sus revisiones, pero debe declararse la menor independencia. Los entrevistados y revisores deben ser personas distintas cuando sea posible; cualquier exposición previa se marca y se reporta.
+Una sola persona no puede producir una doble anotación independiente. Para que el gate cierre, `R01`, `R02` y `A01` deben ser personas distintas durante toda la ronda. Si solo se confirman dos profesionales, detenerse y solicitar una modificación explícita del diseño; no presentar el benchmark como validado. Los entrevistados y revisores deben ser personas distintas cuando sea posible; cualquier exposición previa se marca y se reporta.
 
 ## Canales y cadencia
 
-Orden recomendado:
-
-1. presentación cálida uno a uno dentro de la red profesional del usuario;
-2. correo o WhatsApp privado a un contacto legítimo;
-3. LinkedIn privado si no existe otro canal.
-
-No usar listas compradas, scraping, grupos, mensajes masivos ni publicaciones abiertas bajo esta autorización. Enviar una invitación inicial y, si no hay respuesta, un único recordatorio después de 3 días hábiles. No insistir ante rechazo o silencio posterior.
+Usar únicamente correo privado uno a uno a contactos legítimos del usuario. WhatsApp, LinkedIn, listas compradas, scraping, grupos, mensajes masivos y publicaciones abiertas no están autorizados. Enviar una invitación inicial y, si no hay respuesta, un único recordatorio después de 3 días hábiles. No insistir ante rechazo o silencio posterior.
 
 ## Responsabilidades
 
@@ -56,11 +50,10 @@ Una persona puede cubrir funciones humanas compatibles, salvo que comprometa ind
 
 | Día | Acción | Gate de salida |
 |---|---|---|
-| D0 | Completar aviso privado, asignar roles por código y aprobar canales. | Alcance y responsable documentados fuera de Git. |
+| D0 | Completar aviso privado, asignar roles por código y verificar cierres P0/P1 + freeze prehumano. | Alcance privado completo, tests y hashes válidos. |
 | D1 | Enviar invitaciones dentro de los cupos. | Registro privado de envío; cero PII en Git. |
 | D2–D5 | Realizar 3–5 entrevistas de 25–35 minutos, sin grabar. | Consentimiento por alcance y notas crudas privadas. |
 | D3–D6 | Sanear entrevistas y hacer segunda revisión de privacidad. | Solo registros `privacy_review_status: passed`. |
-| D1–D4 | Resolver hallazgos P0 técnicos y generar materiales en dos fases. | Tests y prueba de ausencia de metadata/salida en referencia. |
 | D4–D7 | `R01` y `R02` completan primero las referencias; se bloquean hashes. | 30 primarias y 10 dobles independientes. |
 | D6–D9 | Entregar salidas ciegas y recoger clasificación de hechos, prioridad y tareas. | Todas las tareas etiquetadas. |
 | D9 | Calcular desacuerdo y kappa antes de mostrar respuestas cruzadas. | Informe de acuerdo inmutable. |
