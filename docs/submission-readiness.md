@@ -16,19 +16,21 @@
 - [x] Candidate privacy pass with real coordinates removed or replaced by an explicit non-location sentinel.
 - [x] Open-source license, README, container definition, and secret hygiene.
 - [x] Significant-work changelog dated after 2026-08-26.
-- [x] Human-validation authorization, recruitment, consent, privacy, role, and execution packet prepared with status `NOT_AUTHORIZED`.
+- [x] Human-validation outreach authorized for user-sent email only, with explicit 5 + 3 caps, no recording/compensation, private custody, and no authorization for paid/public actions.
 - [x] Preflight risks in blind-packet separation and evaluator readiness documented before human review.
 - [x] Five P0 preflight blockers closed: separate Phase A/B, strict forms, primary-only task precision, complete double-output review, and exhaustive validation gates.
-- [x] Gate contract covered by 41 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
+- [x] P1 closed: binding agreement keeps every complete pair, exposure sensitivity is separate, and global reviewer/adjudicator role overlap blocks readiness.
+- [x] Gate contract covered by 44 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 
 ## Requires user authorization or external validation
 
 - [ ] Register/verify Builder Program and Token Factory accounts.
 - [ ] Confirm credits actually issued and freeze authenticated model prices.
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
-- [ ] Interview 3–5 Argentine advisers with consent and revise the workflow.
-- [ ] Have an agronomist review all 30 cases, double-annotate the fixed 10, and adjudicate disagreements.
-- [ ] Receive explicit authorization for human outreach; P0 technical findings are already closed.
+- [ ] User completes the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map without sharing PII with the IA or Git.
+- [ ] User sends at most 5 interview and 3 reviewer invitations by email; no contacts have been made yet.
+- [ ] Interview 3–5 Argentine advisers/producers/scouts with consent and revise the workflow.
+- [ ] Three distinct professionals cover `R01`, `R02`, and `A01`: 30 primaries, 10 fixed doubles, and 30 adjudications.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.
 - [ ] Freeze the final human-reviewed benchmark; all current freezes remain candidate-only and `benchmark_validated: false`.
 - [ ] Choose a deployment host and approve a spend ceiling.

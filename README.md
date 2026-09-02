@@ -48,7 +48,7 @@ Run the harder blind-benchmark candidate:
 python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
 ```
 
-The 30-case set is synthetic and currently has **zero human agronomy reviews and zero real interviews**. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. The five technical P0 preflight blockers are closed and covered by local tests, but human validation remains `NOT_AUTHORIZED`. See `benchmark/agronomy_blind_v1/README.md` for consent, anonymization, review, agreement, adjudication, and freeze procedures.
+The 30-case set is synthetic and currently has **zero human agronomy reviews, zero real interviews, and zero people contacted**. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. All five P0 blockers plus the P1 exposure/role-independence control are closed. Human validation is authorized only for user-sent email outreach and remains pending private setup. See `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md` and the benchmark README for the controlled workflow.
 
 ## Nebius Token Factory mode
 

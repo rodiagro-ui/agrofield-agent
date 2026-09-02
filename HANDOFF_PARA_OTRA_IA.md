@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 1 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Este documento no autoriza contacto humano ni acciones externas.
+> Snapshot: 2 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
 
 ## Estado verificable
 
@@ -9,10 +9,13 @@
 - Separación Fase A/B: `4390a4c`.
 - Gates humanos estrictos: `19ab37f`.
 - Freeze candidato P0-closed: `42f4e97`.
+- Sensibilidad de exposición e independencia global de roles: `1bd5a0e`.
+- Autorización humana limitada registrada: `ff65472`.
+- Freeze prehumano vigente: `bee339e`.
 - HEAD efectivo: ejecutar `git log -1 --oneline`, porque el commit de este handoff será posterior.
 - Licencia: MIT.
-- Tests: 41/41 aprobados en la última verificación.
-- Freeze candidato vigente: 32/32 hashes válidos.
+- Tests: 44/44 aprobados en la última verificación.
+- Freeze candidato prehumano vigente: 34/34 hashes válidos.
 - `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
 
 Estado externo exacto:
@@ -27,7 +30,9 @@ Estado externo exacto:
 - llamadas Tavily: 0;
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
-- autorización humana: `NOT_AUTHORIZED`.
+- invitaciones enviadas: 0/5 de entrevista y 0/3 de revisión;
+- configuración privada: pendiente;
+- autorización humana: `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
 
 ## Lectura obligatoria
 
@@ -44,6 +49,8 @@ Antes de actuar, leer completos y en este orden:
 9. `RESUMEN_COMPLETO_PARA_OTRA_IA.md`
 10. `benchmark/agronomy_blind_v1/authorization/README.md`
 11. `benchmark/agronomy_blind_v1/authorization/preflight-findings.md`
+12. `benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md`
+13. `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md`
 
 Después ejecutar:
 
@@ -108,13 +115,15 @@ Benchmark candidato, 30 casos sintéticos, referencia provisional:
 
 Ambos resultados son locales y sintéticos. No son resultados Nemotron ni evidencia agronómica humana.
 
-## Cierre de los cinco P0
+## Cierre de P0 y P1
 
 1. **Anclaje de referencia:** Fase A y Fase B son archivos distintos. Fase A contiene solo nota/contexto. Fase B se vincula al hash canónico de la anotación Fase A del mismo revisor.
 2. **Gate incompleto:** `benchmark_validated` depende ahora de 17 gates explícitos con valor, requisito y razón de fallo. `--require-validated` sale con código 2 si falla uno.
 3. **Formularios vacíos:** esquema `1.1.0-candidate` valida IDs, asignación, fecha, privacidad, evidencia, campos, tareas y estados. Las plantillas vacías no cuentan y se registran como inválidas.
 4. **Task precision duplicada:** la métrica vinculante es `primary_task_precision`; la secundaria solo mide acuerdo. `adjudicated_task_precision` permanece separado y `null` hasta existir.
 5. **Dobles de salida ausentes:** se exigen 30 salidas primarias y 10 secundarias completas, mismas salida/alias, revisores distintos y locks válidos. El reporte lista IDs faltantes.
+6. **Exposición previa:** el resultado vinculante conserva todos los pares; una sensibilidad separada recalcula referencia y salida sin pares donde cualquiera declaró exposición.
+7. **Superposición de roles:** un ID no puede cruzarse entre primario/secundario ni entre revisor/adjudicador en ningún caso de la ronda. El cruce se reporta y bloquea readiness.
 
 Pruebas relevantes:
 
@@ -125,13 +134,15 @@ Pruebas relevantes:
 - quitar una sola salida secundaria hace fallar `--require-validated` con código 2;
 - cada gate falla de forma independiente;
 - fixture positivo completo 30/10 prueba la ruta feliz, marcado `test_fixture_only` y nunca tratado como evidencia humana.
+- tests adversos prueban exposición declarada y cruces de roles entre casos.
 
 ## Freeze
 
 - `benchmark/agronomy_blind_v1/freeze/manifest-v1.0.0-candidate.json` conserva exactamente el freeze histórico de 18 artefactos.
-- `benchmark/agronomy_blind_v1/freeze/manifest.json` es el freeze candidato vigente `1.1.0-candidate`, 32/32 hashes.
-- El vigente declara `candidate_only: true`, `human_validated: false`, `benchmark_validated: false` y `authorization: NOT_AUTHORIZED`.
-- El reporte asociado es `benchmark/agronomy_blind_v1/reports/local-candidate-preflight-v1.1-2026-09-01.json`.
+- `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json` preservan los freezes intermedios exactos.
+- `benchmark/agronomy_blind_v1/freeze/manifest.json` es el freeze vigente `1.2.1-authorized-prehuman`, 34/34 hashes.
+- El vigente declara `candidate_only: true`, `human_validated: false`, `benchmark_validated: false`, 0 contactos y `authorization: AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
+- El reporte asociado es `benchmark/agronomy_blind_v1/reports/local-candidate-prehuman-v1.2-2026-09-02.json`.
 - Un futuro freeze humano debe ser un manifiesto nuevo con `freeze_scope: human_reviewed_benchmark_inputs`; nunca se reetiqueta el candidato.
 
 ## Reglas inviolables
@@ -143,7 +154,7 @@ Pruebas relevantes:
 - Toda decisión sensible requiere aprobación nominada y auditoría.
 - No inventar entrevistas, revisiones, acuerdos o etiquetas humanas.
 - Cero datos personales, nombres, establecimientos o coordenadas exactas en Git.
-- No contactar personas ni recibir datos reales mientras siga `NOT_AUTHORIZED`.
+- Solo el usuario puede enviar correos dentro de los cupos autorizados, después del setup privado. La IA no contacta, no conoce destinatarios y no recibe PII o notas crudas.
 - No publicar, desplegar, consumir Nebius/Tavily, gastar, subir video ni enviar la submission sin autorización expresa.
 - Antes de un servicio potencialmente pago: autorización separada y límite de gasto concreto.
 
@@ -151,18 +162,8 @@ Pruebas relevantes:
 
 La cadena de evidencia externa sigue vacía. El arnés ya es defendible, pero los 30 casos y todas sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
 
-## Siguiente acción autorizable
+## Siguiente acción permitida
 
-Presentar al usuario el paquete de `benchmark/agronomy_blind_v1/authorization/` y esperar una respuesta expresa. El alcance recomendado es:
+El usuario completa fuera de Git los siete puntos del gate privado de `email-outreach-pack.md`: responsable/contacto/domicilio, destinatarios, almacenamiento, retención, canal de derechos, `PR01` independiente y mapa de códigos. Luego el usuario puede enviar hasta 5 invitaciones de entrevista y 3 de revisión, exclusivamente por correo.
 
-- hasta 5 invitaciones privadas para obtener 3–5 entrevistas;
-- hasta 3 invitaciones a profesionales para cubrir `R01`, `R02` y `A01`;
-- canales uno a uno elegidos por el usuario;
-- máximo un recordatorio;
-- sin grabación ni compensación;
-- el usuario/remitente humano contacta; la IA no suplanta personas;
-- identidades, contactos y notas crudas quedan fuera de Git bajo custodio privado;
-- la IA recibe solo registros saneados y anonimizados;
-- esto no autoriza Nebius, Tavily, costos ni publicación.
-
-Tras autorización: entrevistas → saneamiento y `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo → adjudicación 30 → freeze humano → `--require-validated`. Recién después solicitar autorización y presupuesto para Nemotron.
+La IA espera solo un parte sin PII con conteos y roles confirmados. Después: entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
