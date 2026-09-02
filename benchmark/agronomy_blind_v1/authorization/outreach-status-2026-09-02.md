@@ -4,8 +4,8 @@
 
 ## Conteos verificables
 
-- Invitaciones de entrevista enviadas: **1/5** (`I01`).
-- Invitaciones de revisión enviadas: **0/3**.
+- Invitaciones de entrevista enviadas: **5/5** (`I01`–`I05`), según parte del usuario.
+- Invitaciones de revisión enviadas: **3/3** (`AR01`, `AR02`, `AA01`), según parte del usuario.
 - Aceptaciones: **0 confirmadas**.
 - Entrevistas realizadas: **0**.
 - Revisiones agronómicas: **0**.
@@ -13,7 +13,7 @@
 - Datos agronómicos reales incorporados a la IA o a Git: **0**.
 - Identificadores proporcionados transitoriamente a la IA para ejecutar el envío: **1 dirección de correo**, no reproducida ni persistida en el repositorio.
 
-La invitación `I01` fue enviada individualmente por correo desde la cuenta del usuario, por instrucción expresa del usuario y con asistencia de la IA en la interfaz. No se registra aquí la identidad ni la dirección del destinatario. El envío de una invitación no constituye entrevista, consentimiento, revisión humana ni evidencia agronómica.
+La invitación `I01` fue enviada individualmente por correo desde la cuenta del usuario, por instrucción expresa del usuario y con asistencia de la IA en la interfaz. El usuario informó después que envió los siete borradores restantes. No se registra aquí ninguna identidad ni dirección. El envío de invitaciones no constituye entrevista, consentimiento, revisión humana ni evidencia agronómica.
 
 ## Control de proceso
 
@@ -25,21 +25,21 @@ Se conserva la desviación de control `DV-OUTREACH-001`: la invitación `I01` fu
 
 Mitigación vinculante:
 
-1. los correos restantes son enviados únicamente por el usuario, sin compartir destinatarios con la IA;
+1. todo correo futuro permitido, incluidos los recordatorios, es enviado únicamente por el usuario, sin compartir destinatarios con la IA;
 2. no copiar al chat ni a Git identidades, direcciones, firmas, calendarios o respuestas crudas;
 3. si una persona responde, enviar primero el aviso privado y obtener los consentimientos separados antes de entrevistar o revisar;
 4. conservar el freeze prehumano vigente como snapshot histórico con `outreach_executed: false` y registrar la actividad posterior únicamente fuera de ese manifiesto.
 
-## Cupos habilitados y próximo parte
+## Cupos agotados y próximo parte
 
-Quedan habilitadas como máximo **4 invitaciones de entrevista** (`I02`–`I05`) y **3 invitaciones de revisión** (`AR01`, `AR02`, `AA01`). No se habilita ningún canal distinto de correo ni un segundo recordatorio.
+Los cupos de invitación inicial están agotados: **5/5 entrevistas y 3/3 revisiones**. No se pueden sumar destinatarios sin una ampliación expresa. Para cada correo sin respuesta puede enviarse un único recordatorio después de tres días hábiles; no se habilita ningún canal distinto de correo ni un segundo recordatorio.
 
 Después de actuar, el usuario informa únicamente:
 
 ```text
 ACTUALIZACIÓN SANEADA. No comparto PII adicional.
-Invitaciones de entrevista enviadas: [1–5]/5.
-Invitaciones de revisión enviadas: [0–3]/3.
+Invitaciones de entrevista enviadas: 5/5.
+Invitaciones de revisión enviadas: 3/3.
 Aceptaciones de entrevista: [conteo].
 Roles de revisión confirmados por código: [ninguno / R01 / R02 / A01].
 Retiros o rechazos: [conteo].

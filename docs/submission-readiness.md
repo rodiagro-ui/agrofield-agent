@@ -28,7 +28,7 @@
 - [ ] Confirm credits actually issued and freeze authenticated model prices.
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
-- [ ] Outreach is in progress: 1/5 interview invitations and 0/3 reviewer invitations sent. The user may send the remaining email-only invitations within the approved caps.
+- [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
 - [ ] Interview 3–5 Argentine advisers/producers/scouts with consent and revise the workflow.
 - [ ] Three distinct professionals cover `R01`, `R02`, and `A01`: 30 primaries, 10 fixed doubles, and 30 adjudications.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.

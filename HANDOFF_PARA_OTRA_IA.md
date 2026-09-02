@@ -21,7 +21,7 @@
 Estado externo exacto:
 
 - entrevistas reales: 0;
-- personas contactadas mediante invitación: 1;
+- slots de invitación enviados: 8/8 autorizados;
 - revisiones primarias reales: 0/30;
 - revisiones secundarias reales: 0/10;
 - revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
@@ -30,7 +30,7 @@ Estado externo exacto:
 - llamadas Tavily: 0;
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
-- invitaciones enviadas: 1/5 de entrevista y 0/3 de revisión;
+- invitaciones enviadas: 5/5 de entrevista y 3/3 de revisión, según parte del usuario;
 - aceptaciones confirmadas: 0;
 - configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
 - desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
@@ -168,6 +168,6 @@ La cadena de evidencia externa sigue vacía. El arnés ya es defendible, pero lo
 
 ## Siguiente acción permitida
 
-El gate privado fue atestiguado sin compartir sus valores. Ya se consumió el slot de entrevista `I01`; el usuario puede enviar como máximo 4 invitaciones adicionales de entrevista y 3 de revisión, exclusivamente por correo y sin compartir destinatarios con la IA.
+El gate privado fue atestiguado sin compartir sus valores y los 8 cupos iniciales están agotados. No sumar destinatarios sin ampliar expresamente la autorización. Para cada correo sin respuesta, el usuario puede enviar un único recordatorio después de tres días hábiles, exclusivamente por correo y sin compartir destinatarios con la IA.
 
-La IA espera solo el parte sin PII definido en `outreach-status-2026-09-02.md`. Después: invitaciones restantes → consentimientos privados → entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
+La IA espera solo el parte sin PII definido en `outreach-status-2026-09-02.md`. Después: respuestas → aviso y consentimientos privados → entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
