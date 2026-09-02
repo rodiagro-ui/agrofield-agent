@@ -29,6 +29,8 @@
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
+- [x] User reports preliminary verbal acceptance from all five interview candidates and preliminary verbal coverage of `R01`, `R02`, and `A01`.
+- [ ] Obtain and privately retain the separate written mandatory consents: currently 0/5 interviews and no reviewer role is consent-valid.
 - [ ] Interview 3–5 Argentine advisers/producers/scouts with consent and revise the workflow.
 - [ ] Three distinct professionals cover `R01`, `R02`, and `A01`: 30 primaries, 10 fixed doubles, and 30 adjudications.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.

@@ -31,10 +31,13 @@ Estado externo exacto:
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
 - invitaciones enviadas: 5/5 de entrevista y 3/3 de revisión, según parte del usuario;
-- aceptaciones confirmadas: 0;
+- aceptaciones preliminares verbales de entrevista: 5/5, según parte del usuario;
+- cobertura preliminar verbal de roles: `R01`, `R02` y `A01`, según parte del usuario;
+- consentimientos informados escritos válidos: 0/5 entrevistas y ninguno de los tres roles;
 - configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
 - desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
 - autorización humana vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
+- subestado operativo: `AWAITING_WRITTEN_CONSENT_BEFORE_DATA_COLLECTION`.
 
 ## Lectura obligatoria
 
@@ -54,6 +57,7 @@ Antes de actuar, leer completos y en este orden:
 12. `benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md`
 13. `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md`
 14. `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`
+15. `benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md`
 
 Después ejecutar:
 
@@ -164,10 +168,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-La cadena de evidencia externa sigue vacía. El arnés ya es defendible, pero los 30 casos y todas sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
+La cadena de evidencia externa sigue vacía. El reclutamiento preliminar está completo, pero aún no existe consentimiento informado escrito y los 30 casos y todas sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas consentidas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
 
 ## Siguiente acción permitida
 
-El gate privado fue atestiguado sin compartir sus valores y los 8 cupos iniciales están agotados. No sumar destinatarios sin ampliar expresamente la autorización. Para cada correo sin respuesta, el usuario puede enviar un único recordatorio después de tres días hábiles, exclusivamente por correo y sin compartir destinatarios con la IA.
+El gate privado fue atestiguado, los 8 cupos iniciales están agotados y el usuario reportó aceptación preliminar verbal de las cinco entrevistas y los tres roles. No sumar destinatarios. El usuario debe enviar individualmente por correo el aviso y las opciones separadas de `post-acceptance-consent-pack.md`, conservar las respuestas identificables en privado e informar solo el parte saneado.
 
-La IA espera solo el parte sin PII definido en `outreach-status-2026-09-02.md`. Después: respuestas → aviso y consentimientos privados → entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
+Las llamadas reportadas no habilitan recolección sustantiva. Bajo el alcance actual, esa recolección permanece limitada al correo; una entrevista por llamada o videollamada requiere ampliar expresamente el canal. Después: consentimientos escritos → 3–5 entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.

@@ -48,7 +48,7 @@ Run the harder blind-benchmark candidate:
 python -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
 ```
 
-The 30-case set is synthetic and currently has **zero human agronomy reviews and zero real interviews**. The user reports that all authorized invitations were sent (5/5 interview and 3/3 review); no acceptance or evidence has been recorded. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. All five P0 blockers plus the P1 exposure/role-independence control are closed. The private setup was attested without adding PII to Git. No additional recipients are authorized. See `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`, the email pack, and the benchmark README for the controlled workflow.
+The 30-case set is synthetic and currently has **zero human agronomy reviews and zero real interviews**. The user reports that all authorized invitations were sent (5/5 interview and 3/3 review), all five interview candidates verbally accepted, and the three professional roles were verbally covered. These are preliminary confirmations only: zero written informed consents and zero human evidence have been recorded. Its output is labeled `provisional_candidate_reference`; it is not a Nemotron result or agronomist-validated evidence. All five P0 blockers plus the P1 exposure/role-independence control are closed. The private setup was attested without adding PII to Git. No additional recipients are authorized. See the sanitized outreach status, `post-acceptance-consent-pack.md`, and the benchmark README for the controlled workflow.
 
 ## Nebius Token Factory mode
 
