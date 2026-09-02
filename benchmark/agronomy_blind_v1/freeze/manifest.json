@@ -1,11 +1,11 @@
 {
-  "manifest_version": "1.2",
-  "benchmark_version": "1.2.0-authorized-prehuman",
+  "manifest_version": "1.2.1",
+  "benchmark_version": "1.2.1-authorized-prehuman",
   "frozen_at": "2026-09-02",
   "freeze_scope": "candidate_artifacts_only",
   "hash_algorithm": "sha256",
   "hash_normalization": "UTF-8 text with CRLF and CR normalized to LF; binary bytes unchanged",
-  "previous_manifest": "benchmark/agronomy_blind_v1/freeze/manifest-v1.1.0-candidate.json",
+  "previous_manifest": "benchmark/agronomy_blind_v1/freeze/manifest-v1.2.0-authorized-prehuman.json",
   "status": {
     "candidate_only": true,
     "human_inputs_frozen": false,
@@ -112,10 +112,10 @@
     "submitted": false
   },
   "files": [
-    {"path": "benchmark/agronomy_blind_v1/README.md", "canonical_sha256": "668810ce1d19c40c015d80785571972d662c416344c0286e55ce5437a6567648"},
+    {"path": "benchmark/agronomy_blind_v1/README.md", "canonical_sha256": "dab1b0bb9987c84d658fbaa3ec952516c3ca9521c9880f33168b66ce8e490cd0"},
     {"path": "benchmark/agronomy_blind_v1/data/cases.jsonl", "canonical_sha256": "02b24a2619cf3bb0113f66229864714ee58398c7b0c2cb066036ea5f52ba54c7"},
     {"path": "benchmark/agronomy_blind_v1/data/DATASET_CARD.md", "canonical_sha256": "7ab7c446cdb1580ea1c6ab07e01d236b416bfc62fea7859536c8443c14c31f8d"},
-    {"path": "benchmark/agronomy_blind_v1/data/reviews/README.md", "canonical_sha256": "57f2ca9e4267c84dd207e0410173454d8cc7c2b9a187585636a31641fbbdafd6"},
+    {"path": "benchmark/agronomy_blind_v1/data/reviews/README.md", "canonical_sha256": "cfd2e34a8772f17463e7b0e13e3a3c3dcd27d5d7ad2ca1fe22d900efbf067e35"},
     {"path": "benchmark/agronomy_blind_v1/protocol/annotation-rubric.md", "canonical_sha256": "d0aeb3f5ed3da0c8eb4beb6ef8ff3c8e0cb0b9e3b4da52f6f82ee5e90be84069"},
     {"path": "benchmark/agronomy_blind_v1/protocol/consent-and-privacy.md", "canonical_sha256": "c17c7bf2c51c63476c11d2a120f6c836e7ef6a6bf70d2bd14b5fa795867db8f6"},
     {"path": "benchmark/agronomy_blind_v1/protocol/interview-guide.md", "canonical_sha256": "bcfef2bdabc1b28f68322c87fa64b426f6409cf5a321ba1872a46e21166954fd"},

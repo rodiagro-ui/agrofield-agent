@@ -49,6 +49,7 @@ benchmark/agronomy_blind_v1/
     manifest.json
     manifest-v1.0.0-candidate.json
     manifest-v1.1.0-candidate.json
+    manifest-v1.2.0-authorized-prehuman.json
   authorization/
     README.md
     authorization-request.md
@@ -137,4 +138,4 @@ Verificar el freeze candidato y sus hashes normalizados:
 python -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json
 ```
 
-`manifest-v1.0.0-candidate.json` y `manifest-v1.1.0-candidate.json` conservan freezes históricos. `manifest.json` apunta al freeze candidato prehumano vigente. Todos declaran `human_validated: false`; cuando lleguen revisiones reales se deberá crear un manifiesto humano nuevo, nunca reetiquetar un freeze candidato.
+Los archivos `manifest-v1.0.0-candidate.json`, `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json` conservan freezes históricos. `manifest.json` apunta al freeze candidato prehumano vigente. Todos declaran `human_validated: false`; cuando lleguen revisiones reales se deberá crear un manifiesto humano nuevo, nunca reetiquetar un freeze candidato.

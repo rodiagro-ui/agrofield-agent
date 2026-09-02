@@ -1,6 +1,6 @@
 # Revisiones humanas
 
-Directorio intencionalmente vacío de etiquetas humanas al 2026-09-01. El estado sigue siendo `NOT_AUTHORIZED` y hay 0 entrevistas, 0 referencias y 0 revisiones de salida reales.
+Directorio intencionalmente vacío de etiquetas humanas al 2026-09-02. El contacto por correo está `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`, pero todavía hay 0 personas contactadas, 0 entrevistas, 0 referencias, 0 revisiones de salida y 0 adjudicaciones reales. La autorización no convierte ninguna plantilla o fixture en evidencia humana.
 
 No agregar nombres, iniciales, empleadores, establecimientos ni coordenadas. Cada archivo debe usar un `reviewer_id` aleatorio y seguir las plantillas de `../../templates/`.
 
