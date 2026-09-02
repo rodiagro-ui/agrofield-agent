@@ -27,8 +27,8 @@
 - [ ] Register/verify Builder Program and Token Factory accounts.
 - [ ] Confirm credits actually issued and freeze authenticated model prices.
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
-- [ ] User completes the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map without sharing PII with the IA or Git.
-- [ ] User sends at most 5 interview and 3 reviewer invitations by email; no contacts have been made yet.
+- [ ] User attests that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without sharing PII with the IA or Git.
+- [ ] Outreach is in progress: 1/5 interview invitations and 0/3 reviewer invitations sent. Additional outreach is paused until the private-setup attestation is recorded.
 - [ ] Interview 3–5 Argentine advisers/producers/scouts with consent and revise the workflow.
 - [ ] Three distinct professionals cover `R01`, `R02`, and `A01`: 30 primaries, 10 fixed doubles, and 30 adjudications.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.

@@ -21,8 +21,10 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Gates del candidato local: 7/17 aprobados; `benchmark_validated: false` por diseño.
 - `policy.py`: intacto desde el MVP.
 - Autorización: `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
-- Alcance: el usuario puede enviar hasta 5 + 3 invitaciones por correo después del setup privado; la IA no envía ni conoce destinatarios.
-- Personas contactadas: 0.
+- Alcance original: el usuario puede enviar hasta 5 + 3 invitaciones por correo después del setup privado. En `DV-OUTREACH-001`, una dirección fue compartida transitoriamente y el envío fue asistido por IA; no se persistió PII en Git y no deben compartirse nuevos destinatarios.
+- Personas contactadas mediante invitación: 1.
+- Invitaciones: 1/5 de entrevista y 0/3 de revisión; aceptaciones confirmadas: 0.
+- Setup privado: no atestiguado ante la IA; estado real desconocido. Contactos adicionales pausados.
 - Entrevistas reales: 0.
 - Revisiones humanas: 0/30 primarias y 0/10 secundarias.
 - Revisiones humanas de salida: 0/30 primarias y 0/10 secundarias.
@@ -64,6 +66,7 @@ Artefactos principales:
 - `benchmark/agronomy_blind_v1/authorization/preflight-findings.md`: cierre verificable P0/P1.
 - `benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md`: autorización y exclusiones.
 - `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md`: correos y gate privado.
+- `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`: primer envío saneado, desviación de control y mitigación.
 - `benchmark/agronomy_blind_v1/protocol/blind-review-instructions.md`: flujo Fase A/Fase B.
 - `benchmark/agronomy_blind_v1/templates/`: esquemas `1.1.0-candidate`.
 - `src/agrofield_agent/benchmarking.py`: validadores, locks, readiness, acuerdo y freeze humano.
@@ -82,7 +85,7 @@ Artefactos principales:
 - Toda decisión sensible requiere aprobación nominada y auditoría.
 - No inventar entrevistas, etiquetas, revisores, acuerdos o métricas humanas.
 - No incorporar datos personales, nombres, establecimientos ni coordenadas reales.
-- Solo el usuario puede contactar por correo dentro del alcance registrado; la IA no conoce destinatarios ni recibe PII o notas crudas.
+- En adelante, solo el usuario contacta por correo dentro del alcance registrado; tras `DV-OUTREACH-001`, la IA no debe recibir nuevos destinatarios, PII ni notas crudas.
 - No publicar, desplegar, gastar créditos, llamar Nebius/Tavily, subir video ni enviar la submission sin autorización específica.
 - Antes de cualquier servicio pago, pedir autorización y límite de gasto.
 
@@ -92,16 +95,17 @@ La evidencia externa sigue en cero. La ingeniería del benchmark ya evita contam
 
 ## Próximo incremento de máximo impacto
 
-El usuario completa privadamente los siete puntos de `email-outreach-pack.md` y envía los correos. No debe compartir con la IA nombres, emails, firmas, organizaciones, localidades, calendarios o notas crudas. El único parte esperado es:
+El usuario debe atestiguar que completó privadamente los siete puntos de `email-outreach-pack.md` antes de cualquier contacto adicional. El slot `I01` ya fue utilizado; no debe compartir con la IA nombres, emails, firmas, organizaciones, localidades, calendarios o notas crudas. El único parte esperado es:
 
 ```text
-CONFIGURACIÓN PRIVADA COMPLETA. No comparto PII.
-Invitaciones de entrevista enviadas: [0–5]/5.
-Invitaciones de revisión enviadas: [0–3]/3.
-Aceptaciones de entrevista: [conteo].
-Roles de revisión confirmados por código: [ninguno / R01 / R02 / A01].
-Retiros o rechazos: [conteo].
-Datos reales enviados a IA o Git: 0.
+CONFIGURACIÓN PRIVADA COMPLETA. No comparto PII adicional.
+Invitaciones de entrevista enviadas: 1/5.
+Invitaciones de revisión enviadas: 0/3.
+Aceptaciones de entrevista: 0.
+Roles de revisión confirmados por código: ninguno.
+Retiros o rechazos: 0.
+PII incorporada a Git: 0.
+Datos agronómicos reales enviados a IA o Git: 0.
 ```
 
 Después: 3–5 entrevistas → privacidad `DS01`/`PR01` → Fase A 30/10 → hashes → Fase B 30/10 → desacuerdo/kappa/sensibilidad → adjudicación 30/30 → freeze humano → `--require-validated`. Solo entonces se solicita autorización y presupuesto para Nemotron. Tavily se evalúa después mediante ablación y se conserva únicamente si agrega valor trazable.
@@ -109,7 +113,7 @@ Después: 3–5 entrevistas → privacidad `DS01`/`PR01` → Fase A 30/10 → ha
 ## Texto listo para reanudar con otra IA
 
 ```text
-Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
+Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze 34/34, pero 0 personas contactadas, 0 entrevistas/revisiones humanas y benchmark_validated=false. La autorización vigente permite únicamente que el usuario envíe hasta 5 + 3 correos después de completar el setup privado. La IA no contacta a nadie, no recibe PII y nunca atribuye a humanos los fixtures. No modifiques policy.py ni uses Nebius/Tavily, gastes, publiques, despliegues, subas video o envíes la submission sin autorización expresa separada. La prioridad es acompañar al usuario en el flujo privado y aceptar después solo conteos y registros saneados.
+Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. Se envió 1/5 invitación de entrevista, pero hay 0 aceptaciones, 0 entrevistas/revisiones humanas y benchmark_validated=false. El setup privado no fue atestiguado ante la IA; no inferir que está incompleto, pero pausar contactos adicionales hasta recibir el parte saneado. Una dirección real ya fue compartida transitoriamente para `I01`; no revelar nuevos identificadores ni persistir PII en Git. Nunca atribuyas a humanos los fixtures. No modifiques policy.py ni uses Nebius/Tavily, gastes, publiques, despliegues, subas video o envíes la submission sin autorización expresa separada.
 ```

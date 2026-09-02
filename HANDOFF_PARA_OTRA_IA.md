@@ -21,7 +21,7 @@
 Estado externo exacto:
 
 - entrevistas reales: 0;
-- personas contactadas: 0;
+- personas contactadas mediante invitación: 1;
 - revisiones primarias reales: 0/30;
 - revisiones secundarias reales: 0/10;
 - revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
@@ -30,8 +30,10 @@ Estado externo exacto:
 - llamadas Tavily: 0;
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
-- invitaciones enviadas: 0/5 de entrevista y 0/3 de revisión;
-- configuración privada: pendiente;
+- invitaciones enviadas: 1/5 de entrevista y 0/3 de revisión;
+- aceptaciones confirmadas: 0;
+- configuración privada: no atestiguada ante la IA; estado real desconocido;
+- desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
 - autorización humana: `AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
 
 ## Lectura obligatoria
@@ -51,6 +53,7 @@ Antes de actuar, leer completos y en este orden:
 11. `benchmark/agronomy_blind_v1/authorization/preflight-findings.md`
 12. `benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md`
 13. `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md`
+14. `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`
 
 Después ejecutar:
 
@@ -142,6 +145,7 @@ Pruebas relevantes:
 - `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json` preservan los freezes intermedios exactos.
 - `benchmark/agronomy_blind_v1/freeze/manifest.json` es el freeze vigente `1.2.1-authorized-prehuman`, 34/34 hashes.
 - El vigente declara `candidate_only: true`, `human_validated: false`, `benchmark_validated: false`, 0 contactos y `authorization: AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
+- Esos conteos describen el instante del freeze. La invitación `I01` ocurrió después y se registra fuera del manifiesto; no se reescribe un snapshot histórico.
 - El reporte asociado es `benchmark/agronomy_blind_v1/reports/local-candidate-prehuman-v1.2-2026-09-02.json`.
 - Un futuro freeze humano debe ser un manifiesto nuevo con `freeze_scope: human_reviewed_benchmark_inputs`; nunca se reetiqueta el candidato.
 
@@ -154,7 +158,7 @@ Pruebas relevantes:
 - Toda decisión sensible requiere aprobación nominada y auditoría.
 - No inventar entrevistas, revisiones, acuerdos o etiquetas humanas.
 - Cero datos personales, nombres, establecimientos o coordenadas exactas en Git.
-- Solo el usuario puede enviar correos dentro de los cupos autorizados, después del setup privado. La IA no contacta, no conoce destinatarios y no recibe PII o notas crudas.
+- En adelante, solo el usuario envía correos dentro de los cupos autorizados y después del setup privado. Tras `DV-OUTREACH-001`, la IA no debe recibir nuevos destinatarios, PII ni notas crudas.
 - No publicar, desplegar, consumir Nebius/Tavily, gastar, subir video ni enviar la submission sin autorización expresa.
 - Antes de un servicio potencialmente pago: autorización separada y límite de gasto concreto.
 
@@ -164,6 +168,6 @@ La cadena de evidencia externa sigue vacía. El arnés ya es defendible, pero lo
 
 ## Siguiente acción permitida
 
-El usuario completa fuera de Git los siete puntos del gate privado de `email-outreach-pack.md`: responsable/contacto/domicilio, destinatarios, almacenamiento, retención, canal de derechos, `PR01` independiente y mapa de códigos. Luego el usuario puede enviar hasta 5 invitaciones de entrevista y 3 de revisión, exclusivamente por correo.
+Antes de cualquier contacto adicional, el usuario atestigua sin PII que completó fuera de Git los siete puntos del gate privado de `email-outreach-pack.md`: responsable/contacto/domicilio, destinatarios, almacenamiento, retención, canal de derechos, `PR01` independiente y mapa de códigos. Ya se consumió el slot de entrevista `I01`; quedan como máximo 4 invitaciones de entrevista y 3 de revisión.
 
-La IA espera solo un parte sin PII con conteos y roles confirmados. Después: entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
+La IA espera solo el parte sin PII definido en `outreach-status-2026-09-02.md`. Después: invitaciones restantes → consentimientos privados → entrevistas → saneamiento `DS01` + revisión `PR01` → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
