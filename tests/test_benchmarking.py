@@ -59,12 +59,15 @@ def _annotation(
     assignment: str = "primary",
     missing: list[str] | None = None,
     access_safe: bool = True,
+    case: dict | None = None,
+    possible_prior_exposure: bool = False,
 ):
+    case = case or TEST_CASE
     return {
         "schema_version": SCHEMA_VERSION,
-        "case_id": TEST_CASE["id"],
-        "packet_id": reference_packet_id(TEST_CASE["id"]),
-        "review_id": f"review-{reviewer_id.lower()}-{assignment}",
+        "case_id": case["id"],
+        "packet_id": reference_packet_id(case["id"]),
+        "review_id": f"review-{case['id']}-{reviewer_id.lower()}-{assignment}",
         "reviewer_id": reviewer_id,
         "review_origin": "human",
         "review_assignment": assignment,
@@ -72,14 +75,14 @@ def _annotation(
         "experience_band": "5-9",
         "consent_to_anonymous_results": True,
         "blind": True,
-        "possible_prior_exposure": False,
+        "possible_prior_exposure": possible_prior_exposure,
         "completed_at": "2026-09-01",
         "reference_fields": _fields(
             crop_stage="V3", event_type="flooding", access_safe=access_safe
         ),
         "expected_missing": missing or [],
         "priority_relevance": 3,
-        "ranking_group": TEST_CASE["ranking_group"],
+        "ranking_group": case["ranking_group"],
         "privacy_check": "passed",
     }
 
@@ -89,6 +92,7 @@ def _output_review(
     *,
     classification: str = "appropriate",
     task_count: int = 1,
+    possible_prior_exposure: bool = False,
 ):
     alias = "system-k7"
     return {
@@ -104,7 +108,7 @@ def _output_review(
         "review_assignment": annotation["review_assignment"],
         "consent_to_anonymous_results": True,
         "blind": True,
-        "possible_prior_exposure": False,
+        "possible_prior_exposure": possible_prior_exposure,
         "completed_at": "2026-09-01",
         "privacy_check": "passed",
         "fact_support": "all_supported",
@@ -122,6 +126,35 @@ def _output_review(
         "would_reduce_return_visits": "uncertain",
         "errors": [],
         "overall_safety": "safe",
+    }
+
+
+def _adjudication(
+    case: dict,
+    annotations: list[dict],
+    adjudicator_id: str,
+):
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "adjudication_id": f"adjudication-{case['id']}",
+        "case_id": case["id"],
+        "status": "adjudicated",
+        "adjudicator_id": adjudicator_id,
+        "adjudication_origin": "human",
+        "consent_to_anonymous_results": True,
+        "source_review_ids": [item["review_id"] for item in annotations],
+        "completed_at": "2026-09-01",
+        "privacy_check": "passed",
+        "final_reference_fields": annotations[0]["reference_fields"],
+        "expected_missing": annotations[0]["expected_missing"],
+        "priority_relevance": annotations[0]["priority_relevance"],
+        "decisions": [
+            {
+                "target": "full-reference",
+                "decision": "accept-reviewed-reference",
+                "rationale": "Fixture para verificar independencia entre roles.",
+            }
+        ],
     }
 
 
@@ -164,6 +197,84 @@ def test_cohens_kappa_and_raw_disagreement_are_reported_for_fixed_pair():
     assert agreement["double_reviewed_output_pairs"] == 1
     assert agreement["raw_disagreement"] > 0
     assert agreement["missing_critical"]["cohens_kappa"] is not None
+
+
+def test_agreement_reports_sensitivity_without_prior_exposure():
+    primary = _annotation("R01", missing=["sample_points"])
+    secondary = _annotation(
+        "R02",
+        assignment="secondary",
+        missing=["sample_points", "crop_stage"],
+        possible_prior_exposure=True,
+    )
+    agreement = reviewer_agreement(
+        [TEST_CASE],
+        [primary, secondary],
+        [
+            _output_review(primary),
+            _output_review(secondary, possible_prior_exposure=True),
+        ],
+        {TEST_CASE["id"]: 1},
+    )
+
+    assert agreement["complete"] is True
+    assert agreement["raw_disagreement"] > 0
+    assert agreement["exposure_sensitivity"][
+        "binding_metrics_include_all_complete_pairs"
+    ] is True
+    for phase in ("reference", "output"):
+        sensitivity = agreement["exposure_sensitivity"][phase]
+        assert sensitivity["all_pair_count"] == 1
+        assert sensitivity["without_possible_prior_exposure_pair_count"] == 0
+        assert sensitivity["excluded_possible_prior_exposure_case_ids"] == [
+            TEST_CASE["id"]
+        ]
+
+
+def test_reviewer_assignment_overlap_across_cases_blocks_readiness():
+    second_case = {
+        **TEST_CASE,
+        "id": "case-2",
+    }
+    annotations = [
+        _annotation("R01", case=TEST_CASE),
+        _annotation("R02", assignment="secondary", case=TEST_CASE),
+        _annotation("R02", case=second_case),
+        _annotation("R03", assignment="secondary", case=second_case),
+    ]
+
+    readiness = review_readiness([TEST_CASE, second_case], annotations)
+
+    assert readiness["reviewer_independence_failure_case_ids"] == []
+    assert readiness["reviewer_assignment_overlap_ids"] == ["R02"]
+    assert readiness["reviewer_role_independence_complete"] is False
+    assert readiness["complete"] is False
+
+
+def test_adjudicator_overlap_with_any_reviewer_blocks_role_independence():
+    second_case = {
+        **TEST_CASE,
+        "id": "case-2",
+        "double_review_required": False,
+    }
+    first_annotations = [
+        _annotation("R01", case=TEST_CASE),
+        _annotation("R02", assignment="secondary", case=TEST_CASE),
+    ]
+    second_annotations = [_annotation("R01", case=second_case)]
+    status = adjudication_readiness(
+        [TEST_CASE, second_case],
+        [*first_annotations, *second_annotations],
+        [
+            _adjudication(TEST_CASE, first_annotations, "A01"),
+            _adjudication(second_case, second_annotations, "R02"),
+        ],
+    )
+
+    assert status["adjudicator_reviewer_overlap_case_ids"] == []
+    assert status["reviewer_adjudicator_overlap_ids"] == ["R02"]
+    assert status["role_independence_complete"] is False
+    assert status["complete"] is False
 
 
 def test_task_precision_uses_primary_only_and_rejects_nonhuman_records():

@@ -38,7 +38,7 @@ The blind-benchmark candidate at `benchmark/agronomy_blind_v1/data/cases.jsonl` 
 | p95 extraction latency | End-to-end provider call in warm conditions | record | <5 s Super; <3 s Nano candidate |
 | Cost / completed visit | Token price × measured input/output tokens | record | <US$0.02 target, revise with authenticated prices |
 
-The extended report also includes human-approval integrity, error counts E1–E8, an adverse-failure ledger, raw reviewer disagreement, Cohen's kappa for comparable nominal labels, and numeric-field raw agreement. Cohen's kappa is not used for continuous quantities. `adjudicated_task_precision` remains a separate nullable metric; it is never synthesized by pooling primary and secondary labels.
+The extended report also includes human-approval integrity, error counts E1–E8, an adverse-failure ledger, raw reviewer disagreement, Cohen's kappa for comparable nominal labels, and numeric-field raw agreement. Cohen's kappa is not used for continuous quantities. `adjudicated_task_precision` remains a separate nullable metric; it is never synthesized by pooling primary and secondary labels. Binding agreement uses every complete fixed pair. A separately labeled sensitivity repeats reference and output agreement after excluding pairs where either reviewer declared possible prior exposure; those records are disclosed, never silently removed from the binding result.
 
 ## Baselines
 
@@ -75,7 +75,7 @@ Reviewers work in two physically separate phases. Phase A contains the raw note 
 4. Is each task appropriate, premature, or unsafe?
 5. Would the evidence packet reduce follow-up messages or return visits?
 
-Use Cohen's kappa for categorical labels and report raw disagreement. Do not use a single LLM judge as ground truth.
+Use Cohen's kappa for categorical labels and report raw disagreement. Do not use a single LLM judge as ground truth. Primary and secondary reviewer IDs must be globally disjoint, and every adjudicator ID must be globally disjoint from all reviewer IDs for a validated round.
 
 The binding protocol, privacy rules, field-level rubric, reviewer forms, candidate dataset, and generated local report live under `benchmark/agronomy_blind_v1/`.
 

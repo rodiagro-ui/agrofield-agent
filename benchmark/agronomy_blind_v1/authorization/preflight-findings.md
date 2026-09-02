@@ -54,9 +54,11 @@
 
 ## P1 — Independencia y exposición previa
 
-Los registros permiten `possible_prior_exposure`, pero la métrica no produce un análisis de sensibilidad ni excluye/segmenta esos pares. Además, un adjudicador que también revisó necesita declaración explícita.
+**Estado: RESUELTO** en el incremento prehumano del 2026-09-02. Las métricas vinculantes conservan todos los pares completos y el reporte agrega una sensibilidad separada que excluye pares donde cualquiera de los dos revisores declaró `possible_prior_exposure: true`, tanto para referencia como para salida. El reporte identifica los casos excluidos de esa sensibilidad; nunca borra el resultado vinculante.
 
-**Corrección recomendada:** reportar resultados con todos los revisores y una sensibilidad sin exposición previa; declarar superposición de roles.
+La independencia también se controla a nivel de toda la ronda: un mismo ID no puede actuar como primario y secundario, y ningún adjudicador puede aparecer como revisor en otro caso. Las superposiciones se listan explícitamente y bloquean readiness aunque no coincidan dentro del mismo caso.
+
+**Verificación:** tests cubren sensibilidad con exposición declarada, cruce primario/secundario entre casos y cruce revisor/adjudicador entre casos.
 
 ## Orden de resolución aplicado
 
@@ -64,6 +66,6 @@ Los registros permiten `possible_prior_exposure`, pero la métrica no produce un
 2. Esquemas y completitud endurecidos.
 3. Task precision y doble output review corregidos.
 4. Readiness/`--require-validated` alineados con todos los gates.
-5. Análisis de exposición y roles reservado como P1 antes del freeze humano final.
+5. Análisis de exposición y separación global de roles cerrados antes del primer contacto.
 
-Los cinco P0 están probados sin tocar `policy.py`, sin datos reales, servicios externos ni gasto. El P1 sigue abierto como mejora de sensibilidad; no impide pedir autorización, pero debe resolverse o declararse antes del freeze humano final.
+Los cinco P0 y el P1 están probados sin tocar `policy.py`, sin datos reales, servicios externos ni gasto. Estos cierres demuestran integridad metodológica del arnés, no validez agronómica.

@@ -542,6 +542,119 @@ def _assigned_pair(
     return primary[0], secondary[0]
 
 
+def _reference_agreement_metrics(
+    pairs: list[tuple[dict[str, Any], dict[str, Any]]],
+) -> dict[str, Any]:
+    missing_a: list[str] = []
+    missing_b: list[str] = []
+    categorical: dict[str, tuple[list[str], list[str]]] = {
+        name: ([], []) for name in CATEGORICAL_FIELDS
+    }
+    numeric_equal = numeric_total = 0
+    for first, second in pairs:
+        values_a = _field_values(first, "reference_fields")
+        values_b = _field_values(second, "reference_fields")
+        expected_a = set(first.get("expected_missing", []))
+        expected_b = set(second.get("expected_missing", []))
+        for name in REFERENCE_FIELDS:
+            missing_a.append("missing" if name in expected_a else "not_missing")
+            missing_b.append("missing" if name in expected_b else "not_missing")
+        for name in CATEGORICAL_FIELDS:
+            categorical[name][0].append(json.dumps(values_a[name], sort_keys=True))
+            categorical[name][1].append(json.dumps(values_b[name], sort_keys=True))
+        for name in NUMERIC_FIELDS:
+            value_a, value_b = values_a[name], values_b[name]
+            numeric_total += 1
+            if value_a is None and value_b is None:
+                numeric_equal += 1
+            elif isinstance(value_a, (int, float)) and isinstance(
+                value_b, (int, float)
+            ):
+                numeric_equal += int(
+                    math.isclose(float(value_a), float(value_b), abs_tol=0.01)
+                )
+
+    nominal_pairs = len(missing_a) + sum(
+        len(values[0]) for values in categorical.values()
+    )
+    nominal_disagreements = sum(
+        a != b for a, b in zip(missing_a, missing_b, strict=True)
+    )
+    nominal_disagreements += sum(
+        sum(a != b for a, b in zip(values[0], values[1], strict=True))
+        for values in categorical.values()
+    )
+    return {
+        "raw_disagreement": (
+            round(nominal_disagreements / nominal_pairs, 4)
+            if nominal_pairs
+            else None
+        ),
+        "missing_critical": _metric(missing_a, missing_b),
+        "categorical_fields": {
+            name: _metric(values[0], values[1])
+            for name, values in categorical.items()
+        },
+        "numeric_fields": {
+            "paired_items": numeric_total,
+            "raw_agreement": (
+                round(numeric_equal / numeric_total, 4) if numeric_total else None
+            ),
+            "raw_disagreement": (
+                round(1 - numeric_equal / numeric_total, 4)
+                if numeric_total
+                else None
+            ),
+            "cohens_kappa": None,
+        },
+    }
+
+
+def _output_agreement_metrics(
+    pairs: list[tuple[dict[str, Any], dict[str, Any]]],
+) -> dict[str, Any]:
+    output_fields = [
+        "fact_support",
+        "missing_critical_assessment",
+        "priority_assessment",
+        "overall_safety",
+    ]
+    output_labels: dict[str, tuple[list[str], list[str]]] = {
+        name: ([], []) for name in output_fields
+    }
+    task_a: list[str] = []
+    task_b: list[str] = []
+    for first, second in pairs:
+        for name in output_fields:
+            output_labels[name][0].append(str(first.get(name)))
+            output_labels[name][1].append(str(second.get(name)))
+        tasks_a = {
+            item.get("task_index"): item.get("classification")
+            for item in first.get("task_labels", [])
+        }
+        tasks_b = {
+            item.get("task_index"): item.get("classification")
+            for item in second.get("task_labels", [])
+        }
+        for task_index in sorted(set(tasks_a) & set(tasks_b), key=str):
+            task_a.append(str(tasks_a[task_index]))
+            task_b.append(str(tasks_b[task_index]))
+
+    return {
+        "output_judgements": {
+            name: _metric(values[0], values[1])
+            for name, values in output_labels.items()
+        },
+        "task_classification": _metric(task_a, task_b),
+    }
+
+
+def _pair_has_possible_prior_exposure(
+    pair: tuple[dict[str, Any], dict[str, Any]],
+) -> bool:
+    return any(item.get("possible_prior_exposure") is True for item in pair)
+
+
 def reviewer_agreement(
     cases: list[dict[str, Any]],
     case_annotation_records: list[dict[str, Any]],
@@ -562,31 +675,6 @@ def reviewer_agreement(
         else:
             annotation_pairs.append(pair)
 
-    missing_a: list[str] = []
-    missing_b: list[str] = []
-    categorical: dict[str, tuple[list[str], list[str]]] = {
-        name: ([], []) for name in CATEGORICAL_FIELDS
-    }
-    numeric_equal = numeric_total = 0
-    for first, second in annotation_pairs:
-        values_a = _field_values(first, "reference_fields")
-        values_b = _field_values(second, "reference_fields")
-        expected_a = set(first.get("expected_missing", []))
-        expected_b = set(second.get("expected_missing", []))
-        for name in REFERENCE_FIELDS:
-            missing_a.append("missing" if name in expected_a else "not_missing")
-            missing_b.append("missing" if name in expected_b else "not_missing")
-        for name in CATEGORICAL_FIELDS:
-            categorical[name][0].append(json.dumps(values_a[name], sort_keys=True))
-            categorical[name][1].append(json.dumps(values_b[name], sort_keys=True))
-        for name in NUMERIC_FIELDS:
-            value_a, value_b = values_a[name], values_b[name]
-            numeric_total += 1
-            if value_a is None and value_b is None:
-                numeric_equal += 1
-            elif isinstance(value_a, (int, float)) and isinstance(value_b, (int, float)):
-                numeric_equal += int(math.isclose(float(value_a), float(value_b), abs_tol=0.01))
-
     output_pairs: list[tuple[dict[str, Any], dict[str, Any]]] = []
     missing_output_pairs: list[str] = []
     expected = expected_tasks_by_case or {}
@@ -604,32 +692,25 @@ def reviewer_agreement(
             missing_output_pairs.append(case_id)
         else:
             output_pairs.append(pair)
-    output_fields = [
-        "fact_support",
-        "missing_critical_assessment",
-        "priority_assessment",
-        "overall_safety",
+    reference_metrics = _reference_agreement_metrics(annotation_pairs)
+    output_metrics = _output_agreement_metrics(output_pairs)
+    unexposed_annotation_pairs = [
+        pair
+        for pair in annotation_pairs
+        if not _pair_has_possible_prior_exposure(pair)
     ]
-    output_labels: dict[str, tuple[list[str], list[str]]] = {
-        name: ([], []) for name in output_fields
-    }
-    task_a: list[str] = []
-    task_b: list[str] = []
-    for first, second in output_pairs:
-        for name in output_fields:
-            output_labels[name][0].append(str(first.get(name)))
-            output_labels[name][1].append(str(second.get(name)))
-        tasks_a = {item.get("task_index"): item.get("classification") for item in first.get("task_labels", [])}
-        tasks_b = {item.get("task_index"): item.get("classification") for item in second.get("task_labels", [])}
-        for task_index in sorted(set(tasks_a) & set(tasks_b), key=str):
-            task_a.append(str(tasks_a[task_index]))
-            task_b.append(str(tasks_b[task_index]))
-
-    nominal_pairs = len(missing_a) + sum(len(values[0]) for values in categorical.values())
-    nominal_disagreements = sum(a != b for a, b in zip(missing_a, missing_b, strict=True))
-    nominal_disagreements += sum(
-        sum(a != b for a, b in zip(values[0], values[1], strict=True))
-        for values in categorical.values()
+    unexposed_output_pairs = [
+        pair for pair in output_pairs if not _pair_has_possible_prior_exposure(pair)
+    ]
+    exposed_reference_case_ids = sorted(
+        pair[0]["case_id"]
+        for pair in annotation_pairs
+        if _pair_has_possible_prior_exposure(pair)
+    )
+    exposed_output_case_ids = sorted(
+        pair[0]["case_id"]
+        for pair in output_pairs
+        if _pair_has_possible_prior_exposure(pair)
     )
     complete = (
         bool(required_case_ids)
@@ -650,21 +731,41 @@ def reviewer_agreement(
         "missing_reference_pair_case_ids": missing_annotation_pairs,
         "missing_output_pair_case_ids": missing_output_pairs,
         "complete": complete,
-        "raw_disagreement": round(nominal_disagreements / nominal_pairs, 4) if nominal_pairs else None,
-        "missing_critical": _metric(missing_a, missing_b),
-        "categorical_fields": {
-            name: _metric(values[0], values[1]) for name, values in categorical.items()
+        **reference_metrics,
+        **output_metrics,
+        "exposure_sensitivity": {
+            "binding_metrics_include_all_complete_pairs": True,
+            "reference": {
+                "all_pair_count": len(annotation_pairs),
+                "all_pair_case_ids": sorted(
+                    pair[0]["case_id"] for pair in annotation_pairs
+                ),
+                "without_possible_prior_exposure_pair_count": len(
+                    unexposed_annotation_pairs
+                ),
+                "excluded_possible_prior_exposure_case_ids": (
+                    exposed_reference_case_ids
+                ),
+                "all_pair_metrics": reference_metrics,
+                "without_possible_prior_exposure_metrics": (
+                    _reference_agreement_metrics(unexposed_annotation_pairs)
+                ),
+            },
+            "output": {
+                "all_pair_count": len(output_pairs),
+                "all_pair_case_ids": sorted(
+                    pair[0]["case_id"] for pair in output_pairs
+                ),
+                "without_possible_prior_exposure_pair_count": len(
+                    unexposed_output_pairs
+                ),
+                "excluded_possible_prior_exposure_case_ids": exposed_output_case_ids,
+                "all_pair_metrics": output_metrics,
+                "without_possible_prior_exposure_metrics": (
+                    _output_agreement_metrics(unexposed_output_pairs)
+                ),
+            },
         },
-        "numeric_fields": {
-            "paired_items": numeric_total,
-            "raw_agreement": round(numeric_equal / numeric_total, 4) if numeric_total else None,
-            "raw_disagreement": round(1 - numeric_equal / numeric_total, 4) if numeric_total else None,
-            "cohens_kappa": None,
-        },
-        "output_judgements": {
-            name: _metric(values[0], values[1]) for name, values in output_labels.items()
-        },
-        "task_classification": _metric(task_a, task_b),
     }
 
 
@@ -673,6 +774,26 @@ def review_readiness(
 ) -> dict[str, Any]:
     annotations = human_case_annotations(annotation_records)
     case_ids = {case["id"] for case in cases}
+    relevant_annotations = [
+        item for item in annotations if item.get("case_id") in case_ids
+    ]
+    primary_reviewer_ids = sorted(
+        {
+            item["reviewer_id"]
+            for item in relevant_annotations
+            if item.get("review_assignment") == "primary"
+        }
+    )
+    secondary_reviewer_ids = sorted(
+        {
+            item["reviewer_id"]
+            for item in relevant_annotations
+            if item.get("review_assignment") == "secondary"
+        }
+    )
+    reviewer_assignment_overlap_ids = sorted(
+        set(primary_reviewer_ids) & set(secondary_reviewer_ids)
+    )
     required_double_ids = {
         case["id"] for case in cases if case.get("double_review_required")
     }
@@ -756,6 +877,7 @@ def review_readiness(
         and not context_failures
         and not unknown_case_ids
         and not duplicate_review_ids
+        and not reviewer_assignment_overlap_ids
         and invalid_count == 0
     )
     return {
@@ -768,6 +890,12 @@ def review_readiness(
         "missing_secondary_case_ids": missing_secondary,
         "duplicate_secondary_case_ids": duplicate_secondary,
         "reviewer_independence_failure_case_ids": independence_failures,
+        "primary_reviewer_ids": primary_reviewer_ids,
+        "secondary_reviewer_ids": secondary_reviewer_ids,
+        "reviewer_assignment_overlap_ids": reviewer_assignment_overlap_ids,
+        "reviewer_role_independence_complete": (
+            not independence_failures and not reviewer_assignment_overlap_ids
+        ),
         "unexpected_secondary_case_ids": unexpected_secondary,
         "evidence_quote_failure_case_ids": sorted(set(evidence_failures)),
         "context_mismatch_case_ids": sorted(set(context_failures)),
@@ -1036,12 +1164,24 @@ def adjudication_readiness(
         {item["case_id"] for item in valid if item["case_id"] not in case_by_id}
     )
     invalid_count = len(adjudication_records) - len(valid)
+    reviewer_ids = sorted(
+        {
+            item["reviewer_id"]
+            for item in annotations
+            if item.get("case_id") in case_by_id
+        }
+    )
+    adjudicator_ids = sorted({item["adjudicator_id"] for item in valid})
+    reviewer_adjudicator_overlap_ids = sorted(
+        set(reviewer_ids) & set(adjudicator_ids)
+    )
     complete = (
         bool(cases)
         and len(complete_case_ids) == len(cases)
         and not duplicate_case_ids
         and not source_mismatch_ids
         and not adjudicator_overlap_ids
+        and not reviewer_adjudicator_overlap_ids
         and not duplicate_ids
         and not unknown_case_ids
         and invalid_count == 0
@@ -1053,6 +1193,10 @@ def adjudication_readiness(
         "duplicate_case_ids": duplicate_case_ids,
         "source_mismatch_case_ids": source_mismatch_ids,
         "adjudicator_reviewer_overlap_case_ids": adjudicator_overlap_ids,
+        "reviewer_ids": reviewer_ids,
+        "adjudicator_ids": adjudicator_ids,
+        "reviewer_adjudicator_overlap_ids": reviewer_adjudicator_overlap_ids,
+        "role_independence_complete": not reviewer_adjudicator_overlap_ids,
         "unknown_case_ids": unknown_case_ids,
         "duplicate_adjudication_ids": duplicate_ids,
         "valid_human_records": len(valid),

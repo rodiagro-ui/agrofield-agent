@@ -7,7 +7,7 @@
 - **Revisor secundario:** anota solo los 10 casos `double_review_required`.
 - **Adjudicador:** resuelve desacuerdos después de calcular métricas independientes.
 
-Para el benchmark validado, el adjudicador debe usar un ID distinto de los revisores del caso. Si por limitación operativa una persona ocupa ambos roles, se documenta como limitación y el gate permanece cerrado.
+Para el benchmark validado, los IDs primario y secundario deben pertenecer a personas distintas y permanecer separados durante toda la ronda. El adjudicador debe usar un ID distinto de todos los revisores, no solo de los del caso que adjudica. Toda superposición se informa y mantiene cerrado el gate de readiness.
 
 ## Condición de ciego
 
@@ -65,6 +65,7 @@ Los alias de sistema se generan de forma aleatoria y estable por corrida, por ej
 - No mostrar resultados agregados hasta recibir ambos archivos de los casos dobles.
 - Si el formato falla, corregir el formato sin revelar la respuesta esperada y registrar el incidente.
 - Si un revisor reconoce un caso, marcar `possible_prior_exposure: true`.
+- El resultado vinculante usa todos los pares completos. El evaluador también reporta, sin reemplazarlo, una sensibilidad para referencia y salida que excluye los pares con posible exposición declarada.
 - El holdout se evalúa una sola vez por versión congelada.
 
 ## Criterio de completitud
