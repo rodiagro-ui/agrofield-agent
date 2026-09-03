@@ -34,11 +34,12 @@ Estado externo exacto:
 - aceptaciones preliminares verbales de entrevista: 5/5, según parte del usuario;
 - cobertura preliminar verbal de roles: `R01`, `R02` y `A01`, según parte del usuario;
 - consentimientos informados escritos obligatorios válidos: 5/5 entrevistas y `R01`, `R02`, `A01`, según atestación saneada del custodio;
-- alcances para conclusiones agregadas, escenarios saneados y resultados anónimos: pendientes de parte saneado; no inferirlos;
+- alcances de evidencia: 5/5 conclusiones agregadas, 5/5 escenarios saneados y resultados anónimos/agregados aceptados por `R01`, `R02`, `A01`, según atestación saneada;
+- grabación consentida: 0/8;
 - configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
 - desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
 - autorización humana vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
-- subestado operativo: `MANDATORY_WRITTEN_CONSENT_COMPLETE_EVIDENCE_SCOPE_PENDING`.
+- subestado operativo: `EVIDENCE_SCOPE_COMPLETE_READY_FOR_EMAIL_INTERVIEWS`.
 
 ## Lectura obligatoria
 
@@ -61,6 +62,7 @@ Antes de actuar, leer completos y en este orden:
 15. `benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md`
 16. `benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md`
 17. `benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md`
+18. `benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md`
 
 Después ejecutar:
 
@@ -171,10 +173,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-La cadena de evidencia externa sigue vacía. El reclutamiento y el consentimiento escrito obligatorio están completos, pero aún faltan los alcances saneados de uso anónimo y no existe ninguna entrevista o revisión terminada. Los 30 casos y sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas saneadas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
+La cadena de evidencia externa sigue vacía. Reclutamiento, consentimiento escrito y alcances de uso anónimo están completos, pero no existe ninguna entrevista o revisión terminada. Los 30 casos y sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas saneadas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
 
 ## Siguiente acción permitida
 
-El gate privado fue atestiguado, los 8 cupos iniciales están agotados y el usuario confirmó 5/5 consentimientos escritos obligatorios y los tres roles. No sumar destinatarios. Antes de recolectar contenido, obtener el parte agregado definido en `written-consent-status-2026-09-03.md`: el evaluador exige consentimiento para conclusiones agregadas y escenario saneado en entrevistas, y para resultados anónimos en revisiones.
+El gate de alcance está completo: 5/5 entrevistas aceptan conclusiones agregadas y escenarios saneados; `R01`, `R02` y `A01` aceptan resultados anónimos/agregados; grabación 0/8. No sumar destinatarios ni pedir identidades.
 
-Con esos alcances confirmados, usar `email-interview-fieldwork-pack.md`: Correo A neutral → aclaración opcional → Correo B de concepto → saneamiento `DS01` → revisión `PR01`. Bajo el alcance actual, la recolección permanece limitada al correo; una entrevista por llamada o videollamada requiere ampliar expresamente el canal. Después: 3–5 entrevistas válidas → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Recién entonces se solicita autorización y presupuesto para Nemotron.
+La siguiente acción autorizada es que el usuario envíe individualmente el Correo A de `email-interview-fieldwork-pack.md` a las cinco personas. Después: respuestas A → aclaración opcional → Correo B → saneamiento `DS01` → revisión `PR01` → 3–5 entrevistas válidas → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Bajo el alcance actual, la recolección permanece limitada al correo; una llamada o videollamada requiere ampliar expresamente el canal. Recién después del freeze humano se solicita autorización y presupuesto para Nemotron.

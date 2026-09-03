@@ -31,7 +31,7 @@
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
 - [x] User reports preliminary verbal acceptance from all five interview candidates and preliminary verbal coverage of `R01`, `R02`, and `A01`.
 - [x] User attests that separate mandatory written consents are privately retained and valid for 5/5 interviews and `R01`, `R02`, and `A01`; no PII or raw response entered Git/AI.
-- [ ] Confirm sanitized counts for interview aggregate/scenario use and anonymous reviewer results; mandatory participation consent alone does not make records evaluator-eligible.
+- [x] User attests evaluator-required scopes: 5/5 aggregate insights, 5/5 sanitized scenarios, and anonymous/aggregated results for `R01`, `R02`, and `A01`; recording remains 0/8.
 - [ ] Interview 3–5 Argentine advisers/producers/scouts with consent and revise the workflow.
 - [ ] Three distinct professionals cover `R01`, `R02`, and `A01`: 30 primaries, 10 fixed doubles, and 30 adjudications.
 - [ ] Obtain human labels for every proposed task and reach task precision ≥0.90.

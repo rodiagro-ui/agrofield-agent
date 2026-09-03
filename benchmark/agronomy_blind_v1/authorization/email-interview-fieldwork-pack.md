@@ -1,10 +1,10 @@
 # Paquete de entrevistas por correo — trabajo de campo V1
 
-> **Estado:** borrador local listo. No enviar hasta confirmar el alcance de evidencia de cada participante. Solo el usuario humano envía y custodia respuestas. Este archivo no autoriza llamadas, grabaciones, publicación ni servicios pagos.
+> **Estado:** `READY_FOR_USER_EMAIL_EXECUTION`. Los alcances agregados fueron atestiguados el 2026-09-03 en `evidence-scope-status-2026-09-03.md`. Solo el usuario humano envía y custodia respuestas. Este archivo no autoriza llamadas, grabaciones, publicación ni servicios pagos.
 
 ## Gate anterior al primer cuestionario
 
-Para cada persona, el custodio verifica privadamente:
+El custodio atestiguó de forma agregada que los cinco participantes cumplen los alcances exigidos. Antes de cada envío conserva la verificación privada individual:
 
 1. consentimiento escrito obligatorio válido;
 2. `consent_aggregated_insights: true`;
