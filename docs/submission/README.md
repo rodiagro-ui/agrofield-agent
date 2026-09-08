@@ -18,6 +18,7 @@ The project should compete on a narrow operational failure: a plausible field me
 - `strategy-decision-2026-09-08.md`: decision to proceed without waiting for the full 30/10 human benchmark.
 - `rules-recheck-2026-09-08.md`: current official requirements and judging implications.
 - `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
+- `card-free-access-request.md`: unsent support-request draft for promotional access without a card.
 
 ## Truthful status
 
