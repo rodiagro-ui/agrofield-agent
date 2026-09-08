@@ -1,6 +1,6 @@
 # AgroField Agent — resumen completo para compartir con otra IA
 
-> Snapshot verificable: 3 de septiembre de 2026. P0/P1 cerrados, consentimiento obligatorio atestiguado y freeze prehumano vigente. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
+> Snapshot verificable: 8 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente y paquete local de presentación preparado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
 
 ## Resumen ejecutivo
 
@@ -13,15 +13,15 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 ## Estado exacto
 
 - Rama: `main` y working tree limpio antes de actualizar este resumen.
-- HEAD verificado antes de esta actualización: `5e4744c` — `Record mandatory consent and prepare email interviews`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
-- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; outreach completo `7f9b5a0`; paquete de consentimiento `627fceb`; consentimiento obligatorio `5e4744c`.
+- HEAD verificado antes de esta actualización: `4245d0e` — `Prepare honest hackathon submission package`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
+- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`.
 - Licencia: MIT.
 - Tests: 44/44 aprobados.
 - Freeze vigente: 34/34 hashes válidos, versión `1.2.1-authorized-prehuman`.
 - Gates del candidato local: 7/17 aprobados; `benchmark_validated: false` por diseño.
 - `policy.py`: intacto desde el MVP.
 - Autorización vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
-- Subestado operativo: `EVIDENCE_SCOPE_COMPLETE_READY_FOR_EMAIL_INTERVIEWS`.
+- Subestado operativo: `SUBMISSION_PREPARATION_WITH_UNVALIDATED_BENCHMARK`.
 - Alcance original: el usuario puede enviar hasta 5 + 3 invitaciones por correo después del setup privado. En `DV-OUTREACH-001`, una dirección fue compartida transitoriamente y el envío fue asistido por IA; no se persistió PII en Git y no deben compartirse nuevos destinatarios.
 - Slots de invitación enviados: 8/8 autorizados.
 - Invitaciones: 5/5 de entrevista y 3/3 de revisión, según parte del usuario.
@@ -30,6 +30,7 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Alcances de evidencia: 5/5 conclusiones agregadas, 5/5 escenarios saneados, resultados anónimos/agregados aceptados por `R01`, `R02`, `A01`; grabación 0/8.
 - Setup privado: atestiguado por el usuario sin PII adicional el 2026-09-02.
 - Entrevistas reales: 0.
+- Aportes saneados del fundador con experiencia de dominio: 1, no independiente y fuera del benchmark.
 - Revisiones humanas: 0/30 primarias y 0/10 secundarias.
 - Revisiones humanas de salida: 0/30 primarias y 0/10 secundarias.
 - Adjudicaciones humanas: 0/30.
@@ -99,28 +100,18 @@ Artefactos principales:
 
 ## Debilidad crítica residual
 
-La evidencia externa sigue en cero. La ingeniería del benchmark ya evita contaminación obvia, pero el problema, la rúbrica y las tareas no fueron validados por asesores/productores ni agrónomos independientes. Por eso `benchmark_validated` sigue `false` y correr Nemotron ahora tendría menor ROI y riesgo de optimizar contra referencias circulares.
+La entrada aún no satisface el requisito técnico central: no hay ninguna ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia o costo. Tampoco existen URL, repositorio o video públicos. La evidencia agronómica independiente sigue en cero; el aporte `FDI-001` es del fundador y no altera `benchmark_validated: false`.
 
 ## Próximo incremento de máximo impacto
 
-El gate privado, el reclutamiento, el consentimiento escrito obligatorio y los alcances anónimos/agregados ya están completos por atestación saneada. Los 8 cupos están agotados y no deben sumarse destinatarios. La primera ronda neutral por correo está habilitada. No deben compartirse nombres, emails, firmas, organizaciones, localidades, calendarios o respuestas crudas. El próximo parte esperado es:
+Usar `docs/submission/demo-runbook.md` para ensayar localmente y corregir cualquier fricción visible. Luego pedir una autorización Nemotron separada con límite **US$0 de desembolso personal**, usando solo crédito promocional ya emitido y sin cargos automáticos. Ejecutar primero un smoke test y solo después una comparación congelada si el saldo y el cap lo permiten. Sustituir los `TBD` del Devpost únicamente con resultados reales. Tavily se conserva solo si una ablación autorizada demuestra valor trazable.
 
-```text
-ENTREVISTAS V1 — PARTE A SANEADO. No comparto PII.
-Correos A enviados individualmente: [0–5]/5.
-Respuestas A completas recibidas: [0–5]/5.
-Respuestas que requieren una aclaración neutral: [conteo].
-Retiros posteriores: [conteo].
-PII enviada a la IA o Git: 0.
-Contenido agronómico crudo enviado a la IA o Git: 0.
-```
-
-Después: Correo A neutral → Correo B de concepto → privacidad `DS01`/`PR01` → 3–5 registros válidos → Fase A 30/10 → hashes → Fase B 30/10 → desacuerdo/kappa/sensibilidad → adjudicación 30/30 → freeze humano → `--require-validated`. Bajo el alcance vigente, la recolección sustantiva está limitada al correo; una llamada o videollamada requiere ampliación expresa previa. Solo después del freeze humano se solicita autorización y presupuesto para Nemotron. Tavily se evalúa después mediante ablación y se conserva únicamente si agrega valor trazable.
+La revisión humana completa queda como mejora opcional de credibilidad, no como requisito oficial ni como logro realizado. No bajar sus gates ni describir el aporte del fundador como independiente.
 
 ## Texto listo para reanudar con otra IA
 
 ```text
-Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
+Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. El usuario atestigua consentimiento escrito y alcances contables para 5/5 entrevistas y R01/R02/A01; grabación 0/8. Hay 0 entrevistas/revisiones humanas y benchmark_validated=false. La siguiente acción autorizada es enviar individualmente el Correo A neutral de `email-interview-fieldwork-pack.md`, exclusivamente por el usuario y sin compartir respuestas crudas. El setup privado fue atestiguado sin PII adicional y no quedan cupos para nuevos destinatarios. Una dirección real ya fue compartida transitoriamente para `I01`; no revelar nuevos identificadores ni persistir PII en Git. Nunca atribuyas a humanos los fixtures. No modifiques policy.py ni uses Nebius/Tavily, gastes, publiques, despliegues, subas video o envíes la submission sin autorización expresa separada.
+Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El usuario decidió avanzar con una submission lean y honesta; el paquete está en `docs/submission/`. La próxima acción local es ensayar y pulir la demo. Antes de cualquier llamada Nemotron/Tavily se exige autorización separada; con la restricción económica actual, el cap propuesto es US$0 de desembolso personal y solo crédito promocional ya visible, sin cargos automáticos. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
 ```

@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 3 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
+> Snapshot: 8 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
 
 ## Estado verificable
 
@@ -12,6 +12,7 @@
 - Sensibilidad de exposición e independencia global de roles: `1bd5a0e`.
 - Autorización humana limitada registrada: `ff65472`.
 - Freeze prehumano vigente: `bee339e`.
+- Paquete local de presentación honesta: `4245d0e`.
 - HEAD efectivo: ejecutar `git log -1 --oneline`, porque el commit de este handoff será posterior.
 - Licencia: MIT.
 - Tests: 44/44 aprobados en la última verificación.
@@ -21,6 +22,7 @@
 Estado externo exacto:
 
 - entrevistas reales: 0;
+- aportes saneados del fundador con experiencia de dominio: 1, no independiente y fuera del benchmark;
 - slots de invitación enviados: 8/8 autorizados;
 - revisiones primarias reales: 0/30;
 - revisiones secundarias reales: 0/10;
@@ -39,7 +41,7 @@ Estado externo exacto:
 - configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
 - desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
 - autorización humana vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
-- subestado operativo: `EVIDENCE_SCOPE_COMPLETE_READY_FOR_EMAIL_INTERVIEWS`.
+- subestado operativo: `SUBMISSION_PREPARATION_WITH_UNVALIDATED_BENCHMARK`.
 
 ## Lectura obligatoria
 
@@ -63,6 +65,11 @@ Antes de actuar, leer completos y en este orden:
 16. `benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md`
 17. `benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md`
 18. `benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md`
+19. `docs/submission/README.md`
+20. `docs/submission/strategy-decision-2026-09-08.md`
+21. `docs/submission/founder-domain-input-2026-09-08.md`
+22. `docs/submission/devpost-draft.md`
+23. `docs/submission/demo-runbook.md`
 
 Después ejecutar:
 
@@ -173,10 +180,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-La cadena de evidencia externa sigue vacía. Reclutamiento, consentimiento escrito y alcances de uso anónimo están completos, pero no existe ninguna entrevista o revisión terminada. Los 30 casos y sus referencias siguen siendo sintéticos. Sin 3–5 entrevistas saneadas y revisión independiente 30/10, las cifras son hipótesis de ingeniería, no prueba de impacto o corrección agronómica.
+La entrada todavía no cumple el requisito técnico central del concurso: no existe una ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
-El gate de alcance está completo: 5/5 entrevistas aceptan conclusiones agregadas y escenarios saneados; `R01`, `R02` y `A01` aceptan resultados anónimos/agregados; grabación 0/8. No sumar destinatarios ni pedir identidades.
+El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado, controles de claims y un aporte del fundador saneado y rotulado como no independiente. Puede ensayarse la demo local y mejorar UX sin servicios externos.
 
-La siguiente acción autorizada es que el usuario envíe individualmente el Correo A de `email-interview-fieldwork-pack.md` a las cinco personas. Después: respuestas A → aclaración opcional → Correo B → saneamiento `DS01` → revisión `PR01` → 3–5 entrevistas válidas → Fase A 30/10 → locks → Fase B 30/10 → acuerdo y sensibilidad → adjudicación 30 → freeze humano → `--require-validated`. Bajo el alcance actual, la recolección permanece limitada al correo; una llamada o videollamada requiere ampliar expresamente el canal. Recién después del freeze humano se solicita autorización y presupuesto para Nemotron.
+El próximo gate externo es una evaluación Nemotron mínima y controlada. Antes de cualquier llamada se necesita autorización separada y un límite explícito; dado que el usuario informó que no dispone de dinero, la propuesta debe fijar **US$0 de desembolso personal** y usar únicamente crédito promocional ya visible, sin activar cargos automáticos. Si no hay crédito utilizable sin cobro, detenerse. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
