@@ -29,6 +29,7 @@ Estado externo exacto:
 - revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
 - adjudicaciones reales: 0/30;
 - llamadas Nebius: 0;
+- intentos Nebius: 1, detenido antes de inferencia porque el onboarding exigió tarjeta;
 - llamadas Tavily: 0;
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
@@ -71,6 +72,7 @@ Antes de actuar, leer completos y en este orden:
 22. `docs/submission/devpost-draft.md`
 23. `docs/submission/demo-runbook.md`
 24. `docs/submission/rules-recheck-2026-09-08.md`
+25. `docs/submission/nebius-smoke-attempt-2026-09-08.md`
 
 Después ejecutar:
 
@@ -181,10 +183,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-La entrada todavía no cumple el requisito técnico central del concurso: no existe una ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+La entrada todavía no cumple el requisito técnico central del concurso: no existe una ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia y costo. El smoke test autorizado el 2026-09-08 se detuvo antes de inferencia porque el onboarding exigió una tarjeta, fuera del límite US$0 personal. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado, controles de claims y un aporte del fundador saneado y rotulado como no independiente. Puede ensayarse la demo local y mejorar UX sin servicios externos.
 
-El próximo gate externo es una evaluación Nemotron mínima y controlada. Antes de cualquier llamada se necesita autorización separada y un límite explícito; dado que el usuario informó que no dispone de dinero, la propuesta debe fijar **US$0 de desembolso personal** y usar únicamente crédito promocional ya visible, sin activar cargos automáticos. Si no hay crédito utilizable sin cobro, detenerse. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El próximo gate externo es conseguir de Nebius o de los organizadores una vía de acceso promocional sin tarjeta. No ingresar tarjeta, no crear una API key y no reintentar inferencia bajo la autorización agotada. Si aparece una ruta card-free, volver a solicitar un cap explícito antes de llamar al modelo. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

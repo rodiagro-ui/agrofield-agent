@@ -27,6 +27,7 @@
 ## Requires user authorization or external validation
 
 - [ ] Register/verify Builder Program and Token Factory accounts.
+- [ ] Obtain a card-free Token Factory access path or already-issued promotional project; the 2026-09-08 attempt stopped before inference because onboarding required a card.
 - [ ] Confirm credits actually issued and freeze authenticated model prices.
 - [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.

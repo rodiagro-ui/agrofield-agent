@@ -17,6 +17,7 @@ The project should compete on a narrow operational failure: a plausible field me
 - `founder-domain-input-2026-09-08.md`: sanitized, non-independent product-discovery evidence.
 - `strategy-decision-2026-09-08.md`: decision to proceed without waiting for the full 30/10 human benchmark.
 - `rules-recheck-2026-09-08.md`: current official requirements and judging implications.
+- `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
 
 ## Truthful status
 
@@ -28,7 +29,7 @@ The project should compete on a narrow operational failure: a plausible field me
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
-| Real Nemotron evaluation | Not run |
+| Real Nemotron evaluation | Not run; card onboarding blocked the authorized smoke test before inference |
 | Tavily runtime evidence | Not run |
 | Public repository, URL, video, submission | Not created |
 
