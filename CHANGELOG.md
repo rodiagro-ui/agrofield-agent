@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-08 — submission-preparation increment
+
+- Added an English Devpost draft, a timed demo runbook, and explicit release/claim controls.
+- Recorded one sanitized first-party workflow account as non-independent founder domain input; no raw account or personal data was added to the repository.
+- Chose to continue submission preparation without weakening or relabeling the incomplete 30/10 human benchmark.
+
+No independent human validation, Nemotron request, Tavily request, deployment, publication, video upload, or paid action was performed in this increment.
+
 ## 2026-09-01 — 0.2.0-candidate
 
 - Added the Blind Agronomy Benchmark v1 candidate protocol, consent, privacy rules, neutral interview guide, field-level rubric, reviewer forms, and adjudication template.

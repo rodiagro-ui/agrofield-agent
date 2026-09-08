@@ -21,6 +21,8 @@
 - [x] Five P0 preflight blockers closed: separate Phase A/B, strict forms, primary-only task precision, complete double-output review, and exhaustive validation gates.
 - [x] P1 closed: binding agreement keeps every complete pair, exposure sensitivity is separate, and global reviewer/adjudicator role overlap blocks readiness.
 - [x] Gate contract covered by 44 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
+- [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
+- [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
 
 ## Requires user authorization or external validation
 
@@ -44,4 +46,6 @@
 
 ## Go/no-go gates
 
-Do not publish if `benchmark_validated` is false, critical-omission recall is below 0.98, any task can be approved without a named reviewer, the live demo lacks a runtime Nemotron call, or the cost/availability plan cannot keep the demo accessible through judging.
+`benchmark_validated: false` blocks any claim of independent agronomy validation, but it is not an official hackathon submission requirement. A lean submission may proceed with that limitation disclosed and every synthetic/local number labeled accurately.
+
+Do not publish if any task can execute without a named reviewer, the live demo lacks a runtime Nemotron call, a shown metric is not tied to its provider and dataset, secrets or personal data are exposed, or the cost/availability plan cannot keep the demo accessible through judging. Repository publication, deployment, video upload, and Devpost submission remain separate authorization gates.

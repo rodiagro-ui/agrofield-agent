@@ -78,13 +78,14 @@ tests/                 unit and API tests
 docs/research/         frozen rules and competitive research
 docs/evaluation/       metric definitions and acceptance gates
 docs/architecture.md   system design and trust boundaries
+docs/submission/       local Devpost draft, demo runbook, and claim controls
 ```
 
 All demo locations are synthetic. Exact field coordinates are not stored; `0.0, 0.0` is a deliberate non-location sentinel required by the current application schema.
 
 ## Submission status
 
-This repository is local and has not been published, deployed, or submitted. A public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization.
+This repository is local and has not been published, deployed, or submitted. The judge-facing copy and recording plan are prepared under `docs/submission/`, but a public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization.
 
 ## License
 
