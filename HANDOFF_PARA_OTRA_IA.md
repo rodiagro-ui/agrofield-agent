@@ -70,6 +70,7 @@ Antes de actuar, leer completos y en este orden:
 21. `docs/submission/founder-domain-input-2026-09-08.md`
 22. `docs/submission/devpost-draft.md`
 23. `docs/submission/demo-runbook.md`
+24. `docs/submission/rules-recheck-2026-09-08.md`
 
 Después ejecutar:
 

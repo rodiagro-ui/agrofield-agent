@@ -16,6 +16,7 @@ The project should compete on a narrow operational failure: a plausible field me
 - `demo-runbook.md`: sub-three-minute recording plan and retake criteria.
 - `founder-domain-input-2026-09-08.md`: sanitized, non-independent product-discovery evidence.
 - `strategy-decision-2026-09-08.md`: decision to proceed without waiting for the full 30/10 human benchmark.
+- `rules-recheck-2026-09-08.md`: current official requirements and judging implications.
 
 ## Truthful status
 
