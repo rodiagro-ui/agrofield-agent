@@ -1,6 +1,6 @@
 # Card-free Token Factory access request
 
-> Draft only. Do not send without explicit owner authorization.
+> **Sent 2026-09-08** to the official Token Factory support address after explicit owner authorization. Gmail displayed `Mensaje enviado`. No attachment, API key, card information, billing identifier, or screenshot was included. A response is still pending and no access, credit, inference, or spending authorization should be inferred from the send event.
 
 **Subject:** Card-free hackathon access request — Nebius x NVIDIA Global AI Hackathon
 
@@ -18,4 +18,4 @@ No API call has been made and no credit has been consumed yet.
 Thank you.
 ```
 
-Do not add API keys, card information, screenshots containing billing data, or private account identifiers. Add only the sender name and the email address already associated with the Nebius account when sending through an official support channel.
+The request was sent using only the sender identity already associated with the account. Any reply that introduces billing, a card, API-key creation, inference, or another external action requires a new decision under the existing authorization gates.
