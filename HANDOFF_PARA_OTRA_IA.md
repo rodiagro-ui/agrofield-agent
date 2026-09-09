@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 8 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
+> Snapshot: 9 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
 
 ## Estado verificable
 
@@ -13,9 +13,11 @@
 - Autorización humana limitada registrada: `ff65472`.
 - Freeze prehumano vigente: `bee339e`.
 - Paquete local de presentación honesta: `4245d0e`.
+- Solicitud card-free registrada como enviada: `2e14762`.
+- Modo seguro de ensayo para grabación: `7d88880`.
 - HEAD efectivo: ejecutar `git log -1 --oneline`, porque el commit de este handoff será posterior.
 - Licencia: MIT.
-- Tests: 44/44 aprobados en la última verificación.
+- Tests: 45/45 aprobados en la última verificación.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
 - `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
 
@@ -30,6 +32,7 @@ Estado externo exacto:
 - adjudicaciones reales: 0/30;
 - llamadas Nebius: 0;
 - intentos Nebius: 1, detenido antes de inferencia porque el onboarding exigió tarjeta;
+- solicitud card-free a soporte oficial: enviada el 2026-09-08 sin adjuntos ni datos de facturación; respuesta pendiente y sin autorización implícita para inferencia;
 - llamadas Tavily: 0;
 - costo: US$0;
 - publicación, despliegue, video y submission: no realizados;
@@ -73,6 +76,7 @@ Antes de actuar, leer completos y en este orden:
 23. `docs/submission/demo-runbook.md`
 24. `docs/submission/rules-recheck-2026-09-08.md`
 25. `docs/submission/nebius-smoke-attempt-2026-09-08.md`
+26. `docs/submission/card-free-access-request.md`
 
 Después ejecutar:
 
@@ -88,6 +92,8 @@ git log --oneline -10
 ## Producto
 
 AgroField Agent es un agente operativo para recorridas de soja posteriores a lluvia intensa, granizo o viento. Convierte una nota por texto o voz del navegador en hechos estructurados con citas, omisiones críticas, prioridades y tareas. Las reglas deterministas deciden completitud y bloqueos; las decisiones sensibles permanecen pendientes hasta aprobación humana auditada.
+
+Para ensayar una toma reproducible existe `python -m agrofield_agent --recording`: fuerza proveedor local, anula las credenciales externas durante el proceso, crea una base SQLite temporal nueva, muestra `ENSAYO LOCAL · SINTÉTICO` y elimina esa base al cerrar. No satisface el requisito Nemotron.
 
 No es un chatbot generalista ni un prescriptor autónomo. El diferenciador es demostrar que existe evidencia suficiente antes de actuar.
 
@@ -187,6 +193,6 @@ La entrada todavía no cumple el requisito técnico central del concurso: no exi
 
 ## Siguiente acción permitida
 
-El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado, controles de claims y un aporte del fundador saneado y rotulado como no independiente. Puede ensayarse la demo local y mejorar UX sin servicios externos.
+El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El próximo gate externo es conseguir de Nebius o de los organizadores una vía de acceso promocional sin tarjeta. No ingresar tarjeta, no crear una API key y no reintentar inferencia bajo la autorización agotada. Si aparece una ruta card-free, volver a solicitar un cap explícito antes de llamar al modelo. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El próximo gate externo es recibir una vía de acceso promocional sin tarjeta de Nebius o de los organizadores. La solicitud fue enviada el 2026-09-08 y sigue pendiente. No ingresar tarjeta, no crear una API key y no reintentar inferencia bajo la autorización agotada. Si aparece una ruta card-free, volver a solicitar un cap explícito antes de llamar al modelo. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

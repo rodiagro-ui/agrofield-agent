@@ -1,6 +1,6 @@
 # AgroField Agent — resumen completo para compartir con otra IA
 
-> Snapshot verificable: 8 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente y paquete local de presentación preparado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
+> Snapshot verificable: 9 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente y modo seguro de ensayo local verificado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
 
 ## Resumen ejecutivo
 
@@ -13,10 +13,10 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 ## Estado exacto
 
 - Rama: `main` y working tree limpio antes de actualizar este resumen.
-- HEAD verificado antes de esta actualización: `4245d0e` — `Prepare honest hackathon submission package`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
-- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`.
+- HEAD verificado antes de esta actualización: `7d88880` — `Add safe recording rehearsal mode`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
+- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`; solicitud card-free enviada `2e14762`; modo grabación `7d88880`.
 - Licencia: MIT.
-- Tests: 44/44 aprobados.
+- Tests: 45/45 aprobados.
 - Freeze vigente: 34/34 hashes válidos, versión `1.2.1-authorized-prehuman`.
 - Gates del candidato local: 7/17 aprobados; `benchmark_validated: false` por diseño.
 - `policy.py`: intacto desde el MVP.
@@ -36,6 +36,7 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Adjudicaciones humanas: 0/30.
 - Nebius/Tavily: 0 llamadas, US$0.
 - Intento Nebius del 2026-09-08: detenido antes de inferencia porque el onboarding exigió tarjeta; no se ingresó tarjeta, no se creó API key y no hubo cargo.
+- Solicitud card-free: enviada a soporte oficial el 2026-09-08 sin adjuntos, claves ni datos de facturación; respuesta pendiente. El envío no autoriza inferencia ni gasto.
 - Repositorio/URL/video/submission públicos: no.
 
 ## Resultados reproducibles actuales
@@ -50,6 +51,14 @@ Proveedor de ambos: `local/deterministic-es-v0.1`. Task precision humana: no dis
 El candidato todavía falla el umbral de recall de omisiones críticas: `0,9714 < 0,98`. Ese dato es real para la referencia sintética provisional, pero no debe usarse para ajustar el holdout antes de obtener la referencia humana congelada.
 
 ## Qué cambió en el último incremento
+
+Se agregó y verificó `python -m agrofield_agent --recording`. Cada arranque crea una base SQLite temporal nueva, fuerza `local/deterministic-es-v0.1`, anula las claves Nebius/Tavily durante el proceso, muestra `ENSAYO LOCAL · SINTÉTICO` y restaura el entorno al cerrar. La UI ahora ordena lotes por prioridad (`91 → 76 → 58 → 48`), exige escribir un revisor, traduce la decisión a `APROBADA/RECHAZADA`, evita una afirmación de vuelco que el extractor no respaldaba, versiona recursos estáticos y sirve favicon sin 404.
+
+El recorrido se comprobó en navegador con una base fresca: nota incompleta bloqueada por `sample_points` y `water_duration_hours`; nota completa en `review_ready`; aprobación nominada; auditoría con `demo_seeded`, ambas evaluaciones y `task_approved`. Todas las rutas observadas respondieron 200. El guion quedó cronometrado a 2:42 y contiene una narración alternativa que identifica honestamente el proveedor local durante el ensayo.
+
+La solicitud de acceso promocional sin tarjeta se registró como enviada el 2026-09-08; la respuesta continúa pendiente. No hubo llamada, costo, clave nueva ni ampliación de autorización.
+
+La base anterior conserva los siguientes controles:
 
 Se cerraron los cinco bloqueos P0 de preflight:
 
@@ -105,7 +114,7 @@ La entrada aún no satisface el requisito técnico central: no hay ninguna ejecu
 
 ## Próximo incremento de máximo impacto
 
-Usar `docs/submission/demo-runbook.md` para ensayar localmente y corregir cualquier fricción visible. En paralelo, pedir a Nebius o a los organizadores una vía promocional sin tarjeta. No reintentar el smoke test ni crear una API key hasta que exista esa ruta y una nueva autorización con cap explícito. Sustituir los `TBD` del Devpost únicamente con resultados reales. Tavily se conserva solo si una ablación autorizada demuestra valor trazable.
+El ensayo local de extremo a extremo ya está estable. El mayor bloqueo competitivo sigue siendo externo: esperar la respuesta de acceso promocional card-free y, solo si ofrece crédito visible sin tarjeta, pedir una nueva autorización con cap explícito antes de crear una clave o llamar Nemotron. Mientras tanto, el siguiente incremento local de mayor ROI es preparar los overlays de arquitectura y métricas con placeholders inequívocos, sin sustituir ningún `TBD` por resultados inventados. Tavily se conserva solo si una ablación autorizada demuestra valor trazable.
 
 La revisión humana completa queda como mejora opcional de credibilidad, no como requisito oficial ni como logro realizado. No bajar sus gates ni describir el aporte del fundador como independiente.
 
@@ -114,5 +123,5 @@ La revisión humana completa queda como mejora opcional de credibilidad, no como
 ```text
 Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md; docs/submission/rules-recheck-2026-09-08.md; docs/submission/nebius-smoke-attempt-2026-09-08.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 44/44 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El usuario decidió avanzar con una submission lean y honesta; el paquete está en `docs/submission/`. La próxima acción local es ensayar y pulir la demo. Antes de cualquier llamada Nemotron/Tavily se exige autorización separada; con la restricción económica actual, el cap propuesto es US$0 de desembolso personal y solo crédito promocional ya visible, sin cargos automáticos. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
+Los cinco P0 y el P1 ya están cerrados. Hay 45/45 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El modo `--recording` fue verificado de extremo a extremo y siempre se identifica como local/sintético. La solicitud card-free fue enviada y la respuesta está pendiente. Antes de cualquier llamada Nemotron/Tavily se exige autorización separada; con la restricción económica actual, el cap propuesto es US$0 de desembolso personal y solo crédito promocional ya visible, sin cargos automáticos. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
 ```

@@ -25,7 +25,8 @@ The project should compete on a narrow operational failure: a plausible field me
 | Item | Current status |
 |---|---|
 | Local vertical MVP | Functional |
-| Deterministic local tests | 44/44 passing on 2026-09-08 |
+| Deterministic local tests | 45/45 passing on 2026-09-09 |
+| Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
 | Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
@@ -39,7 +40,7 @@ All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cas
 
 ## Path to a valid entry
 
-1. Finish judge-facing copy and rehearse the deterministic demo locally.
+1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
 2. Obtain separate authorization and a hard spending limit before any Nebius or Tavily call.
 3. Run a small controlled Nemotron smoke test, then the frozen evaluation if the smoke test is safe and affordable.
 4. Replace every placeholder in the submission and demo with measured values.
