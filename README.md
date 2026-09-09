@@ -35,6 +35,14 @@ python -m agrofield_agent
 
 Open `http://127.0.0.1:8000`.
 
+For a repeatable screen-recording rehearsal, start the dedicated mode:
+
+```bash
+python -m agrofield_agent --recording
+```
+
+Every recording-mode start creates a fresh temporary SQLite database, forces the local deterministic provider, disables Nebius and Tavily credentials for that process, and labels the interface `ENSAYO LOCAL · SINTÉTICO`. Closing the server removes the temporary database and restores the original environment.
+
 Run tests and the evaluation:
 
 ```bash
@@ -85,7 +93,7 @@ All demo locations are synthetic. Exact field coordinates are not stored; `0.0, 
 
 ## Submission status
 
-This repository is local and has not been published, deployed, or submitted. The judge-facing copy and recording plan are prepared under `docs/submission/`, but a public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization.
+This repository is local and has not been published, deployed, or submitted. The judge-facing copy and recording plan are prepared under `docs/submission/`, but a public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization. A card-free promotional-access request was sent to official Token Factory support on 2026-09-08; a response is pending and no runtime access or spending authorization is implied.
 
 ## License
 

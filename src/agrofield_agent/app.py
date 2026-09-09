@@ -50,6 +50,7 @@ def create_app(
             "status": "ok",
             "provider": settings.provider,
             "tavily_configured": bool(settings.tavily_api_key),
+            "recording_mode": settings.recording_mode,
         }
 
     @app.get("/api/fields")

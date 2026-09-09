@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#152b22" />
     <title>AgroField Agent</title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="icon" href="/static/favicon.svg?v=0.1.1" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/styles.css?v=0.1.1" />
   </head>
   <body>
     <header class="topbar">
@@ -89,7 +90,7 @@
                 <p class="eyebrow">4 · Revisión humana</p>
                 <h2>Tareas propuestas, todavía no ejecutadas</h2>
               </div>
-              <label class="reviewer-label">Revisor <input id="reviewerName" value="Asesor demo" /></label>
+              <label class="reviewer-label">Revisor <input id="reviewerName" placeholder="Ej.: Asesor demo" autocomplete="off" /></label>
             </div>
             <div id="taskList" class="task-list"></div>
           </article>
@@ -111,6 +112,6 @@
       <div id="auditList" class="audit-list"></div>
     </dialog>
 
-    <script src="/static/app.js" defer></script>
+    <script src="/static/app.js?v=0.1.1" defer></script>
   </body>
 </html>

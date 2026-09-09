@@ -1,7 +1,7 @@
-const state = { fields: [], selected: null, latest: null };
+const state = { fields: [], selected: null, latest: null, recordingMode: false };
 
 const incompleteNote = "Soja V3. La tormenta fue hace 18 horas y el acceso es seguro. Hay agua parada en aproximadamente 35% del lote. En los bajos conté 9 plantas por metro. El resto se ve heterogéneo.";
-const completeNote = "Soja V3. La tormenta fue hace 18 horas y el acceso es seguro. Recorrí 6 puntos representativos en W. El anegamiento afecta 35% del lote y lleva 14 horas con agua parada. Conté 9 plantas por metro en los bajos. No observé vuelco y el estado general es heterogéneo.";
+const completeNote = "Soja V3. La tormenta fue hace 18 horas y el acceso es seguro. Recorrí 6 puntos representativos en W. El anegamiento afecta 35% del lote y lleva 14 horas con agua parada. Conté 9 plantas por metro en los bajos. El estado general es heterogéneo.";
 
 const labels = {
   crop_stage: "Estado", event_type: "Evento", event_hours_ago: "Antigüedad", access_safe: "Acceso",
@@ -34,7 +34,8 @@ function fieldRiskScore(field) {
 }
 
 function renderFields() {
-  el("fieldList").innerHTML = state.fields.map(field => `
+  const rankedFields = [...state.fields].sort((a, b) => fieldRiskScore(b) - fieldRiskScore(a));
+  el("fieldList").innerHTML = rankedFields.map(field => `
     <button class="field-item ${field.id === state.selected?.id ? "active" : ""}" data-field="${field.id}">
       <div class="field-row"><span class="field-name">${field.name}</span><span class="field-stage">${field.stage}</span></div>
       <div class="field-meta"><span>${field.hectares} ha</span><span>prioridad ${fieldRiskScore(field)}</span><span>${field.weather.precipitation_mm_72h} mm</span></div>
@@ -107,7 +108,7 @@ function renderAnalysis(result) {
   const alerts = result.official_alerts || [];
   el("alertsCard").classList.toggle("hidden", !alerts.length);
   el("alertList").innerHTML = alerts.map(alert => `<div class="alert-item"><a href="${alert.url}" target="_blank" rel="noopener">${alert.title}</a><p>${alert.snippet}</p></div>`).join("");
-  el("results").scrollIntoView({behavior:"smooth", block:"start"});
+  el("results").scrollIntoView({behavior: state.recordingMode ? "auto" : "smooth", block:"start"});
 }
 
 async function analyze() {
@@ -124,9 +125,11 @@ async function analyze() {
 async function decideTask(taskId, action) {
   const reviewer = el("reviewerName").value.trim();
   if (reviewer.length < 2) { el("captureMessage").textContent = "Indicá quién revisa la tarea."; return; }
-  const task = await api(`/api/tasks/${taskId}/${action}`, {method:"POST", body: JSON.stringify({reviewer, decision_note:"Decisión registrada desde la demo local"})});
+  const decisionNote = state.recordingMode ? "Decisión registrada durante ensayo local sintético" : "Decisión registrada desde AgroField Agent";
+  const task = await api(`/api/tasks/${taskId}/${action}`, {method:"POST", body: JSON.stringify({reviewer, decision_note: decisionNote})});
   const node = el(`task-${taskId}`); node.classList.add("decided");
-  node.querySelector(".task-actions").innerHTML = `<span class="task-status">${task.status}</span>`;
+  const statusLabel = {approved:"APROBADA", rejected:"RECHAZADA"}[task.status] || task.status;
+  node.querySelector(".task-actions").innerHTML = `<span class="task-status">${statusLabel}</span>`;
 }
 
 function setupVoice() {
@@ -146,7 +149,10 @@ async function showAudit() {
 }
 
 async function init() {
-  const health = await api("/health"); el("providerBadge").textContent = health.provider === "local" ? "modo local · $0" : "Nemotron · Token Factory";
+  const health = await api("/health");
+  state.recordingMode = Boolean(health.recording_mode);
+  el("providerBadge").textContent = state.recordingMode ? "ENSAYO LOCAL · SINTÉTICO" : (health.provider === "local" ? "modo local · $0" : "Nemotron · Token Factory");
+  document.body.classList.toggle("recording-mode", state.recordingMode);
   if (!health.tavily_configured) {
     el("tavilyToggle").disabled = true;
     el("tavilyToggle").closest("label").title = "Configurá TAVILY_API_KEY para activar alertas en runtime";

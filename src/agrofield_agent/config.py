@@ -16,6 +16,7 @@ class Settings:
     nebius_model: str
     tavily_api_key: str | None
     tavily_include_domains: tuple[str, ...]
+    recording_mode: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -39,4 +40,6 @@ class Settings:
             tavily_include_domains=tuple(
                 item.strip().lower() for item in domains.split(",") if item.strip()
             ),
+            recording_mode=os.getenv("AGROFIELD_RECORDING_MODE", "").lower()
+            in {"1", "true", "yes", "on"},
         )
