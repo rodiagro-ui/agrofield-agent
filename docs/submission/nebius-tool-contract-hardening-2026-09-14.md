@@ -54,3 +54,12 @@ Estos resultados prueban lógica local, no compatibilidad real con el endpoint. 
 El perfil solo puede llamarse nuevamente después de una autorización independiente con cantidad de solicitudes, cero o más reintentos explícitos, fuente de crédito, cargo personal máximo y cap total. Antes de llamar deben reconfirmarse precio, saldo promocional y `Stop usage`, crear una clave temporal y ejecutar nuevamente el preflight.
 
 Una respuesta solo cuenta como éxito si supera todos los controles en la primera solicitud. Si falla, el reporte debe registrar el diagnóstico saneado y detenerse; nunca debe registrar la nota, la clave o el razonamiento del modelo.
+
+## Nota histórica posterior
+
+Este documento describía el estado inmediatamente posterior a `911d786`. Luego se
+ejecutó una única solicitud autorizada por la ruta real `/api/analyze`; falló upstream
+antes de una salida observable y no validó el contrato. El registro completo está en
+`nebius-live-route-smoke-run-2026-09-14.md`. El commit local posterior `e8a926a`
+agregó diagnóstico HTTP seguro y simplificó dos keywords opcionales del esquema sin
+debilitar la validación client-side. No se abrió red para esa corrección.

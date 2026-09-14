@@ -20,11 +20,12 @@
 - [x] Preflight risks in blind-packet separation and evaluator readiness documented before human review.
 - [x] Five P0 preflight blockers closed: separate Phase A/B, strict forms, primary-only task precision, complete double-output review, and exhaustive validation gates.
 - [x] P1 closed: binding agreement keeps every complete pair, exposure sensitivity is separate, and global reviewer/adjudicator role overlap blocks readiness.
-- [x] Core application and benchmark contract covered by 45 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
+- [x] Core application and benchmark contract covered by local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 - [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
 - [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
-- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 21 mocked tests.
+- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 23 mocked tests.
 - [x] Post-failure compatibility profile hardened locally: reasoning explicitly disabled, strict defaults removed, exact argument shape revalidated, and budget-exhaustion diagnostics classified without retaining model text.
+- [x] Live-route failure hardened locally: future upstream failures preserve only status, safe request ID and latency; optional schema keywords were removed while equivalent client-side validation remains.
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
 
 ## Requires user authorization or external validation
@@ -36,7 +37,8 @@
 - [x] Run one authorized real Nemotron Playground smoke test; connectivity passed but the structured final output failed because the 256-token budget ended during reasoning.
 - [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
 - [x] Run one separately authorized guarded AgroField-harness API smoke with a US$0.01 promotional cap and zero retries; connectivity passed, the exactly-one-tool-call contract failed, and the key was revoked.
-- [ ] Pass the structured tool contract through the live `/api/analyze` path; the route integration is tested with mocks, but no live route request has run.
+- [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request and returned local HTTP 503 after an upstream HTTP/transport failure, without proving model invocation or reaching the tool contract.
+- [ ] Pass the structured tool contract through the live `/api/analyze` path; the route is tested with mocks, but its only live attempt failed before a model output was observable.
 - [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.

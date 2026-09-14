@@ -65,7 +65,7 @@ The browser never receives provider credentials. Invalid model output is rejecte
 | Hard candidate suite | `local/deterministic-es-v0.1` | 30 synthetic | 0.9188 | 0.9714 | 0.0050 | 1.0000 |
 | Nemotron | `TBD_AFTER_AUTHORIZED_RUN` | TBD | TBD | TBD | TBD | TBD |
 
-Two separately authorized requests using `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` proved Token Factory connectivity: the Playground run returned an empty final message after exhausting a 256-token reasoning budget, and the guarded AgroField harness run did not return exactly one required tool call. These are adverse compatibility findings, not benchmark rows, and do not replace the `TBD` values above.
+Three separately authorized request attempts used `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`: the Playground run proved model execution but returned an empty final message after exhausting a 256-token reasoning budget; the guarded AgroField CLI reached the API but did not return exactly one required tool call; and the live `/api/analyze` route returned local HTTP 503 after an upstream HTTP/transport failure before model output was observable. These are adverse compatibility findings, not benchmark rows, and do not replace the `TBD` values above. The third attempt does not prove model inference.
 
 The 30-case candidate remains `benchmark_validated: false` and contains no independent human labels. The local numbers must never be described as Nemotron performance.
 

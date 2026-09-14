@@ -1,10 +1,10 @@
 # Nebius API compatibility harness
 
-> Estado: endurecido localmente después de una ejecución real adversa. Hay 21 pruebas con transporte simulado. El perfil corregido todavía no fue validado contra la API real y este documento no autoriza otra llamada.
+> Estado: endurecido localmente después de dos ejecuciones reales adversas desde el repositorio. Hay 23 pruebas con transporte simulado. El contrato corregido todavía no fue validado con una salida real y este documento no autoriza otra llamada.
 
 ## Propósito
 
-`python -m agrofield_agent.nebius_smoke` convierte una eventual autorización limitada en una sola solicitud controlada. El mismo contrato está conectado a `create_app()` cuando `AGROFIELD_PROVIDER=nebius`. El harness existe porque el smoke del Playground del 2026-09-14 agotó 256 tokens en razonamiento y porque la primera llamada desde el repositorio respondió sin el tool call obligatorio.
+`python -m agrofield_agent.nebius_smoke` convierte una eventual autorización limitada en una sola solicitud controlada. El mismo contrato está conectado a `create_app()` cuando `AGROFIELD_PROVIDER=nebius`. El harness existe porque el smoke del Playground del 2026-09-14 agotó 256 tokens en razonamiento y porque la primera llamada desde el repositorio respondió sin el tool call obligatorio. Una ejecución posterior por `/api/analyze` falló upstream antes de que pudiera observarse una salida del modelo.
 
 El contrato sigue la API oficial de Token Factory:
 
@@ -44,6 +44,7 @@ Durante y después de la llamada:
 - exige `prompt_tokens`, `completion_tokens` y request ID;
 - calcula costo estimado desde el uso reportado;
 - ante un fallo conserva solo diagnóstico saneado: forma de respuesta, conteos, presencia y longitud de contenido/razonamiento, uso, latencia y request ID; nunca el texto generado, la clave ni la nota cruda.
+- ante un HTTP no exitoso conserva solo estado, request ID de caracteres seguros y latencia; ante transporte fallido conserva solo latencia. Nunca conserva el cuerpo upstream.
 
 Los precios deben volver a verificarse en la interfaz autenticada inmediatamente antes de una ejecución. Los valores observados el 2026-09-14 para `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` fueron US$0,06 por millón de tokens de entrada y US$0,24 por millón de salida; no se asume que sigan vigentes.
 
@@ -67,11 +68,26 @@ US$0,00122880. La API respondió, pero la salida no contenía exactamente un too
 el harness la rechazó y no reintentó. La clave temporal fue revocada y la lista de
 claves quedó vacía. Véase `nebius-api-smoke-run-2026-09-14.md`.
 
-El perfil de esa ejecución histórica usó `reasoning_effort: low` y el esquema Pydantic directo. Después del fallo, el commit `911d786` introdujo el perfil sin razonamiento, el esquema cerrado y los diagnósticos saneados. La causa exacta de la respuesta sin tool call no puede probarse porque la primera versión no preservó esos metadatos; agotamiento en razonamiento y compatibilidad del esquema son hipótesis, no hechos. El perfil nuevo solo está verificado localmente.
+El perfil de esa ejecución histórica usó `reasoning_effort: low` y el esquema Pydantic directo. Después del fallo, el commit `911d786` introdujo el perfil sin razonamiento, el esquema cerrado y los diagnósticos saneados. La causa exacta de la respuesta sin tool call no puede probarse porque la primera versión no preservó esos metadatos; agotamiento en razonamiento y compatibilidad del esquema son hipótesis, no hechos.
+
+## Ejecución por la ruta real
+
+Una tercera autorización separada permitió una única solicitud por `/api/analyze`,
+cero reintentos, hasta US$0,01 promocional y US$0 personal. La ruta local respondió
+HTTP 503 con un fallo upstream saneado. La versión ejecutada no distinguía HTTP de
+transporte ni preservaba estado/request ID, de modo que no se puede probar que el
+modelo haya iniciado inferencia. No hubo tool call ni salida evaluable. La clave fue
+revocada y la lista quedó vacía. Véase
+`nebius-live-route-smoke-run-2026-09-14.md`.
+
+Después de ese intento, `e8a926a` agregó metadatos HTTP seguros y eliminó del esquema
+enviado `minLength` y `uniqueItems`, manteniendo la validación equivalente del lado
+cliente. La causa live sigue sin conocerse y el nuevo perfil solo está verificado
+localmente.
 
 ## Preflight actual, sin red
 
-Con la nota sintética congelada y los precios históricos —solo para reproducir el cálculo— el perfil endurecido serializa 4.951 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
+Con la nota sintética congelada y los precios históricos —solo para reproducir el cálculo— el perfil endurecido serializa 4.904 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
 
 ## Gate para una futura llamada
 
@@ -87,4 +103,4 @@ Para probar el recorrido mediante la aplicación en vez del CLI, configurar adem
 
 La aceptación requiere, en la misma única respuesta: HTTP/JSON válido, exactamente un tool call, argumentos cerrados y válidos, citas literales, telemetría completa y costo estimado dentro del cap. Cualquier otra salida es fallo y no se reintenta.
 
-Las autorizaciones del Playground y de la primera ejecución del harness están agotadas. El endurecimiento local no amplía esos permisos.
+Las autorizaciones del Playground, del primer harness y de la ruta `/api/analyze` están agotadas. El endurecimiento local no amplía esos permisos.

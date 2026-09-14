@@ -23,20 +23,21 @@ The project should compete on a narrow operational failure: a plausible field me
 - `nebius-api-compatibility-harness.md`: strict one-request contract shared by the CLI harness and guarded application provider.
 - `nebius-api-smoke-run-2026-09-14.md`: one real request from AgroField's guarded harness, its adverse missing-tool-call result, cost preflight, and credential cleanup.
 - `nebius-tool-contract-hardening-2026-09-14.md`: local-only reasoning/schema/diagnostic hardening after the adverse request; not live-validated.
+- `nebius-live-route-smoke-run-2026-09-14.md`: the separately authorized live `/api/analyze` attempt, its upstream failure, strict claim boundary, and cleanup evidence.
 
 ## Truthful status
 
 | Item | Current status |
 |---|---|
 | Local vertical MVP | Functional |
-| Local tests | 66/66 passing on 2026-09-14, including 21 mocked guarded-Nebius tests |
+| Local tests | 68/68 passing on 2026-09-14, including 23 mocked guarded-Nebius tests |
 | Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
 | Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
-| Real Nemotron runtime | Two separately authorized requests ran on 2026-09-14: one in Playground and one from the AgroField harness; connectivity passed and both structured contracts failed |
-| AgroField API integration / Nemotron evaluation | Guarded repository harness reached the live API once; `/api/analyze` passes with mocks but has not run live, and no Nemotron evaluation has run |
+| Real Nemotron runtime | Three separately authorized request attempts ran on 2026-09-14; only Playground proves model execution, none produced an accepted extraction, and no benchmark ran |
+| AgroField API integration / Nemotron evaluation | The guarded CLI reached the live API once; a separate `/api/analyze` attempt failed upstream before model output was observable; no Nemotron evaluation has run |
 | Card-free access request | Support confirmed that no card-free activation path is available |
 | Tavily runtime evidence | Not run |
 | Public repository, URL, video, submission | Not created |
@@ -46,8 +47,8 @@ All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cas
 ## Path to a valid entry
 
 1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
-2. Preserve the locally hardened compatibility candidate and do not describe it as live-validated.
-3. Obtain separate authorization and a hard spending limit before any additional Nebius or Tavily call.
+2. Preserve the locally hardened compatibility candidate and do not describe its tool contract as live-validated.
+3. Obtain separate authorization and a hard spending limit before any additional Nebius or Tavily call; all three existing authorizations are consumed.
 4. Only after the contract passes, consider a separately capped frozen-suite evaluation.
 5. Replace every placeholder in the submission and demo with measured values.
 6. Decide whether Tavily earns demo time through a documented ablation; omit it if it does not.

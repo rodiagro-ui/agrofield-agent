@@ -86,7 +86,7 @@ python -m agrofield_agent.nebius_smoke \
   --max-cost-usd 0.01
 ```
 
-The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires fresh human authorization plus an exact live-confirmation phrase. The hardened profile passes local mocks but has not yet passed the live endpoint. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires fresh human authorization plus an exact live-confirmation phrase. A single live `/api/analyze` attempt reached an upstream HTTP/transport failure before the tool contract could be evaluated; no model inference or output was proven. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
 
 ## Tavily policy
 
@@ -123,9 +123,20 @@ successful extraction, a live `/api/analyze` result, or a benchmark. See
 
 After that run, the request contract was hardened locally in commit `911d786`: Nano
 reasoning is disabled explicitly, the function schema is closed and fully required,
-and failures preserve only safe response-shape diagnostics. This candidate has not
-been called live and is not a successful Nemotron result. See
-`docs/submission/nebius-tool-contract-hardening-2026-09-14.md`.
+and failures preserve only safe response-shape diagnostics.
+
+A third, separately authorized attempt then exercised the real `/api/analyze` route
+with one request, zero retries, the same US$0.01 promotional cap, and Tavily off. The
+local route returned HTTP 503 after an upstream HTTP/transport failure. The running
+adapter version did not preserve the upstream status, so model invocation cannot be
+proven and no tool contract or extraction was evaluated. The temporary key was
+revoked and the key list was verified empty. See
+`docs/submission/nebius-live-route-smoke-run-2026-09-14.md`.
+
+Commit `e8a926a` subsequently added safe upstream status/request-ID diagnostics and
+removed two optional JSON Schema keywords while retaining equivalent client-side
+validation. This change is locally tested only and is not a successful Nemotron
+result.
 
 ## License
 

@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 14 de septiembre de 2026. Repositorio local y privado, sin despliegue. Las dos autorizaciones Nebius de esta fecha ya fueron consumidas; este documento no autoriza a la IA a contactar personas, gastar o ejecutar nuevas llamadas externas.
+> Snapshot: 14 de septiembre de 2026. Repositorio local y privado, sin despliegue. Las tres autorizaciones Nebius de esta fecha ya fueron consumidas; este documento no autoriza a la IA a contactar personas, gastar o ejecutar nuevas llamadas externas.
 
 ## Estado verificable
 
@@ -20,9 +20,12 @@
 - Integración guarded en `/api/analyze`: `f4efc11`.
 - Primera llamada real desde el harness guarded: documentada en `docs/submission/nebius-api-smoke-run-2026-09-14.md`; conectividad aprobada y contrato de tool call fallido.
 - Endurecimiento local post-fallo del contrato Nemotron: `911d786`.
-- HEAD anterior a la actualización de este handoff: `911d786`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
+- Intento live por `/api/analyze`: documentado en `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`; la ruta local devolvió 503 tras un fallo upstream anterior al contrato y no demuestra inferencia.
+- Diagnóstico HTTP seguro post-intento: `e8a926a`.
+- Prueba explícita de unicidad client-side: `9cf6dd3`.
+- HEAD anterior a la actualización de este handoff: `9cf6dd3`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
 - Licencia: MIT.
-- Tests: 66/66 aprobados en la última verificación; 21 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
+- Tests: 68/68 aprobados en la última verificación; 23 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
 - `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
 
@@ -35,11 +38,13 @@ Estado externo exacto:
 - revisiones secundarias reales: 0/10;
 - revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
 - adjudicaciones reales: 0/30;
-- llamadas Nebius: 2 inferencias reales y controladas el 2026-09-14, bajo autorizaciones separadas: una en Token Factory Playground y una desde `python -m agrofield_agent.nebius_smoke`; ninguna fue un benchmark;
+- llamadas Nebius: 3 intentos reales y controlados el 2026-09-14, bajo autorizaciones separadas: Playground, `python -m agrofield_agent.nebius_smoke` y la ruta real `/api/analyze`; ninguno fue un benchmark;
 - modelo mostrado: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, proveedor NVIDIA, temperatura 0, modo JSON y máximo 256 tokens;
 - resultado Playground: conectividad/autenticación aprobadas, pero el modelo consumió el límite en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`);
 - resultado harness AgroField: preflight US$0,00122880 bajo cap US$0,01, un único POST y cero reintentos; la API respondió pero no devolvió exactamente un tool call, por lo que el contrato bloqueó la salida;
-- perfil corregido después de esa llamada: razonamiento desactivado por dos controles, esquema cerrado y obligatorio, revalidación de forma y diagnósticos saneados; aprobado solo con mocks, nunca ejecutado live;
+- resultado `/api/analyze`: un único POST local y cero reintentos; la ruta devolvió HTTP 503 por un fallo upstream HTTP/transporte. La versión ejecutada no conservó el estado upstream, por lo que no se puede demostrar invocación del modelo y el contrato no llegó a evaluarse;
+- perfil usado por la ruta: razonamiento desactivado por dos controles, esquema cerrado y obligatorio y revalidación de forma; el intento live falló antes de producir una salida observable;
+- perfil posterior `e8a926a`: conserva solo estado HTTP, request ID seguro y latencia, y retira dos keywords opcionales del esquema manteniendo validación client-side; aprobado solo con mocks y no ejecutado live;
 - telemetría visible del Playground: 447 ms, 3 s y 88 t/s; no sustituye una medición reproducible desde la aplicación;
 - facturación: trial visible de US$1, fallback configurado en `Stop usage`; la consulta inmediata mostró `No usage` y sin transacciones. El costo contabilizado real no estaba disponible, por lo que no debe afirmarse costo medido cero;
 - solicitud card-free: soporte respondió que el onboarding requiere método de pago y que la verificación de tarjeta es de US$0; no ofreció una vía card-free;
@@ -92,6 +97,7 @@ Antes de actuar, leer completos y en este orden:
 28. `docs/submission/nebius-api-compatibility-harness.md`
 29. `docs/submission/nebius-api-smoke-run-2026-09-14.md`
 30. `docs/submission/nebius-tool-contract-hardening-2026-09-14.md`
+31. `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`
 
 Después ejecutar:
 
@@ -117,7 +123,7 @@ Arquitectura ya construida:
 - FastAPI + interfaz web móvil;
 - SQLite con memoria por lote y auditoría;
 - extractor local determinista sin costo;
-- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField; la conectividad pasó pero el contrato de tool call falló; el perfil corregido y `/api/analyze` solo están verificados con mocks;
+- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField y una vez por `/api/analyze`; el primero falló el contrato de tool call y el segundo falló upstream antes de una salida observable;
 - `policy.py` como autoridad de seguridad;
 - aprobación humana obligatoria;
 - Tavily opcional, restringido y nunca ejecutado.
@@ -204,10 +210,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-Ya existe conectividad real tanto desde Playground como desde el harness guarded de AgroField, pero todavía no hay una extracción Nemotron aceptada ni un recorrido live por `/api/analyze`: el Playground terminó sin salida final y el harness no recibió exactamente un tool call. El perfil corregido resuelve localmente los riesgos de razonamiento, esquema y diagnóstico, pero aún no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live falló upstream antes de una salida observable. El perfil posterior mejora localmente compatibilidad y diagnóstico, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 21 pruebas con transporte simulado. La primera ejecución real desde el CLI del proyecto envió exactamente una solicitud con cero reintentos: conectividad aprobada, contrato exactamente-un-tool-call fallido. La clave fue revocada, el portapapeles limpiado y la lista de claves quedó vacía. El riesgo se corrigió localmente en `911d786`: razonamiento desactivado, esquema estricto cerrado, comprobación exacta después de recibir y diagnósticos sin contenido sensible. El siguiente incremento de máximo impacto es validar este candidato en una única llamada por `/api/analyze`, pero solo tras una nueva autorización separada con límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única, pero devolvió 503 tras un fallo upstream cuyo estado no quedó preservado; no prueba inferencia ni contrato. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales sin debilitar validaciones; `9cf6dd3` prueba explícitamente la unicidad client-side. El siguiente incremento externo de máximo impacto sería obtener una salida aceptada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
