@@ -121,9 +121,8 @@ def test_preflight_has_bounded_cost_and_forced_single_tool_call():
     assert estimate.estimated_cost_ceiling_usd == Decimal("0.0012288")
     assert payload["max_completion_tokens"] == 1024
     assert payload["reasoning_effort"] == "none"
-    assert payload["extra_body"] == {
-        "chat_template_kwargs": {"enable_thinking": False}
-    }
+    assert payload["chat_template_kwargs"] == {"enable_thinking": False}
+    assert "extra_body" not in payload
     assert payload["n"] == 1
     assert payload["stream"] is False
     assert payload["store"] is False
@@ -178,6 +177,8 @@ def test_one_request_parses_tool_call_and_never_exposes_key_or_note():
         assert request.url == f"{DEFAULT_NEBIUS_BASE_URL}/chat/completions"
         assert request.headers["authorization"] == "Bearer test-secret"
         assert payload["max_completion_tokens"] == 1024
+        assert payload["chat_template_kwargs"] == {"enable_thinking": False}
+        assert "extra_body" not in payload
         assert payload["tool_choice"]["function"]["name"] == "record_field_observation"
         return httpx.Response(
             200,

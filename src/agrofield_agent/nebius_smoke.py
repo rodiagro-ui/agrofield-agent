@@ -252,7 +252,10 @@ def build_payload(raw_text: str, plan: SmokePlan) -> dict[str, Any]:
         },
         "temperature": 0,
         "reasoning_effort": plan.reasoning_effort,
-        "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+        # `extra_body` is an OpenAI SDK option that merges vendor-specific
+        # parameters into the HTTP body. This module posts raw JSON with httpx,
+        # so the vLLM parameter itself must be top-level.
+        "chat_template_kwargs": {"enable_thinking": False},
         "max_completion_tokens": plan.max_completion_tokens,
         "n": 1,
         "stream": False,
