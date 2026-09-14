@@ -19,6 +19,7 @@ from agrofield_agent.nebius_smoke import (
     preflight,
     provider_for_application,
     require_live_confirmation,
+    strict_observation_schema,
 )
 from agrofield_agent.repository import Repository
 from agrofield_agent.services.extraction import LocalExtractionProvider
@@ -39,7 +40,7 @@ def plan(**changes):
         "input_price_per_million": Decimal("0.06"),
         "output_price_per_million": Decimal("0.24"),
         "max_cost_usd": Decimal("0.01"),
-        "reasoning_effort": "low",
+        "reasoning_effort": "none",
     }
     values.update(changes)
     return SmokePlan(**values)
@@ -67,6 +68,11 @@ def valid_body(arguments=None):
         "affected_area_pct": 35,
         "standing_water_pct": 35,
         "water_duration_hours": 14,
+        "lodging_pct": None,
+        "stem_damage_pct": None,
+        "stand_count_per_m": None,
+        "general_condition": "unknown",
+        "notes": [],
         "evidence_quotes": {
             "crop_stage": "Soja V3",
             "event_type": "agua parada",
@@ -76,7 +82,12 @@ def valid_body(arguments=None):
             "affected_area_pct": "afecta 35% del lote",
             "standing_water_pct": "agua parada afecta 35% del lote",
             "water_duration_hours": "desde hace 14 horas",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": "",
         },
+        "uncertainties": [],
     }
     return {
         "id": "chatcmpl-test",
@@ -108,12 +119,34 @@ def test_preflight_has_bounded_cost_and_forced_single_tool_call():
 
     assert estimate.estimated_cost_ceiling_usd == Decimal("0.0012288")
     assert payload["max_completion_tokens"] == 1024
-    assert payload["reasoning_effort"] == "low"
+    assert payload["reasoning_effort"] == "none"
+    assert payload["extra_body"] == {
+        "chat_template_kwargs": {"enable_thinking": False}
+    }
     assert payload["n"] == 1
     assert payload["stream"] is False
     assert payload["store"] is False
     assert payload["tool_choice"]["function"]["name"] == "record_field_observation"
     assert payload["tools"][0]["function"]["strict"] is True
+
+
+def test_tool_schema_is_closed_required_and_has_no_pydantic_defaults():
+    schema = strict_observation_schema()
+
+    assert schema["additionalProperties"] is False
+    assert set(schema["required"]) == set(schema["properties"])
+    evidence = schema["properties"]["evidence_quotes"]
+    assert evidence["additionalProperties"] is False
+    assert set(evidence["required"]) == set(evidence["properties"])
+    serialized = json.dumps(schema)
+    assert '"default"' not in serialized
+    assert '"$defs"' not in serialized
+    assert '"$ref"' not in serialized
+
+
+def test_guarded_nemotron_profile_blocks_reasoning_before_network():
+    with pytest.raises(PreflightBlocked, match="requires reasoning_effort=none"):
+        preflight(NOTE, plan(reasoning_effort="low"))
 
 
 def test_preflight_blocks_cost_above_cap_before_network():
@@ -188,7 +221,7 @@ def test_empty_assistant_message_fails_after_exactly_one_request():
             },
         )
 
-    with pytest.raises(ContractViolation, match="exactly one tool call"):
+    with pytest.raises(ContractViolation, match="exactly one tool call") as caught:
         asyncio.run(
             execute_one_request(
                 NOTE,
@@ -198,6 +231,53 @@ def test_empty_assistant_message_fails_after_exactly_one_request():
             )
         )
     assert calls == 1
+    assert caught.value.code == "output_budget_exhausted_before_tool_call"
+    assert caught.value.diagnostics["finish_reason"] == "length"
+    assert caught.value.diagnostics["completion_tokens_at_limit"] is True
+    assert caught.value.diagnostics["assistant_content_present"] is False
+
+
+def test_reasoning_only_failure_is_classified_without_retaining_reasoning_text():
+    private_reasoning = "texto de razonamiento que no debe persistirse"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "id": "chatcmpl-reasoning-only",
+                "choices": [
+                    {
+                        "finish_reason": "length",
+                        "message": {
+                            "role": "assistant",
+                            "content": "",
+                            "reasoning_content": private_reasoning,
+                            "tool_calls": [],
+                        },
+                    }
+                ],
+                "usage": {"prompt_tokens": 800, "completion_tokens": 1024},
+            },
+            headers={"x-request-id": "req-reasoning-only"},
+        )
+
+    with pytest.raises(ContractViolation) as caught:
+        asyncio.run(
+            execute_one_request(
+                NOTE,
+                plan(),
+                "test-secret",
+                transport=httpx.MockTransport(handler),
+            )
+        )
+
+    assert caught.value.code == "reasoning_budget_exhausted_before_tool_call"
+    assert caught.value.diagnostics["reasoning_content_present"] is True
+    assert caught.value.diagnostics["reasoning_content_chars"] == len(private_reasoning)
+    serialized = json.dumps(caught.value.diagnostics, ensure_ascii=False)
+    assert private_reasoning not in serialized
+    assert NOTE not in serialized
+    assert "test-secret" not in serialized
 
 
 def test_nonliteral_evidence_is_rejected_without_retry():
@@ -223,6 +303,50 @@ def test_nonliteral_evidence_is_rejected_without_retry():
             )
         )
     assert calls == 1
+
+
+def test_incomplete_tool_arguments_are_rejected_even_if_pydantic_has_defaults():
+    arguments = json.loads(
+        valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
+            "arguments"
+        ]
+    )
+    arguments.pop("notes")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=valid_body(arguments))
+
+    with pytest.raises(ContractViolation, match="closed observation schema"):
+        asyncio.run(
+            execute_one_request(
+                NOTE,
+                plan(),
+                "test-secret",
+                transport=httpx.MockTransport(handler),
+            )
+        )
+
+
+def test_nonliteral_notes_are_rejected_as_unsupported_claims():
+    arguments = json.loads(
+        valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
+            "arguments"
+        ]
+    )
+    arguments["notes"] = ["Aplicar fungicida mañana"]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=valid_body(arguments))
+
+    with pytest.raises(ContractViolation, match="notes must be non-empty literal"):
+        asyncio.run(
+            execute_one_request(
+                NOTE,
+                plan(),
+                "test-secret",
+                transport=httpx.MockTransport(handler),
+            )
+        )
 
 
 def test_missing_usage_is_not_counted_as_contract_pass():
