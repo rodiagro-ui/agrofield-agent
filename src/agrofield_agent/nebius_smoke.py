@@ -5,17 +5,20 @@ import asyncio
 import json
 import os
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation, ROUND_CEILING
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 from urllib.parse import urlparse
 
 import httpx
 from pydantic import ValidationError
 
-from agrofield_agent.config import DEFAULT_NEBIUS_BASE_URL
+from agrofield_agent.config import DEFAULT_NEBIUS_BASE_URL, Settings
 from agrofield_agent.models import ObservationDraft, ProviderTelemetry
+
+if TYPE_CHECKING:
+    from agrofield_agent.services.extraction import ExtractionProvider
 
 
 CONFIRMATION_PHRASE = "RUN_ONE_NEBIUS_REQUEST"
@@ -336,6 +339,100 @@ async def execute_one_request(
     result = parse_response(body, raw_text, plan, response, latency_ms)
     result["cost_preflight"] = estimate.public_dict()
     return result
+
+
+@dataclass
+class GuardedNebiusExtractionProvider:
+    """Application provider that can claim at most one live request per process."""
+
+    plan: SmokePlan
+    api_key: str
+    transport: httpx.AsyncBaseTransport | None = None
+    _request_claimed: bool = field(default=False, init=False, repr=False)
+    _claim_lock: asyncio.Lock = field(
+        default_factory=asyncio.Lock, init=False, repr=False
+    )
+
+    async def extract(self, raw_text: str) -> tuple[ObservationDraft, ProviderTelemetry]:
+        async with self._claim_lock:
+            if self._request_claimed:
+                raise RuntimeError(
+                    "Guarded Nebius mode permits one request per process; restart only with "
+                    "fresh human authorization"
+                )
+            self._request_claimed = True
+        try:
+            result = await execute_one_request(
+                raw_text,
+                self.plan,
+                self.api_key,
+                transport=self.transport,
+            )
+        except httpx.HTTPError as exc:
+            raise RuntimeError(
+                "Nebius request failed; no automatic retry was attempted"
+            ) from exc
+        return (
+            ObservationDraft.model_validate(result["observation"]),
+            ProviderTelemetry.model_validate(result["telemetry"]),
+        )
+
+
+def _required_decimal_env(name: str) -> Decimal:
+    raw_value = os.getenv(name, "")
+    try:
+        value = Decimal(raw_value)
+    except InvalidOperation as exc:
+        raise PreflightBlocked(f"{name} must be a positive decimal") from exc
+    if not value.is_finite() or value <= 0:
+        raise PreflightBlocked(f"{name} must be a positive decimal")
+    return value
+
+
+def _bounded_int_env(name: str, default: int) -> int:
+    raw_value = os.getenv(name)
+    if raw_value is None:
+        return default
+    try:
+        return int(raw_value)
+    except ValueError as exc:
+        raise PreflightBlocked(f"{name} must be an integer") from exc
+
+
+def provider_for_application(
+    settings: Settings,
+    *,
+    transport: httpx.AsyncBaseTransport | None = None,
+) -> "ExtractionProvider":
+    """Select the local provider or require every live guard for Nebius."""
+
+    from agrofield_agent.services.extraction import provider_from_settings
+
+    if settings.provider != "nebius":
+        return provider_from_settings(settings)
+
+    require_live_confirmation(os.getenv("AGROFIELD_NEBIUS_LIVE_CONFIRMATION"))
+    if not settings.nebius_api_key:
+        raise PreflightBlocked("NEBIUS_API_KEY is required for guarded Nebius mode")
+    reasoning_effort = os.getenv("NEBIUS_REASONING_EFFORT", "low").lower()
+    if reasoning_effort not in {"low", "medium", "high"}:
+        raise PreflightBlocked("NEBIUS_REASONING_EFFORT must be low, medium, or high")
+    plan = SmokePlan(
+        model=settings.nebius_model,
+        base_url=settings.nebius_base_url,
+        max_completion_tokens=_bounded_int_env("NEBIUS_MAX_COMPLETION_TOKENS", 1024),
+        prompt_token_budget=_bounded_int_env("NEBIUS_PROMPT_TOKEN_BUDGET", 16384),
+        input_price_per_million=_required_decimal_env("NEBIUS_INPUT_PRICE_PER_MILLION"),
+        output_price_per_million=_required_decimal_env("NEBIUS_OUTPUT_PRICE_PER_MILLION"),
+        max_cost_usd=_required_decimal_env("NEBIUS_MAX_COST_USD"),
+        reasoning_effort=reasoning_effort,
+    )
+    _validate_plan(plan)
+    return GuardedNebiusExtractionProvider(
+        plan=plan,
+        api_key=settings.nebius_api_key,
+        transport=transport,
+    )
 
 
 def _decimal_argument(value: str) -> Decimal:

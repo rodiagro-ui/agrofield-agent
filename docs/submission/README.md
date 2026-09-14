@@ -27,14 +27,14 @@ The project should compete on a narrow operational failure: a plausible field me
 | Item | Current status |
 |---|---|
 | Local vertical MVP | Functional |
-| Local tests | 55/55 passing on 2026-09-14, including 10 mocked Nebius-harness tests |
+| Local tests | 61/61 passing on 2026-09-14, including 16 mocked guarded-Nebius tests |
 | Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
 | Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
 | Real Nemotron runtime | One Playground request ran on 2026-09-14; connectivity passed, structured final output failed |
-| AgroField API integration / Nemotron evaluation | Not run |
+| AgroField API integration / Nemotron evaluation | Guarded route integration passes with mocks; no live app request or evaluation has run |
 | Card-free access request | Support confirmed that no card-free activation path is available |
 | Tavily runtime evidence | Not run |
 | Public repository, URL, video, submission | Not created |

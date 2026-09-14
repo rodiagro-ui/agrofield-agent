@@ -4,17 +4,24 @@ from decimal import Decimal
 
 import httpx
 import pytest
+from fastapi.testclient import TestClient
 
+import agrofield_agent.app as app_module
+from agrofield_agent.app import PROJECT_ROOT
 from agrofield_agent.config import DEFAULT_NEBIUS_BASE_URL, Settings
 from agrofield_agent.nebius_smoke import (
     CONFIRMATION_PHRASE,
     ContractViolation,
+    GuardedNebiusExtractionProvider,
     PreflightBlocked,
     SmokePlan,
     execute_one_request,
     preflight,
+    provider_for_application,
     require_live_confirmation,
 )
+from agrofield_agent.repository import Repository
+from agrofield_agent.services.extraction import LocalExtractionProvider
 
 
 NOTE = (
@@ -36,6 +43,18 @@ def plan(**changes):
     }
     values.update(changes)
     return SmokePlan(**values)
+
+
+def make_settings(tmp_path, *, provider="local", api_key=None):
+    return Settings(
+        provider=provider,
+        database_path=tmp_path / "test.sqlite3",
+        nebius_api_key=api_key,
+        nebius_base_url=DEFAULT_NEBIUS_BASE_URL,
+        nebius_model="nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        tavily_api_key=None,
+        tavily_include_domains=(),
+    )
 
 
 def valid_body(arguments=None):
@@ -247,3 +266,129 @@ def test_default_settings_use_shared_token_factory_endpoint(monkeypatch, tmp_pat
     monkeypatch.delenv("NEBIUS_BASE_URL", raising=False)
     settings = Settings.from_env()
     assert settings.nebius_base_url == DEFAULT_NEBIUS_BASE_URL
+
+
+def test_application_local_provider_needs_no_live_authorization(tmp_path):
+    provider = provider_for_application(make_settings(tmp_path))
+    assert isinstance(provider, LocalExtractionProvider)
+
+
+def test_application_nebius_provider_blocks_without_exact_confirmation(
+    monkeypatch, tmp_path
+):
+    monkeypatch.delenv("AGROFIELD_NEBIUS_LIVE_CONFIRMATION", raising=False)
+    with pytest.raises(PreflightBlocked, match="live request blocked"):
+        provider_for_application(
+            make_settings(tmp_path, provider="nebius", api_key="secret")
+        )
+
+
+def test_application_nebius_provider_requires_price_and_cap_env(monkeypatch, tmp_path):
+    monkeypatch.setenv("AGROFIELD_NEBIUS_LIVE_CONFIRMATION", CONFIRMATION_PHRASE)
+    monkeypatch.delenv("NEBIUS_INPUT_PRICE_PER_MILLION", raising=False)
+    with pytest.raises(PreflightBlocked, match="NEBIUS_INPUT_PRICE_PER_MILLION"):
+        provider_for_application(
+            make_settings(tmp_path, provider="nebius", api_key="secret")
+        )
+
+
+def test_guarded_application_provider_allows_only_one_request(monkeypatch, tmp_path):
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(200, json=valid_body())
+
+    monkeypatch.setenv("AGROFIELD_NEBIUS_LIVE_CONFIRMATION", CONFIRMATION_PHRASE)
+    monkeypatch.setenv("NEBIUS_INPUT_PRICE_PER_MILLION", "0.06")
+    monkeypatch.setenv("NEBIUS_OUTPUT_PRICE_PER_MILLION", "0.24")
+    monkeypatch.setenv("NEBIUS_MAX_COST_USD", "0.01")
+    provider = provider_for_application(
+        make_settings(tmp_path, provider="nebius", api_key="test-secret"),
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert isinstance(provider, GuardedNebiusExtractionProvider)
+    observation, telemetry = asyncio.run(provider.extract(NOTE))
+    assert observation.crop_stage == "V3"
+    assert telemetry.provider == "nebius"
+    with pytest.raises(RuntimeError, match="one request per process"):
+        asyncio.run(provider.extract(NOTE))
+    assert calls == 1
+
+
+def test_analyze_route_uses_guarded_nebius_contract_once(monkeypatch, tmp_path):
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(200, json=valid_body())
+
+    guarded = GuardedNebiusExtractionProvider(
+        plan=plan(),
+        api_key="test-secret",
+        transport=httpx.MockTransport(handler),
+    )
+    monkeypatch.setattr(app_module, "provider_for_application", lambda current: guarded)
+    current_settings = make_settings(
+        tmp_path, provider="nebius", api_key="test-secret"
+    )
+    repository = Repository(
+        current_settings.database_path,
+        PROJECT_ROOT / "fixtures" / "fields.json",
+    )
+    client = TestClient(app_module.create_app(current_settings, repository))
+
+    first = client.post(
+        "/api/analyze",
+        json={"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False},
+    )
+    second = client.post(
+        "/api/analyze",
+        json={"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False},
+    )
+
+    assert first.status_code == 200
+    assert first.json()["telemetry"]["provider"] == "nebius"
+    assert second.status_code == 503
+    assert "one request per process" in second.json()["detail"]
+    assert calls == 1
+
+
+def test_analyze_route_sanitizes_upstream_http_failure(monkeypatch, tmp_path):
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(503, json={"error": "provider unavailable"})
+
+    guarded = GuardedNebiusExtractionProvider(
+        plan=plan(),
+        api_key="test-secret",
+        transport=httpx.MockTransport(handler),
+    )
+    monkeypatch.setattr(app_module, "provider_for_application", lambda current: guarded)
+    current_settings = make_settings(
+        tmp_path, provider="nebius", api_key="test-secret"
+    )
+    repository = Repository(
+        current_settings.database_path,
+        PROJECT_ROOT / "fixtures" / "fields.json",
+    )
+    client = TestClient(app_module.create_app(current_settings, repository))
+
+    response = client.post(
+        "/api/analyze",
+        json={"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False},
+    )
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == (
+        "Nebius request failed; no automatic retry was attempted"
+    )
+    assert "test-secret" not in response.text
+    assert NOTE not in response.text
+    assert calls == 1

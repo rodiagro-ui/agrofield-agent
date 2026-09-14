@@ -4,7 +4,7 @@
 
 ## Propósito
 
-`python -m agrofield_agent.nebius_smoke` convierte la próxima autorización limitada en una sola solicitud controlada. El harness existe porque el smoke del Playground del 2026-09-14 probó conectividad, pero agotó 256 tokens en razonamiento y devolvió un mensaje final vacío.
+`python -m agrofield_agent.nebius_smoke` convierte la próxima autorización limitada en una sola solicitud controlada. El mismo contrato está conectado a `create_app()` cuando `AGROFIELD_PROVIDER=nebius`. El harness existe porque el smoke del Playground del 2026-09-14 probó conectividad, pero agotó 256 tokens en razonamiento y devolvió un mensaje final vacío.
 
 El contrato sigue la API oficial de Token Factory:
 
@@ -32,6 +32,7 @@ Antes de abrir red:
 Durante y después de la llamada:
 
 - realiza un único `POST`, sin retry automático;
+- la aplicación admite como máximo una solicitud Nebius por proceso, incluso si la primera falla;
 - fuerza exactamente un tool call `record_field_observation`;
 - rechaza respuesta vacía, texto libre, JSON inválido, herramienta equivocada o múltiples tool calls;
 - valida `ObservationDraft` y exige citas literales por cada hecho no nulo;
@@ -62,5 +63,7 @@ No ejecutar todavía. Solo después de una nueva autorización explícita que in
 3. repetir el preflight con los precios vigentes;
 4. añadir `--confirm-live RUN_ONE_NEBIUS_REQUEST` una sola vez;
 5. revocar la clave después de capturar el reporte saneado.
+
+Para probar el recorrido mediante la aplicación en vez del CLI, configurar además `AGROFIELD_PROVIDER=nebius` y `AGROFIELD_NEBIUS_LIVE_CONFIRMATION=RUN_ONE_NEBIUS_REQUEST`. El arranque se bloquea si faltan clave, precios o cap. Al terminar, cerrar el proceso, limpiar las variables sensibles y revocar la clave.
 
 La autorización anterior de US$0,10 cubrió el smoke del Playground y está agotada. El harness no amplía ese permiso.

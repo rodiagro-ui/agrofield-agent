@@ -8,9 +8,9 @@ from fastapi.staticfiles import StaticFiles
 
 from agrofield_agent.config import Settings
 from agrofield_agent.models import AnalysisRequest, ApprovalRequest
+from agrofield_agent.nebius_smoke import provider_for_application
 from agrofield_agent.orchestrator import Orchestrator
 from agrofield_agent.repository import Repository
-from agrofield_agent.services.extraction import provider_from_settings
 from agrofield_agent.services.tavily import TavilyAlertProvider
 
 
@@ -29,7 +29,7 @@ def create_app(
     repository.initialize()
     orchestrator = Orchestrator(
         repository,
-        provider_from_settings(settings),
+        provider_for_application(settings),
         TavilyAlertProvider(settings),
     )
 

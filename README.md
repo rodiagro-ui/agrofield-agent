@@ -60,13 +60,17 @@ The 30-case set is synthetic and currently has **zero human agronomy reviews and
 
 ## Nebius Token Factory mode
 
-Copy `.env.example` to `.env`, set `NEBIUS_API_KEY`, and launch with `AGROFIELD_PROVIDER=nebius`. The default model is `nvidia/nemotron-3-super-120b-a12b`; it can be changed with `NEBIUS_MODEL`.
+Copy `.env.example` to `.env` only after a live run has been explicitly authorized. Set `NEBIUS_API_KEY`, current input/output prices, a hard `NEBIUS_MAX_COST_USD`, and the exact one-use confirmation shown in the harness documentation; then launch with `AGROFIELD_PROVIDER=nebius`. The default model is `nvidia/nemotron-3-super-120b-a12b`; it can be changed with `NEBIUS_MODEL`.
 
-The adapter uses Nebius's OpenAI-compatible chat completions API and forces a tool call whose arguments match the observation schema. No key is ever sent to the browser.
+The application routes Nebius mode through the guarded OpenAI-compatible adapter. It forces a tool call whose arguments match the observation schema, validates literal evidence, requires usage telemetry, disables automatic retries, and permits at most one request per process. It refuses to start if confirmation, prices, cap, or key are absent. No key is ever sent to the browser.
 
 ```bash
 set AGROFIELD_PROVIDER=nebius
 set NEBIUS_API_KEY=...
+set NEBIUS_INPUT_PRICE_PER_MILLION=...
+set NEBIUS_OUTPUT_PRICE_PER_MILLION=...
+set NEBIUS_MAX_COST_USD=...
+set AGROFIELD_NEBIUS_LIVE_CONFIRMATION=RUN_ONE_NEBIUS_REQUEST
 python -m agrofield_agent
 ```
 

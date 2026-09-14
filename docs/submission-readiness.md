@@ -23,7 +23,7 @@
 - [x] Core application and benchmark contract covered by 45 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 - [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
 - [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
-- [x] Network-free Nebius compatibility harness with hard cost preflight, exact one-request confirmation, no retries, literal-evidence checks, telemetry requirements, and 10 mocked tests.
+- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized upstream failures, literal-evidence checks, telemetry requirements, and 16 mocked tests.
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
 
 ## Requires user authorization or external validation
@@ -34,7 +34,7 @@
 - [x] Freeze authenticated Nano public-endpoint prices observed on 2026-09-14: US$0.06/M input and US$0.24/M output.
 - [x] Run one authorized real Nemotron Playground smoke test; connectivity passed but the structured final output failed because the 256-token budget ended during reasoning.
 - [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
-- [ ] Run an AgroField API-adapter smoke test with a fresh privately stored key and a new explicit cap.
+- [ ] Run the guarded AgroField API-adapter smoke test with a fresh privately stored key and a new explicit cap; local route integration is tested, but no live app request has run.
 - [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
