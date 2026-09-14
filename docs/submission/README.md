@@ -20,13 +20,14 @@ The project should compete on a narrow operational failure: a plausible field me
 - `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
 - `card-free-access-request.md`: exact support request and the later support outcome.
 - `nebius-smoke-run-2026-09-14.md`: one real Nemotron Playground request, its adverse empty-output result, authenticated pricing, billing controls, and credential revocation.
+- `nebius-api-compatibility-harness.md`: local preflight and strict one-request contract for a future authorized app smoke.
 
 ## Truthful status
 
 | Item | Current status |
 |---|---|
 | Local vertical MVP | Functional |
-| Deterministic local tests | 45/45 passing on 2026-09-09 |
+| Local tests | 55/55 passing on 2026-09-14, including 10 mocked Nebius-harness tests |
 | Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
 | Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
@@ -44,7 +45,7 @@ All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cas
 
 1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
 2. Obtain separate authorization and a hard spending limit before any Nebius or Tavily call.
-3. Run a small controlled Nemotron smoke test, then the frozen evaluation if the smoke test is safe and affordable.
+3. With fresh authorization, run exactly one API-level smoke through the guarded harness; only then consider a separately capped evaluation.
 4. Replace every placeholder in the submission and demo with measured values.
 5. Decide whether Tavily earns demo time through a documented ablation; omit it if it does not.
 6. Request separate authorization before repository publication, deployment, video upload, or Devpost submission.

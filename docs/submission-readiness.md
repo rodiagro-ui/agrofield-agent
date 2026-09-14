@@ -20,9 +20,11 @@
 - [x] Preflight risks in blind-packet separation and evaluator readiness documented before human review.
 - [x] Five P0 preflight blockers closed: separate Phase A/B, strict forms, primary-only task precision, complete double-output review, and exhaustive validation gates.
 - [x] P1 closed: binding agreement keeps every complete pair, exposure sensitivity is separate, and global reviewer/adjudicator role overlap blocks readiness.
-- [x] Gate contract covered by 44 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
+- [x] Core application and benchmark contract covered by 45 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 - [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
 - [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
+- [x] Network-free Nebius compatibility harness with hard cost preflight, exact one-request confirmation, no retries, literal-evidence checks, telemetry requirements, and 10 mocked tests.
+- [x] Shared Token Factory base URL aligned with the current official API documentation.
 
 ## Requires user authorization or external validation
 

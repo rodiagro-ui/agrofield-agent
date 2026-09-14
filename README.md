@@ -72,6 +72,18 @@ python -m agrofield_agent
 
 No live Nebius or Tavily request is made by the default configuration.
 
+Before any future authorized API smoke, run the network-free cost and contract preflight. This command deliberately exits with code 2 because it omits the one-use live confirmation:
+
+```bash
+python -m agrofield_agent.nebius_smoke \
+  --note-file fixtures/nebius_smoke_note.txt \
+  --input-price-per-million 0.06 \
+  --output-price-per-million 0.24 \
+  --max-cost-usd 0.01
+```
+
+The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, and requires fresh human authorization plus an exact live-confirmation phrase. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+
 ## Tavily policy
 
 Tavily is not used to invent a diagnosis. It is called only when a recent external alert could change **where or when to inspect**, and results are limited to configured authoritative domains such as INTA, SMN, SENASA, and university extension sites. Retrieved sources are displayed with date and URL, and never bypass the evidence gate.

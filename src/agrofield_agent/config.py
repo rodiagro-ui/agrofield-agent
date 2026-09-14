@@ -7,6 +7,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
+DEFAULT_NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
+
+
 @dataclass(frozen=True)
 class Settings:
     provider: str
@@ -31,7 +34,7 @@ class Settings:
             nebius_api_key=os.getenv("NEBIUS_API_KEY") or None,
             nebius_base_url=os.getenv(
                 "NEBIUS_BASE_URL",
-                "https://api.tokenfactory.us-central1.nebius.com/v1",
+                DEFAULT_NEBIUS_BASE_URL,
             ).rstrip("/"),
             nebius_model=os.getenv(
                 "NEBIUS_MODEL", "nvidia/nemotron-3-super-120b-a12b"
