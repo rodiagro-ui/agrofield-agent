@@ -34,7 +34,8 @@
 - [x] Freeze authenticated Nano public-endpoint prices observed on 2026-09-14: US$0.06/M input and US$0.24/M output.
 - [x] Run one authorized real Nemotron Playground smoke test; connectivity passed but the structured final output failed because the 256-token budget ended during reasoning.
 - [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
-- [ ] Run the guarded AgroField API-adapter smoke test with a fresh privately stored key and a new explicit cap; local route integration is tested, but no live app request has run.
+- [x] Run one separately authorized guarded AgroField-harness API smoke with a US$0.01 promotional cap and zero retries; connectivity passed, the exactly-one-tool-call contract failed, and the key was revoked.
+- [ ] Pass the structured tool contract through the live `/api/analyze` path; the route integration is tested with mocks, but no live route request has run.
 - [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.

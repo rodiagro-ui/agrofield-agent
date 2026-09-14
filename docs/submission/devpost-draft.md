@@ -65,7 +65,7 @@ The browser never receives provider credentials. Invalid model output is rejecte
 | Hard candidate suite | `local/deterministic-es-v0.1` | 30 synthetic | 0.9188 | 0.9714 | 0.0050 | 1.0000 |
 | Nemotron | `TBD_AFTER_AUTHORIZED_RUN` | TBD | TBD | TBD | TBD | TBD |
 
-One real Playground request using `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` proved Token Factory connectivity but returned an empty final message after exhausting a 256-token reasoning budget. It is an adverse compatibility finding, not a benchmark row, and does not replace the `TBD` values above.
+Two separately authorized requests using `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` proved Token Factory connectivity: the Playground run returned an empty final message after exhausting a 256-token reasoning budget, and the guarded AgroField harness run did not return exactly one required tool call. These are adverse compatibility findings, not benchmark rows, and do not replace the `TBD` values above.
 
 The 30-case candidate remains `benchmark_validated: false` and contains no independent human labels. The local numbers must never be described as Nemotron performance.
 
@@ -116,7 +116,7 @@ Demo data and locations are synthetic. No treatment is autonomously recommended 
 
 ## Nebius and NVIDIA feedback
 
-Initial real-use evidence: Token Factory made the NVIDIA model and approximate per-token prices easy to inspect, and the Playground exposed latency and throughput. The first constrained-JSON Nano request also revealed an important failure mode: a small completion budget can be consumed by reasoning before a final answer is emitted. Tool-call compatibility, request telemetry, and benchmark quality remain `TBD_AFTER_AUTHORIZED_API_RUN`.
+Initial real-use evidence: Token Factory made the NVIDIA model and approximate per-token prices easy to inspect, and the Playground exposed latency and throughput. The first constrained-JSON Nano request revealed that a small completion budget can be consumed by reasoning before a final answer is emitted. A second request from AgroField's guarded harness reached the API but did not satisfy the forced-tool contract. Successful tool-call compatibility, accepted API telemetry, and benchmark quality remain `TBD_AFTER_AUTHORIZED_API_RUN`.
 
 ## Required links
 

@@ -113,6 +113,14 @@ This repository is local and has not been published, deployed, or submitted. The
 
 On 2026-09-14, one separately authorized Playground inference ran on Nebius Token Factory with `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`. Connectivity passed, but the 256-token reasoning budget ended before a final JSON message, so the structured-output smoke test failed. This is real runtime evidence, not an application integration or benchmark result. No personal charge appeared, the post-trial preference was set to stop usage, and the temporary API key was revoked. See `docs/submission/nebius-smoke-run-2026-09-14.md`.
 
+Later that day, a second, separately authorized request ran from AgroField's guarded
+repository harness with one request, zero retries, and a US$0.01 promotional-credit
+cap. The preflight ceiling was US$0.00122880. API connectivity passed, but the model
+did not return exactly one tool call, so the strict contract rejected the response.
+The temporary key was revoked and the API-key list was verified empty. This is not a
+successful extraction, a live `/api/analyze` result, or a benchmark. See
+`docs/submission/nebius-api-smoke-run-2026-09-14.md`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

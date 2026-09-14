@@ -67,3 +67,11 @@ Official support case `AISTUDIOSUP-1730` answered on 2026-09-08 that billing onb
 ## Next controlled increment
 
 Prepare and test locally, without a live key, a one-request compatibility harness that uses the same forced tool call as `NebiusExtractionProvider`, rejects empty or malformed output, records request ID/tokens/latency, prevents retries, and computes a conservative preflight cost ceiling. A future live API run requires a newly created key saved privately by the owner plus a fresh explicit inference authorization and cap.
+
+## Later update
+
+That harness was subsequently implemented and, under a separate authorization, sent
+exactly one real API request later on 2026-09-14. Connectivity passed but the model
+did not return exactly one required tool call, so the harness rejected the response
+without retrying. See `nebius-api-smoke-run-2026-09-14.md`. This update does not alter
+the historical facts or telemetry of the Playground run above.

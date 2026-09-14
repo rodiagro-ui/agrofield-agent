@@ -20,7 +20,8 @@ The project should compete on a narrow operational failure: a plausible field me
 - `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
 - `card-free-access-request.md`: exact support request and the later support outcome.
 - `nebius-smoke-run-2026-09-14.md`: one real Nemotron Playground request, its adverse empty-output result, authenticated pricing, billing controls, and credential revocation.
-- `nebius-api-compatibility-harness.md`: local preflight and strict one-request contract for a future authorized app smoke.
+- `nebius-api-compatibility-harness.md`: strict one-request contract shared by the CLI harness and guarded application provider.
+- `nebius-api-smoke-run-2026-09-14.md`: one real request from AgroField's guarded harness, its adverse missing-tool-call result, cost preflight, and credential cleanup.
 
 ## Truthful status
 
@@ -33,8 +34,8 @@ The project should compete on a narrow operational failure: a plausible field me
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
-| Real Nemotron runtime | One Playground request ran on 2026-09-14; connectivity passed, structured final output failed |
-| AgroField API integration / Nemotron evaluation | Guarded route integration passes with mocks; no live app request or evaluation has run |
+| Real Nemotron runtime | Two separately authorized requests ran on 2026-09-14: one in Playground and one from the AgroField harness; connectivity passed and both structured contracts failed |
+| AgroField API integration / Nemotron evaluation | Guarded repository harness reached the live API once; `/api/analyze` passes with mocks but has not run live, and no Nemotron evaluation has run |
 | Card-free access request | Support confirmed that no card-free activation path is available |
 | Tavily runtime evidence | Not run |
 | Public repository, URL, video, submission | Not created |
@@ -44,10 +45,11 @@ All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cas
 ## Path to a valid entry
 
 1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
-2. Obtain separate authorization and a hard spending limit before any Nebius or Tavily call.
-3. With fresh authorization, run exactly one API-level smoke through the guarded harness; only then consider a separately capped evaluation.
-4. Replace every placeholder in the submission and demo with measured values.
-5. Decide whether Tavily earns demo time through a documented ablation; omit it if it does not.
-6. Request separate authorization before repository publication, deployment, video upload, or Devpost submission.
+2. Investigate the missing-tool-call compatibility failure locally without another live request.
+3. Obtain separate authorization and a hard spending limit before any additional Nebius or Tavily call.
+4. Only after the contract passes, consider a separately capped frozen-suite evaluation.
+5. Replace every placeholder in the submission and demo with measured values.
+6. Decide whether Tavily earns demo time through a documented ablation; omit it if it does not.
+7. Request separate authorization before repository publication, deployment, video upload, or Devpost submission.
 
 The full 30-primary/10-double human benchmark remains the gold-standard research target. It is not weakened or relabeled by the lean submission strategy.

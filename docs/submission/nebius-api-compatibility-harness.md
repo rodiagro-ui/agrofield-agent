@@ -1,6 +1,6 @@
 # Nebius API compatibility harness
 
-> Estado: implementado y verificado solo con transporte simulado. No constituye una llamada real, una evaluación Nemotron ni una autorización para ejecutarla.
+> Estado: implementado, cubierto con transporte simulado y ejecutado una vez contra la API real el 2026-09-14. La conectividad pasó, pero Nemotron no devolvió exactamente un tool call y el contrato lo rechazó. No constituye una evaluación Nemotron ni autorización para repetir la llamada.
 
 ## Propósito
 
@@ -54,9 +54,17 @@ Este comando no incluye confirmación live; imprime el preflight y termina bloqu
   --max-cost-usd 0.01
 ```
 
+## Primera ejecución real
+
+Una autorización separada permitió exactamente una llamada, cero reintentos, hasta
+US$0,01 de crédito promocional y US$0 personal. El preflight calculó un techo de
+US$0,00122880. La API respondió, pero la salida no contenía exactamente un tool call;
+el harness la rechazó y no reintentó. La clave temporal fue revocada y la lista de
+claves quedó vacía. Véase `nebius-api-smoke-run-2026-09-14.md`.
+
 ## Gate para una futura llamada
 
-No ejecutar todavía. Solo después de una nueva autorización explícita que indique proveedor, cantidad máxima de llamadas, crédito permitido, cargo personal máximo y cap total:
+No volver a ejecutar. Solo después de una nueva autorización explícita que indique proveedor, cantidad máxima de llamadas, crédito permitido, cargo personal máximo y cap total:
 
 1. verificar precios y fallback de facturación en Token Factory;
 2. crear una clave temporal y cargarla privadamente en `NEBIUS_API_KEY`;
@@ -66,4 +74,4 @@ No ejecutar todavía. Solo después de una nueva autorización explícita que in
 
 Para probar el recorrido mediante la aplicación en vez del CLI, configurar además `AGROFIELD_PROVIDER=nebius` y `AGROFIELD_NEBIUS_LIVE_CONFIRMATION=RUN_ONE_NEBIUS_REQUEST`. El arranque se bloquea si faltan clave, precios o cap. Al terminar, cerrar el proceso, limpiar las variables sensibles y revocar la clave.
 
-La autorización anterior de US$0,10 cubrió el smoke del Playground y está agotada. El harness no amplía ese permiso.
+Las autorizaciones del Playground y de la primera ejecución del harness están agotadas. El harness no amplía esos permisos.

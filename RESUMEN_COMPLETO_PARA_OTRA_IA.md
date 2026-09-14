@@ -1,6 +1,6 @@
 # AgroField Agent — resumen completo para compartir con otra IA
 
-> Snapshot verificable: 14 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente, ensayo local seguro verificado y un smoke real de Nemotron documentado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
+> Snapshot verificable: 14 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente, ensayo local seguro verificado y dos smokes reales de Nemotron documentados. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
 
 ## Resumen ejecutivo
 
@@ -8,13 +8,13 @@ AgroField Agent compite en Nebius x NVIDIA Global AI Hackathon 2026, track suger
 
 El producto no es un chatbot genérico. Resuelve un flujo estrecho: después de lluvia, granizo o viento, transforma una nota de campo por texto/voz en evidencia estructurada por lote, detecta omisiones críticas, prioriza tareas y bloquea decisiones sensibles hasta aprobación humana auditada.
 
-Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor determinista local, adaptador Nebius/Nemotron preparado, memoria por lote, reglas de seguridad deterministas, aprobación humana y Tavily opcional restringido. Nada fue publicado. Hubo exactamente una inferencia real y controlada en Nebius Token Factory Playground; no fue una ejecución del adaptador de AgroField ni un benchmark.
+Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor determinista local, adaptador Nebius/Nemotron guarded, memoria por lote, reglas de seguridad deterministas, aprobación humana y Tavily opcional restringido. Nada fue publicado. Hubo dos inferencias reales y controladas bajo autorizaciones separadas: una en Token Factory Playground y otra desde el harness del repositorio. Ninguna produjo una extracción aceptada ni constituye benchmark.
 
 ## Estado exacto
 
 - Rama: `main` y working tree limpio antes de actualizar este resumen.
-- HEAD verificado antes de esta actualización: `f4efc11` — `Wire guarded Nebius provider into the app`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
-- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`; solicitud card-free enviada `2e14762`; modo grabación `7d88880`; smoke real Nebius `af29edf`; harness API seguro `395322f`; integración guarded en app `f4efc11`.
+- HEAD verificado antes de esta actualización: `721b7f3` — `Refresh handoff after guarded app integration`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
+- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`; solicitud card-free enviada `2e14762`; modo grabación `7d88880`; smoke real Nebius `af29edf`; harness API seguro `395322f`; integración guarded en app `f4efc11`; handoff previo `721b7f3`.
 - Licencia: MIT.
 - Tests: 61/61 aprobados; 16 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
 - Freeze vigente: 34/34 hashes válidos, versión `1.2.1-authorized-prehuman`.
@@ -34,8 +34,9 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Revisiones humanas: 0/30 primarias y 0/10 secundarias.
 - Revisiones humanas de salida: 0/30 primarias y 0/10 secundarias.
 - Adjudicaciones humanas: 0/30.
-- Nebius: 1 inferencia real en Playground; Tavily: 0 llamadas.
+- Nebius: 2 inferencias reales, una en Playground y una desde el harness guarded de AgroField; Tavily: 0 llamadas.
 - Smoke Nebius del 2026-09-14: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, temperatura 0, JSON, máximo 256 tokens. La autenticación y conectividad funcionaron, pero el límite se consumió en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`). No es un resultado del adaptador ni del benchmark.
+- Smoke API AgroField del 2026-09-14: mismo modelo, `reasoning_effort: low`, máximo 1024 tokens, herramienta forzada, un POST y cero reintentos. El preflight calculó US$0,00122880 bajo un cap promocional de US$0,01. La API respondió, pero no devolvió exactamente un tool call; el contrato rechazó la salida. No es un resultado de `/api/analyze` ni del benchmark.
 - Telemetría visible: 447 ms, 3 s y 88 t/s. El trial mostraba US$1 y el fallback se configuró en `Stop usage`. La consulta inmediata mostró `No usage` y ninguna transacción: cargo personal observado US$0, pero costo promocional real contabilizado no disponible.
 - La clave temporal fue revocada y la lista de API keys quedó vacía. El secreto no está en Git y no debe reproducirse.
 - Solicitud card-free: soporte respondió que el onboarding exige método de pago y que la verificación de tarjeta es de US$0; no ofreció un camino card-free.
@@ -58,7 +59,7 @@ Se agregó y verificó `python -m agrofield_agent --recording`. Cada arranque cr
 
 El recorrido se comprobó en navegador con una base fresca: nota incompleta bloqueada por `sample_points` y `water_duration_hours`; nota completa en `review_ready`; aprobación nominada; auditoría con `demo_seeded`, ambas evaluaciones y `task_approved`. Todas las rutas observadas respondieron 200. El guion quedó cronometrado a 2:42 y contiene una narración alternativa que identifica honestamente el proveedor local durante el ensayo.
 
-La solicitud de acceso promocional sin tarjeta recibió respuesta: Nebius exige método de pago para completar onboarding. Posteriormente, bajo autorización explícita limitada a US$0,10 de crédito promocional y US$0 personal, se ejecutó una sola inferencia en Playground. La prueba demostró acceso real, pero falló el contrato de salida JSON. La clave temporal fue revocada y no queda autorización para otra llamada.
+La solicitud de acceso promocional sin tarjeta recibió respuesta: Nebius exige método de pago para completar onboarding. Bajo dos autorizaciones explícitas separadas se ejecutaron una inferencia en Playground y una desde el harness guarded. Ambas demostraron acceso real y ambas fallaron su contrato estructurado. Las claves temporales fueron revocadas, la lista quedó vacía y no queda autorización para otra llamada.
 
 La base anterior conserva los siguientes controles:
 
@@ -96,7 +97,8 @@ Artefactos principales:
 - `benchmark/agronomy_blind_v1/freeze/manifest.json`: freeze candidato vigente.
 - `benchmark/agronomy_blind_v1/freeze/manifest-v1.0.0-candidate.json`, `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json`: freezes históricos preservados.
 - `benchmark/agronomy_blind_v1/reports/local-candidate-prehuman-v1.2-2026-09-02.json`: reporte local vigente.
-- `docs/submission/nebius-smoke-run-2026-09-14.md`: registro verificable del único smoke real, sus límites y la revocación de la clave.
+- `docs/submission/nebius-smoke-run-2026-09-14.md`: registro verificable del smoke real en Playground, sus límites y la revocación de la clave.
+- `docs/submission/nebius-api-smoke-run-2026-09-14.md`: registro de la única llamada real desde el harness de AgroField, su preflight, fallo de tool call y limpieza de credencial.
 
 ## Reglas que no pueden romperse
 
@@ -113,7 +115,7 @@ Artefactos principales:
 
 ## Debilidad crítica residual
 
-Existe una inferencia real con Nemotron vía Nebius, pero no una ejecución del adaptador de AgroField ni métricas reales pareadas. Además, la única respuesta final fue vacía, de modo que el contrato estructurado sigue sin validar. Tampoco existen URL, repositorio o video públicos. La evidencia agronómica independiente sigue en cero; el aporte `FDI-001` es del fundador y no altera `benchmark_validated: false`.
+Existen dos inferencias reales con Nemotron vía Nebius y una provino del harness guarded de AgroField, pero todavía no hay una extracción aceptada, una ejecución live de `/api/analyze` ni métricas reales pareadas. El contrato estructurado sigue sin validar. Tampoco existen URL, repositorio o video públicos. La evidencia agronómica independiente sigue en cero; el aporte `FDI-001` es del fundador y no altera `benchmark_validated: false`.
 
 ## Próximo incremento de máximo impacto
 
@@ -124,7 +126,7 @@ La revisión humana completa queda como mejora opcional de credibilidad, no como
 ## Texto listo para reanudar con otra IA
 
 ```text
-Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md; docs/submission/rules-recheck-2026-09-08.md; docs/submission/nebius-smoke-attempt-2026-09-08.md; docs/submission/card-free-access-request.md; docs/submission/nebius-smoke-run-2026-09-14.md; docs/submission/nebius-api-compatibility-harness.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
+Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md; docs/submission/rules-recheck-2026-09-08.md; docs/submission/nebius-smoke-attempt-2026-09-08.md; docs/submission/card-free-access-request.md; docs/submission/nebius-smoke-run-2026-09-14.md; docs/submission/nebius-api-compatibility-harness.md; docs/submission/nebius-api-smoke-run-2026-09-14.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 61/61 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El modo `--recording` fue verificado de extremo a extremo y siempre se identifica como local/sintético. Hubo exactamente un smoke real en Token Factory: conectividad aprobada, salida JSON vacía, sin resultado de app ni benchmark; la clave temporal quedó revocada. El nuevo harness está conectado a la app, tiene 16 pruebas simuladas y no hizo llamadas. No existe autorización para otra llamada Nemotron/Tavily. Antes de cualquier llamada nueva se exige autorización separada y límite concreto. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
+Los cinco P0 y el P1 ya están cerrados. Hay 61/61 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El modo `--recording` fue verificado de extremo a extremo y siempre se identifica como local/sintético. Hubo dos smokes reales en Token Factory: el Playground terminó sin mensaje final y el harness de AgroField respondió sin exactamente un tool call. El harness está conectado a la app, tiene 16 pruebas simuladas y realizó una única llamada real con cero reintentos; `/api/analyze` no se ejecutó live. Las claves temporales quedaron revocadas y la lista vacía. No existe autorización para otra llamada Nemotron/Tavily. Antes de cualquier llamada nueva se exige autorización separada y límite concreto. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
 ```
