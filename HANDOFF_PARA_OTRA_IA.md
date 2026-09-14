@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 9 de septiembre de 2026. Repositorio local, privado, sin despliegue ni costos. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas.
+> Snapshot: 14 de septiembre de 2026. Repositorio local y privado, sin despliegue. Existe una autorización limitada para correos enviados por el usuario; este documento no la amplía ni autoriza a la IA a contactar personas, gastar o ejecutar nuevas llamadas externas.
 
 ## Estado verificable
 
@@ -15,7 +15,8 @@
 - Paquete local de presentación honesta: `4245d0e`.
 - Solicitud card-free registrada como enviada: `2e14762`.
 - Modo seguro de ensayo para grabación: `7d88880`.
-- HEAD efectivo: ejecutar `git log -1 --oneline`, porque el commit de este handoff será posterior.
+- Smoke real de Nebius/Nemotron documentado: `af29edf`.
+- HEAD anterior a la actualización de este handoff: `af29edf`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
 - Licencia: MIT.
 - Tests: 45/45 aprobados en la última verificación.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
@@ -30,11 +31,15 @@ Estado externo exacto:
 - revisiones secundarias reales: 0/10;
 - revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
 - adjudicaciones reales: 0/30;
-- llamadas Nebius: 0;
-- intentos Nebius: 1, detenido antes de inferencia porque el onboarding exigió tarjeta;
-- solicitud card-free a soporte oficial: enviada el 2026-09-08 sin adjuntos ni datos de facturación; respuesta pendiente y sin autorización implícita para inferencia;
+- llamadas Nebius: 1 inferencia real y controlada en Token Factory Playground el 2026-09-14; no fue una ejecución del adaptador de AgroField ni un benchmark;
+- modelo mostrado: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, proveedor NVIDIA, temperatura 0, modo JSON y máximo 256 tokens;
+- resultado: conectividad/autenticación aprobadas, pero contrato de salida fallido; el modelo consumió el límite en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`);
+- telemetría visible del Playground: 447 ms, 3 s y 88 t/s; no sustituye una medición reproducible desde la aplicación;
+- facturación: trial visible de US$1, fallback configurado en `Stop usage`; la consulta inmediata mostró `No usage` y sin transacciones. El costo contabilizado real no estaba disponible, por lo que no debe afirmarse costo medido cero;
+- solicitud card-free: soporte respondió que el onboarding requiere método de pago y que la verificación de tarjeta es de US$0; no ofreció una vía card-free;
+- clave temporal usada para la prueba: revocada y lista de API keys verificada vacía; el secreto no está en Git y no debe reproducirse;
 - llamadas Tavily: 0;
-- costo: US$0;
+- cargo personal observado: US$0; costo promocional contabilizado de la inferencia: no disponible al consultar inmediatamente;
 - publicación, despliegue, video y submission: no realizados;
 - invitaciones enviadas: 5/5 de entrevista y 3/3 de revisión, según parte del usuario;
 - aceptaciones preliminares verbales de entrevista: 5/5, según parte del usuario;
@@ -77,6 +82,7 @@ Antes de actuar, leer completos y en este orden:
 24. `docs/submission/rules-recheck-2026-09-08.md`
 25. `docs/submission/nebius-smoke-attempt-2026-09-08.md`
 26. `docs/submission/card-free-access-request.md`
+27. `docs/submission/nebius-smoke-run-2026-09-14.md`
 
 Después ejecutar:
 
@@ -102,7 +108,7 @@ Arquitectura ya construida:
 - FastAPI + interfaz web móvil;
 - SQLite con memoria por lote y auditoría;
 - extractor local determinista sin costo;
-- adaptador Nebius/Nemotron preparado, nunca ejecutado;
+- adaptador Nebius/Nemotron preparado, aún no ejecutado desde AgroField; solo existe una inferencia separada en Playground;
 - `policy.py` como autoridad de seguridad;
 - aprobación humana obligatoria;
 - Tavily opcional, restringido y nunca ejecutado.
@@ -189,10 +195,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-La entrada todavía no cumple el requisito técnico central del concurso: no existe una ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia y costo. El smoke test autorizado el 2026-09-08 se detuvo antes de inferencia porque el onboarding exigió una tarjeta, fuera del límite US$0 personal. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+Ya existe prueba de conectividad real con Nemotron vía Nebius, pero todavía no prueba el requisito a nivel aplicación: AgroField no ha ejecutado su adaptador contra Token Factory y la única inferencia real falló el contrato JSON con salida final vacía. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El próximo gate externo es recibir una vía de acceso promocional sin tarjeta de Nebius o de los organizadores. La solicitud fue enviada el 2026-09-08 y sigue pendiente. No ingresar tarjeta, no crear una API key y no reintentar inferencia bajo la autorización agotada. Si aparece una ruta card-free, volver a solicitar un cap explícito antes de llamar al modelo. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El siguiente incremento permitido es local: construir y probar con mocks un harness de compatibilidad de una sola solicitud que fuerce salida estructurada, rechace respuestas vacías o inválidas, no haga reintentos silenciosos y registre request ID, tokens, latencia y estimación conservadora de costo. No crear otra clave ni ejecutar otra inferencia: la autorización de US$0,10 cubrió solo el smoke ya realizado y la clave quedó revocada. Cualquier nueva llamada exige autorización separada con límite concreto y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

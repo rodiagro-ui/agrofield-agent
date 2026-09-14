@@ -1,6 +1,6 @@
 # AgroField Agent — resumen completo para compartir con otra IA
 
-> Snapshot verificable: 9 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente y modo seguro de ensayo local verificado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
+> Snapshot verificable: 14 de septiembre de 2026. P0/P1 cerrados, freeze prehumano vigente, ensayo local seguro verificado y un smoke real de Nemotron documentado. Leer también `HANDOFF_PARA_OTRA_IA.md`, que contiene el contrato operativo y los comandos de reproducción.
 
 ## Resumen ejecutivo
 
@@ -8,13 +8,13 @@ AgroField Agent compite en Nebius x NVIDIA Global AI Hackathon 2026, track suger
 
 El producto no es un chatbot genérico. Resuelve un flujo estrecho: después de lluvia, granizo o viento, transforma una nota de campo por texto/voz en evidencia estructurada por lote, detecta omisiones críticas, prioriza tareas y bloquea decisiones sensibles hasta aprobación humana auditada.
 
-Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor determinista local, adaptador Nebius/Nemotron preparado, memoria por lote, reglas de seguridad deterministas, aprobación humana y Tavily opcional restringido. Nada fue publicado ni ejecutado en servicios pagos.
+Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor determinista local, adaptador Nebius/Nemotron preparado, memoria por lote, reglas de seguridad deterministas, aprobación humana y Tavily opcional restringido. Nada fue publicado. Hubo exactamente una inferencia real y controlada en Nebius Token Factory Playground; no fue una ejecución del adaptador de AgroField ni un benchmark.
 
 ## Estado exacto
 
 - Rama: `main` y working tree limpio antes de actualizar este resumen.
-- HEAD verificado antes de esta actualización: `7d88880` — `Add safe recording rehearsal mode`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
-- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`; solicitud card-free enviada `2e14762`; modo grabación `7d88880`.
+- HEAD verificado antes de esta actualización: `af29edf` — `Record real Nebius Nemotron smoke test`; ejecutar `git log -1 --oneline` para obtener el commit posterior que contiene este archivo.
+- Commits clave: MVP `32855c4`; Fase A/B `4390a4c`; gates `19ab37f`; P1 `1bd5a0e`; autorización `ff65472`; freeze prehumano `bee339e`; consentimiento obligatorio `5e4744c`; alcances anónimos `56286f7`; presentación local `4245d0e`; solicitud card-free enviada `2e14762`; modo grabación `7d88880`; smoke real Nebius `af29edf`.
 - Licencia: MIT.
 - Tests: 45/45 aprobados.
 - Freeze vigente: 34/34 hashes válidos, versión `1.2.1-authorized-prehuman`.
@@ -34,9 +34,11 @@ Ya existe un MVP funcional con FastAPI, SQLite, interfaz móvil, extractor deter
 - Revisiones humanas: 0/30 primarias y 0/10 secundarias.
 - Revisiones humanas de salida: 0/30 primarias y 0/10 secundarias.
 - Adjudicaciones humanas: 0/30.
-- Nebius/Tavily: 0 llamadas, US$0.
-- Intento Nebius del 2026-09-08: detenido antes de inferencia porque el onboarding exigió tarjeta; no se ingresó tarjeta, no se creó API key y no hubo cargo.
-- Solicitud card-free: enviada a soporte oficial el 2026-09-08 sin adjuntos, claves ni datos de facturación; respuesta pendiente. El envío no autoriza inferencia ni gasto.
+- Nebius: 1 inferencia real en Playground; Tavily: 0 llamadas.
+- Smoke Nebius del 2026-09-14: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, temperatura 0, JSON, máximo 256 tokens. La autenticación y conectividad funcionaron, pero el límite se consumió en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`). No es un resultado del adaptador ni del benchmark.
+- Telemetría visible: 447 ms, 3 s y 88 t/s. El trial mostraba US$1 y el fallback se configuró en `Stop usage`. La consulta inmediata mostró `No usage` y ninguna transacción: cargo personal observado US$0, pero costo promocional real contabilizado no disponible.
+- La clave temporal fue revocada y la lista de API keys quedó vacía. El secreto no está en Git y no debe reproducirse.
+- Solicitud card-free: soporte respondió que el onboarding exige método de pago y que la verificación de tarjeta es de US$0; no ofreció un camino card-free.
 - Repositorio/URL/video/submission públicos: no.
 
 ## Resultados reproducibles actuales
@@ -56,7 +58,7 @@ Se agregó y verificó `python -m agrofield_agent --recording`. Cada arranque cr
 
 El recorrido se comprobó en navegador con una base fresca: nota incompleta bloqueada por `sample_points` y `water_duration_hours`; nota completa en `review_ready`; aprobación nominada; auditoría con `demo_seeded`, ambas evaluaciones y `task_approved`. Todas las rutas observadas respondieron 200. El guion quedó cronometrado a 2:42 y contiene una narración alternativa que identifica honestamente el proveedor local durante el ensayo.
 
-La solicitud de acceso promocional sin tarjeta se registró como enviada el 2026-09-08; la respuesta continúa pendiente. No hubo llamada, costo, clave nueva ni ampliación de autorización.
+La solicitud de acceso promocional sin tarjeta recibió respuesta: Nebius exige método de pago para completar onboarding. Posteriormente, bajo autorización explícita limitada a US$0,10 de crédito promocional y US$0 personal, se ejecutó una sola inferencia en Playground. La prueba demostró acceso real, pero falló el contrato de salida JSON. La clave temporal fue revocada y no queda autorización para otra llamada.
 
 La base anterior conserva los siguientes controles:
 
@@ -94,6 +96,7 @@ Artefactos principales:
 - `benchmark/agronomy_blind_v1/freeze/manifest.json`: freeze candidato vigente.
 - `benchmark/agronomy_blind_v1/freeze/manifest-v1.0.0-candidate.json`, `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json`: freezes históricos preservados.
 - `benchmark/agronomy_blind_v1/reports/local-candidate-prehuman-v1.2-2026-09-02.json`: reporte local vigente.
+- `docs/submission/nebius-smoke-run-2026-09-14.md`: registro verificable del único smoke real, sus límites y la revocación de la clave.
 
 ## Reglas que no pueden romperse
 
@@ -110,18 +113,18 @@ Artefactos principales:
 
 ## Debilidad crítica residual
 
-La entrada aún no satisface el requisito técnico central: no hay ninguna ejecución real con Nemotron vía Nebius ni métricas reales de calidad, latencia o costo. El primer intento autorizado se detuvo correctamente antes de inferencia al exigir una tarjeta. Tampoco existen URL, repositorio o video públicos. La evidencia agronómica independiente sigue en cero; el aporte `FDI-001` es del fundador y no altera `benchmark_validated: false`.
+Existe una inferencia real con Nemotron vía Nebius, pero no una ejecución del adaptador de AgroField ni métricas reales pareadas. Además, la única respuesta final fue vacía, de modo que el contrato estructurado sigue sin validar. Tampoco existen URL, repositorio o video públicos. La evidencia agronómica independiente sigue en cero; el aporte `FDI-001` es del fundador y no altera `benchmark_validated: false`.
 
 ## Próximo incremento de máximo impacto
 
-El ensayo local de extremo a extremo ya está estable. El mayor bloqueo competitivo sigue siendo externo: esperar la respuesta de acceso promocional card-free y, solo si ofrece crédito visible sin tarjeta, pedir una nueva autorización con cap explícito antes de crear una clave o llamar Nemotron. Mientras tanto, el siguiente incremento local de mayor ROI es preparar los overlays de arquitectura y métricas con placeholders inequívocos, sin sustituir ningún `TBD` por resultados inventados. Tavily se conserva solo si una ablación autorizada demuestra valor trazable.
+El ensayo local de extremo a extremo ya está estable. El siguiente incremento local de mayor ROI es un harness de compatibilidad con mocks para una única solicitud estructurada: debe rechazar salida vacía o inválida, impedir reintentos silenciosos, capturar request ID/tokens/latencia y calcular un techo conservador de costo antes de ejecutar. Después requerirá nueva autorización y una clave nueva manejada privadamente para un smoke desde la aplicación. Tavily se conserva solo si una ablación autorizada demuestra valor trazable.
 
 La revisión humana completa queda como mejora opcional de credibilidad, no como requisito oficial ni como logro realizado. No bajar sus gates ni describir el aporte del fundador como independiente.
 
 ## Texto listo para reanudar con otra IA
 
 ```text
-Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md; docs/submission/rules-recheck-2026-09-08.md; docs/submission/nebius-smoke-attempt-2026-09-08.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
+Continúa AgroField Agent desde este repositorio. Lee completos y en este orden: README.md; docs/research/official-rules-freeze-2026-09-01.md; docs/architecture.md; docs/evaluation/evaluation-spec.md; docs/submission-readiness.md; docs/research/landscape-and-idea-matrix.md; docs/video-outline.md; HANDOFF_PARA_OTRA_IA.md; RESUMEN_COMPLETO_PARA_OTRA_IA.md; benchmark/agronomy_blind_v1/authorization/README.md; benchmark/agronomy_blind_v1/authorization/preflight-findings.md; benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md; benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md; benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md; benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md; benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md; benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md; docs/submission/README.md; docs/submission/strategy-decision-2026-09-08.md; docs/submission/founder-domain-input-2026-09-08.md; docs/submission/devpost-draft.md; docs/submission/demo-runbook.md; docs/submission/rules-recheck-2026-09-08.md; docs/submission/nebius-smoke-attempt-2026-09-08.md; docs/submission/card-free-access-request.md; docs/submission/nebius-smoke-run-2026-09-14.md. Luego ejecuta git status, git log -10, pytest -q, ambos baselines y el freeze vigente.
 
-Los cinco P0 y el P1 ya están cerrados. Hay 45/45 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El modo `--recording` fue verificado de extremo a extremo y siempre se identifica como local/sintético. La solicitud card-free fue enviada y la respuesta está pendiente. Antes de cualquier llamada Nemotron/Tavily se exige autorización separada; con la restricción económica actual, el cap propuesto es US$0 de desembolso personal y solo crédito promocional ya visible, sin cargos automáticos. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
+Los cinco P0 y el P1 ya están cerrados. Hay 45/45 tests y freeze histórico 34/34. El benchmark tiene 0 entrevistas/revisiones humanas y `benchmark_validated=false`. Existe un aporte saneado del fundador (`FDI-001`) que solo informa diseño y no cuenta como validación independiente. El modo `--recording` fue verificado de extremo a extremo y siempre se identifica como local/sintético. Hubo exactamente un smoke real en Token Factory: conectividad aprobada, salida JSON vacía, sin resultado de app ni benchmark; la clave temporal quedó revocada. No existe autorización para otra llamada Nemotron/Tavily. Antes de cualquier llamada nueva se exige autorización separada y límite concreto. No publicar, desplegar, subir video ni enviar la submission sin autorización expresa separada. Nunca atribuyas a humanos los fixtures ni modifiques `policy.py`.
 ```
