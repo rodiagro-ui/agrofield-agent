@@ -48,6 +48,12 @@ Optional Tavily -> allowlisted official alerts -> priority signal only
 
 ## Data contract
 
+The guarded Nebius wire contract selects request-local source IDs in
+`evidence_sources` and `note_sources`. Application code resolves those IDs to exact
+original note excerpts before constructing the shared observation schema. Invalid
+references fail closed. This guarantees literal provenance, not semantic support
+for every model-extracted value; see `submission/nebius-source-anchors-2026-09-14.md`.
+
 Every extracted field carries `value`, `unit` where relevant, an exact `evidence_quote`, and `confidence`. Values not explicitly supported by the note are `null`; the model is told not to infer them.
 
 Critical fields for the post-event slice:

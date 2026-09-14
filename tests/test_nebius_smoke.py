@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 import agrofield_agent.app as app_module
 from agrofield_agent.app import PROJECT_ROOT
 from agrofield_agent.config import DEFAULT_NEBIUS_BASE_URL, Settings
+from agrofield_agent.models import ObservationDraft
 from agrofield_agent.nebius_smoke import (
     CONFIRMATION_PHRASE,
     ContractViolation,
@@ -16,6 +17,7 @@ from agrofield_agent.nebius_smoke import (
     PreflightBlocked,
     SmokePlan,
     UpstreamRequestFailure,
+    _validate_evidence,
     execute_one_request,
     preflight,
     provider_for_application,
@@ -73,20 +75,20 @@ def valid_body(arguments=None):
         "stem_damage_pct": None,
         "stand_count_per_m": None,
         "general_condition": "unknown",
-        "notes": [],
-        "evidence_quotes": {
-            "crop_stage": "Soja V3",
-            "event_type": "agua parada",
-            "event_hours_ago": "hace 18 horas",
-            "access_safe": "acceso seguro",
-            "sample_points": "6 puntos",
-            "affected_area_pct": "afecta 35% del lote",
-            "standing_water_pct": "agua parada afecta 35% del lote",
-            "water_duration_hours": "desde hace 14 horas",
-            "lodging_pct": "",
-            "stem_damage_pct": "",
-            "stand_count_per_m": "",
-            "general_condition": "",
+        "note_sources": [],
+        "evidence_sources": {
+            "crop_stage": ["S01"],
+            "event_type": ["S04"],
+            "event_hours_ago": ["S02"],
+            "access_safe": ["S02"],
+            "sample_points": ["S03"],
+            "affected_area_pct": ["S04"],
+            "standing_water_pct": ["S04"],
+            "water_duration_hours": ["S04"],
+            "lodging_pct": [],
+            "stem_damage_pct": [],
+            "stand_count_per_m": [],
+            "general_condition": [],
         },
         "uncertainties": [],
     }
@@ -131,13 +133,15 @@ def test_preflight_has_bounded_cost_and_forced_single_tool_call():
 
 
 def test_tool_schema_is_closed_required_and_has_no_pydantic_defaults():
-    schema = strict_observation_schema()
+    schema = strict_observation_schema(NOTE)
 
     assert schema["additionalProperties"] is False
     assert set(schema["required"]) == set(schema["properties"])
-    evidence = schema["properties"]["evidence_quotes"]
+    evidence = schema["properties"]["evidence_sources"]
     assert evidence["additionalProperties"] is False
     assert set(evidence["required"]) == set(evidence["properties"])
+    for field_schema in evidence["properties"].values():
+        assert field_schema["items"]["enum"] == ["S01", "S02", "S03", "S04"]
     serialized = json.dumps(schema)
     assert '"default"' not in serialized
     assert '"$defs"' not in serialized
@@ -200,6 +204,11 @@ def test_one_request_parses_tool_call_and_never_exposes_key_or_note():
     assert result["telemetry"]["request_id"] == "req-test"
     assert result["telemetry"]["input_tokens"] == 900
     assert result["telemetry"]["output_tokens"] == 120
+    for quote in result["observation"]["evidence_quotes"].values():
+        assert not quote or quote in NOTE
+    assert result["observation"]["evidence_quotes"]["event_type"] == (
+        "El agua parada afecta 35% del lote desde hace 14 horas."
+    )
     serialized = json.dumps(result, ensure_ascii=False)
     assert "test-secret" not in serialized
     assert NOTE not in serialized
@@ -284,20 +293,20 @@ def test_reasoning_only_failure_is_classified_without_retaining_reasoning_text()
     assert "test-secret" not in serialized
 
 
-def test_nonliteral_evidence_is_rejected_without_retry():
+def test_generated_quote_instead_of_source_is_rejected_without_retry():
     calls = 0
     arguments = valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
         "arguments"
     ]
     parsed_arguments = json.loads(arguments)
-    parsed_arguments["evidence_quotes"]["sample_points"] = "12 puntos"
+    parsed_arguments["evidence_sources"]["sample_points"] = ["12 puntos"]
 
     def handler(request: httpx.Request) -> httpx.Response:
         nonlocal calls
         calls += 1
         return httpx.Response(200, json=valid_body(parsed_arguments))
 
-    with pytest.raises(ContractViolation, match="non-literal evidence"):
+    with pytest.raises(ContractViolation, match="invalid evidence source"):
         asyncio.run(
             execute_one_request(
                 NOTE,
@@ -315,7 +324,7 @@ def test_incomplete_tool_arguments_are_rejected_even_if_pydantic_has_defaults():
             "arguments"
         ]
     )
-    arguments.pop("notes")
+    arguments.pop("note_sources")
 
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json=valid_body(arguments))
@@ -337,12 +346,12 @@ def test_nonliteral_notes_are_rejected_as_unsupported_claims():
             "arguments"
         ]
     )
-    arguments["notes"] = ["Aplicar fungicida mañana"]
+    arguments["note_sources"] = ["Aplicar fungicida mañana"]
 
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json=valid_body(arguments))
 
-    with pytest.raises(ContractViolation, match="notes must be non-empty literal"):
+    with pytest.raises(ContractViolation, match="invalid note source"):
         asyncio.run(
             execute_one_request(
                 NOTE,
@@ -574,3 +583,82 @@ def test_analyze_route_sanitizes_upstream_http_failure(monkeypatch, tmp_path):
     assert "test-secret" not in response.text
     assert NOTE not in response.text
     assert calls == 1
+
+
+@pytest.mark.parametrize(
+    "field_name,sources,match",
+    [
+        ("event_type", ["inundación"], "invalid evidence source"),
+        ("event_type", ["S99"], "invalid evidence source"),
+        ("event_type", ["S04", "S04"], "invalid evidence source"),
+        ("event_type", [], "missing evidence quote"),
+        ("general_condition", ["S01"], "evidence quote supplied for an absent field"),
+    ],
+)
+def test_evidence_source_failures_keep_diagnostics_without_accepting_an_observation(
+    field_name, sources, match,
+):
+    arguments = json.loads(valid_body()["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"])
+    arguments["evidence_sources"][field_name] = sources
+    with pytest.raises(ContractViolation, match=match) as caught:
+        asyncio.run(execute_one_request(
+            NOTE, plan(), "test-secret",
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=valid_body(arguments))),
+        ))
+    assert caught.value.diagnostics["http_status"] == 200
+    assert caught.value.diagnostics["tool_call_count"] == 1
+    assert caught.value.diagnostics["prompt_tokens"] == 900
+    assert NOTE not in json.dumps(caught.value.diagnostics)
+    assert "inundación" not in str(caught.value)
+
+
+def test_literal_guard_still_rejects_translations_and_even_changed_case():
+    for quote in ("inundación", "Agua parada"):
+        draft = ObservationDraft(event_type="flooding", evidence_quotes={"event_type": quote})
+        with pytest.raises(ContractViolation, match="non-literal evidence"):
+            _validate_evidence(draft, NOTE)
+
+
+def test_route_contract_failure_preserves_safe_diagnostics_and_creates_no_tasks(monkeypatch, tmp_path):
+    calls = 0
+    arguments = json.loads(valid_body()["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"])
+    arguments["evidence_sources"]["event_type"] = ["invented private quotation"]
+
+    def handler(request):
+        nonlocal calls
+        calls += 1
+        return httpx.Response(200, json=valid_body(arguments), headers={"x-request-id": "req-contract"})
+
+    guarded = GuardedNebiusExtractionProvider(plan(), "test-secret", httpx.MockTransport(handler))
+    monkeypatch.setattr(app_module, "provider_for_application", lambda current: guarded)
+    current_settings = make_settings(tmp_path, provider="nebius", api_key="test-secret")
+    repository = Repository(current_settings.database_path, PROJECT_ROOT / "fixtures" / "fields.json")
+    client = TestClient(app_module.create_app(current_settings, repository))
+    before = client.get("/api/audit").json()
+    response = client.post("/api/analyze", json={"field_id": "lote-bajo", "raw_text": NOTE})
+    assert response.status_code == 503
+    assert response.json()["failure_code"] == "invalid_evidence_source"
+    assert response.json()["safe_diagnostics"]["request_id"] == "req-contract"
+    assert response.json()["safe_diagnostics"]["http_status"] == 200
+    assert response.json()["automatic_retry"] is False
+    assert all(value not in response.text for value in (NOTE, "test-secret", "invented private quotation"))
+    assert client.get("/api/audit").json() == before
+    second = client.post("/api/analyze", json={"field_id": "lote-bajo", "raw_text": NOTE})
+    assert second.status_code == 503
+    assert "one request per process" in second.json()["detail"]
+    assert calls == 1
+
+
+def test_malformed_response_metadata_is_sanitized_instead_of_crashing():
+    body = valid_body()
+    body["id"] = "private@example.invalid"
+    body["choices"][0]["finish_reason"] = {"private": "text"}
+    body["choices"][0]["message"] = []
+    with pytest.raises(ContractViolation) as caught:
+        asyncio.run(execute_one_request(
+            NOTE, plan(), "test-secret",
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=body)),
+        ))
+    assert caught.value.diagnostics["request_id"] is None
+    assert caught.value.diagnostics["finish_reason"] is None
+    assert "private" not in json.dumps(caught.value.diagnostics)

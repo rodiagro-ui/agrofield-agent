@@ -3,12 +3,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from agrofield_agent.config import Settings
 from agrofield_agent.models import AnalysisRequest, ApprovalRequest
-from agrofield_agent.nebius_smoke import provider_for_application
+from agrofield_agent.nebius_smoke import (
+    ContractViolation,
+    UpstreamRequestFailure,
+    provider_for_application,
+)
 from agrofield_agent.orchestrator import Orchestrator
 from agrofield_agent.repository import Repository
 from agrofield_agent.services.tavily import TavilyAlertProvider
@@ -72,6 +76,16 @@ def create_app(
             )
         except KeyError as exc:
             raise HTTPException(status_code=404, detail="Unknown field") from exc
+        except (ContractViolation, UpstreamRequestFailure) as exc:
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "detail": str(exc),
+                    "failure_code": exc.code,
+                    "safe_diagnostics": exc.diagnostics,
+                    "automatic_retry": False,
+                },
+            )
         except RuntimeError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
