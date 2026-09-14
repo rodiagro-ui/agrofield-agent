@@ -15,6 +15,7 @@ from agrofield_agent.nebius_smoke import (
     GuardedNebiusExtractionProvider,
     PreflightBlocked,
     SmokePlan,
+    UpstreamRequestFailure,
     execute_one_request,
     preflight,
     provider_for_application,
@@ -142,6 +143,8 @@ def test_tool_schema_is_closed_required_and_has_no_pydantic_defaults():
     assert '"default"' not in serialized
     assert '"$defs"' not in serialized
     assert '"$ref"' not in serialized
+    assert '"minLength"' not in serialized
+    assert '"uniqueItems"' not in serialized
 
 
 def test_guarded_nemotron_profile_blocks_reasoning_before_network():
@@ -367,6 +370,38 @@ def test_missing_usage_is_not_counted_as_contract_pass():
         )
 
 
+def test_upstream_http_failure_preserves_only_safe_metadata():
+    private_body = "provider detail that must not escape"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            422,
+            json={"error": private_body},
+            headers={"x-request-id": "req-safe-422"},
+        )
+
+    with pytest.raises(UpstreamRequestFailure) as caught:
+        asyncio.run(
+            execute_one_request(
+                NOTE,
+                plan(),
+                "test-secret",
+                transport=httpx.MockTransport(handler),
+            )
+        )
+
+    assert str(caught.value) == (
+        "Nebius returned HTTP 422; no automatic retry was attempted"
+    )
+    assert caught.value.code == "upstream_http_error"
+    assert caught.value.diagnostics["http_status"] == 422
+    assert caught.value.diagnostics["request_id"] == "req-safe-422"
+    serialized = json.dumps(caught.value.diagnostics)
+    assert private_body not in serialized
+    assert NOTE not in serialized
+    assert "test-secret" not in serialized
+
+
 def test_free_text_alongside_tool_call_is_rejected():
     body = valid_body()
     body["choices"][0]["message"]["content"] = "Listo"
@@ -511,7 +546,7 @@ def test_analyze_route_sanitizes_upstream_http_failure(monkeypatch, tmp_path):
 
     assert response.status_code == 503
     assert response.json()["detail"] == (
-        "Nebius request failed; no automatic retry was attempted"
+        "Nebius returned HTTP 503; no automatic retry was attempted"
     )
     assert "test-secret" not in response.text
     assert NOTE not in response.text

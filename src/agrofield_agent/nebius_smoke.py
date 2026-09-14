@@ -76,6 +76,21 @@ class ContractViolation(SmokeHarnessError):
         self.diagnostics = diagnostics or {}
 
 
+class UpstreamRequestFailure(SmokeHarnessError):
+    """A sanitized HTTP/transport failure from the inference endpoint."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str,
+        diagnostics: dict[str, Any],
+    ) -> None:
+        super().__init__(message)
+        self.code = code
+        self.diagnostics = diagnostics
+
+
 @dataclass(frozen=True)
 class SmokePlan:
     model: str
@@ -162,7 +177,6 @@ def strict_observation_schema() -> dict[str, Any]:
         "crop_stage": nullable(
             {
                 "type": "string",
-                "minLength": 1,
                 "description": "Etapa fenológica explícita, por ejemplo V3 o R1.",
             }
         ),
@@ -185,7 +199,7 @@ def strict_observation_schema() -> dict[str, Any]:
         },
         "notes": {
             "type": "array",
-            "items": {"type": "string", "minLength": 1},
+            "items": {"type": "string"},
             "description": (
                 "Solo fragmentos literales de la nota no representados en otros campos."
             ),
@@ -199,7 +213,6 @@ def strict_observation_schema() -> dict[str, Any]:
         "uncertainties": {
             "type": "array",
             "items": {"type": "string", "enum": list(EVIDENCE_FIELDS)},
-            "uniqueItems": True,
             "description": "Campos cuya evidencia es ambigua; no inferencias agronómicas.",
         },
     }
@@ -324,6 +337,8 @@ def _validate_evidence(draft: ObservationDraft, raw_text: str) -> None:
             "uncertainties contains unsupported fields: "
             + ", ".join(unsupported_uncertainties)
         )
+    if len(draft.uncertainties) != len(set(draft.uncertainties)):
+        raise ContractViolation("uncertainties contains duplicate fields")
     nonliteral_notes = [
         str(index)
         for index, item in enumerate(draft.notes)
@@ -435,6 +450,16 @@ def _response_diagnostics(
     }
 
 
+def _upstream_request_id(response: httpx.Response) -> str | None:
+    for header in ("x-request-id", "x-nebius-request-id", "request-id"):
+        value = response.headers.get(header)
+        if value and value.isascii() and all(
+            character.isalnum() or character in "-_.:" for character in value
+        ):
+            return value[:128]
+    return None
+
+
 def parse_response(
     body: dict[str, Any], raw_text: str, plan: SmokePlan, response: httpx.Response, latency_ms: float
 ) -> dict[str, Any]:
@@ -537,17 +562,40 @@ async def execute_one_request(
     if not api_key.strip():
         raise PreflightBlocked("NEBIUS_API_KEY is required for a live request")
     started = time.perf_counter()
-    async with httpx.AsyncClient(timeout=plan.timeout_seconds, transport=transport) as client:
-        response = await client.post(
-            f"{plan.base_url.rstrip('/')}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
+    try:
+        async with httpx.AsyncClient(timeout=plan.timeout_seconds, transport=transport) as client:
+            response = await client.post(
+                f"{plan.base_url.rstrip('/')}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+    except httpx.RequestError as exc:
+        latency_ms = (time.perf_counter() - started) * 1000
+        raise UpstreamRequestFailure(
+            "Nebius transport failed; no automatic retry was attempted",
+            code="upstream_transport_error",
+            diagnostics={
+                "http_status": None,
+                "request_id": None,
+                "latency_ms": round(latency_ms, 1),
             },
-            json=payload,
-        )
-        response.raise_for_status()
+        ) from exc
     latency_ms = (time.perf_counter() - started) * 1000
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        raise UpstreamRequestFailure(
+            f"Nebius returned HTTP {response.status_code}; no automatic retry was attempted",
+            code="upstream_http_error",
+            diagnostics={
+                "http_status": response.status_code,
+                "request_id": _upstream_request_id(response),
+                "latency_ms": round(latency_ms, 1),
+            },
+        ) from exc
     try:
         body = response.json()
     except ValueError as exc:
@@ -728,13 +776,13 @@ def main(argv: list[str] | None = None) -> int:
     except PreflightBlocked as exc:
         print(json.dumps({"status": "blocked", "error": str(exc)}, ensure_ascii=False))
         return 2
-    except (ContractViolation, httpx.HTTPError) as exc:
+    except (ContractViolation, UpstreamRequestFailure, httpx.HTTPError) as exc:
         failure: dict[str, Any] = {
             "status": "request_or_contract_failed",
             "automatic_retry": False,
             "error": str(exc),
         }
-        if isinstance(exc, ContractViolation):
+        if isinstance(exc, (ContractViolation, UpstreamRequestFailure)):
             failure["failure_code"] = exc.code
             failure["safe_diagnostics"] = exc.diagnostics
         print(
