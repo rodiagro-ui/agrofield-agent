@@ -1,5 +1,7 @@
 # Nebius smoke-test attempt — 2026-09-08
 
+> Historical pre-inference attempt. A separate authorized Playground inference later ran on 2026-09-14; see `nebius-smoke-run-2026-09-14.md`. This file remains unchanged as evidence of the earlier stop decision.
+
 ## Outcome
 
 `BLOCKED_BEFORE_INFERENCE_BY_MANDATORY_CARD_ONBOARDING`

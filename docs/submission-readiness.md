@@ -26,11 +26,14 @@
 
 ## Requires user authorization or external validation
 
-- [ ] Register/verify Builder Program and Token Factory accounts.
-- [ ] Obtain a card-free Token Factory access path or already-issued promotional project; the 2026-09-08 attempt stopped before inference because onboarding required a card.
-- [x] Send a card-free promotional-access request to official Token Factory support; sent 2026-09-08 with no attachments or sensitive billing data, response pending.
-- [ ] Confirm credits actually issued and freeze authenticated model prices.
-- [ ] Run the annotated suite on Nemotron Nano and Super under an approved cap.
+- [x] Authenticate and complete Token Factory trial onboarding.
+- [x] Receive the official card-free answer: support confirmed that a payment method is required and no card-free hackathon path is available.
+- [x] Set the post-trial preference to `Stop usage` before the first inference.
+- [x] Freeze authenticated Nano public-endpoint prices observed on 2026-09-14: US$0.06/M input and US$0.24/M output.
+- [x] Run one authorized real Nemotron Playground smoke test; connectivity passed but the structured final output failed because the 256-token budget ended during reasoning.
+- [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
+- [ ] Run an AgroField API-adapter smoke test with a fresh privately stored key and a new explicit cap.
+- [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
 - [x] User reports preliminary verbal acceptance from all five interview candidates and preliminary verbal coverage of `R01`, `R02`, and `A01`.

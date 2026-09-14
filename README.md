@@ -93,7 +93,9 @@ All demo locations are synthetic. Exact field coordinates are not stored; `0.0, 
 
 ## Submission status
 
-This repository is local and has not been published, deployed, or submitted. The judge-facing copy and recording plan are prepared under `docs/submission/`, but a public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization. A card-free promotional-access request was sent to official Token Factory support on 2026-09-08; a response is pending and no runtime access or spending authorization is implied.
+This repository is local and has not been published, deployed, or submitted. The judge-facing copy and recording plan are prepared under `docs/submission/`, but a public URL, public repository, YouTube video, and Devpost submission still require explicit user authorization.
+
+On 2026-09-14, one separately authorized Playground inference ran on Nebius Token Factory with `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`. Connectivity passed, but the 256-token reasoning budget ended before a final JSON message, so the structured-output smoke test failed. This is real runtime evidence, not an application integration or benchmark result. No personal charge appeared, the post-trial preference was set to stop usage, and the temporary API key was revoked. See `docs/submission/nebius-smoke-run-2026-09-14.md`.
 
 ## License
 

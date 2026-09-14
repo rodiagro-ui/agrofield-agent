@@ -18,7 +18,8 @@ The project should compete on a narrow operational failure: a plausible field me
 - `strategy-decision-2026-09-08.md`: decision to proceed without waiting for the full 30/10 human benchmark.
 - `rules-recheck-2026-09-08.md`: current official requirements and judging implications.
 - `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
-- `card-free-access-request.md`: exact support request sent on 2026-09-08 for promotional access without a card; reply pending.
+- `card-free-access-request.md`: exact support request and the later support outcome.
+- `nebius-smoke-run-2026-09-14.md`: one real Nemotron Playground request, its adverse empty-output result, authenticated pricing, billing controls, and credential revocation.
 
 ## Truthful status
 
@@ -31,8 +32,9 @@ The project should compete on a narrow operational failure: a plausible field me
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
-| Real Nemotron evaluation | Not run; card onboarding blocked the authorized smoke test before inference |
-| Card-free access request | Sent to official Token Factory support on 2026-09-08; response pending |
+| Real Nemotron runtime | One Playground request ran on 2026-09-14; connectivity passed, structured final output failed |
+| AgroField API integration / Nemotron evaluation | Not run |
+| Card-free access request | Support confirmed that no card-free activation path is available |
 | Tavily runtime evidence | Not run |
 | Public repository, URL, video, submission | Not created |
 

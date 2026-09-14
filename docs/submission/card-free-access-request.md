@@ -1,6 +1,12 @@
 # Card-free Token Factory access request
 
-> **Sent 2026-09-08** to the official Token Factory support address after explicit owner authorization. Gmail displayed `Mensaje enviado`. No attachment, API key, card information, billing identifier, or screenshot was included. A response is still pending and no access, credit, inference, or spending authorization should be inferred from the send event.
+> **Sent 2026-09-08** to the official Token Factory support address after explicit owner authorization. Gmail displayed `Mensaje enviado`. No attachment, API key, card information, billing identifier, or screenshot was included.
+
+## Support outcome
+
+Case `AISTUDIOSUP-1730` received a substantive response on 2026-09-08. Support stated that billing onboarding, including a payment method, is required before promotional credit can be applied; the card authorization used for verification is US$0; and there is no card-free activation path for hackathon participants.
+
+This answer did not itself authorize entering a card, changing billing settings, creating a key, or making an inference. Those actions were handled later under separate explicit approvals and are documented in `nebius-smoke-run-2026-09-14.md`.
 
 **Subject:** Card-free hackathon access request — Nebius x NVIDIA Global AI Hackathon
 
