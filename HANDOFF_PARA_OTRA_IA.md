@@ -16,9 +16,10 @@
 - Solicitud card-free registrada como enviada: `2e14762`.
 - Modo seguro de ensayo para grabación: `7d88880`.
 - Smoke real de Nebius/Nemotron documentado: `af29edf`.
-- HEAD anterior a la actualización de este handoff: `af29edf`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
+- Harness API Nebius con preflight y mocks: `395322f`.
+- HEAD anterior a la actualización de este handoff: `395322f`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
 - Licencia: MIT.
-- Tests: 45/45 aprobados en la última verificación.
+- Tests: 55/55 aprobados en la última verificación; 10 cubren el harness Nebius con transporte simulado.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
 - `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
 
@@ -83,6 +84,7 @@ Antes de actuar, leer completos y en este orden:
 25. `docs/submission/nebius-smoke-attempt-2026-09-08.md`
 26. `docs/submission/card-free-access-request.md`
 27. `docs/submission/nebius-smoke-run-2026-09-14.md`
+28. `docs/submission/nebius-api-compatibility-harness.md`
 
 Después ejecutar:
 
@@ -201,4 +203,4 @@ Ya existe prueba de conectividad real con Nemotron vía Nebius, pero todavía no
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El siguiente incremento permitido es local: construir y probar con mocks un harness de compatibilidad de una sola solicitud que fuerce salida estructurada, rechace respuestas vacías o inválidas, no haga reintentos silenciosos y registre request ID, tokens, latencia y estimación conservadora de costo. No crear otra clave ni ejecutar otra inferencia: la autorización de US$0,10 cubrió solo el smoke ya realizado y la clave quedó revocada. Cualquier nueva llamada exige autorización separada con límite concreto y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El harness de compatibilidad ya está construido y cubierto por 10 pruebas con transporte simulado. Fuerza una sola herramienta, usa `max_completion_tokens` y razonamiento bajo, rechaza salida vacía/no literal, exige telemetría y calcula un techo conservador antes de abrir red. El preflight real local terminó bloqueado con código 2 y `network_request_sent: false`, como debía. El próximo incremento de máximo impacto es una única llamada API desde este código, pero no está autorizada: la autorización de US$0,10 cubrió solo el smoke de Playground y la clave quedó revocada. Cualquier nueva llamada exige autorización separada con límite concreto, precios reconfirmados y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
