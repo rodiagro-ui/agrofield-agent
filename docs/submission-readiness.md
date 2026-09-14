@@ -26,6 +26,7 @@
 - [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 23 mocked tests.
 - [x] Post-failure compatibility profile hardened locally: reasoning explicitly disabled, strict defaults removed, exact argument shape revalidated, and budget-exhaustion diagnostics classified without retaining model text.
 - [x] Live-route failure hardened locally: future upstream failures preserve only status, safe request ID and latency; optional schema keywords were removed while equivalent client-side validation remains.
+- [x] Raw wire format corrected locally: `chat_template_kwargs` is top-level for direct `httpx`; the OpenAI SDK-only `extra_body` wrapper is no longer serialized.
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
 
 ## Requires user authorization or external validation

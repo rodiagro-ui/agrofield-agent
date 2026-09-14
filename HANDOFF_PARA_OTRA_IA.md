@@ -23,7 +23,8 @@
 - Intento live por `/api/analyze`: documentado en `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`; la ruta local devolvió 503 tras un fallo upstream anterior al contrato y no demuestra inferencia.
 - Diagnóstico HTTP seguro post-intento: `e8a926a`.
 - Prueba explícita de unicidad client-side: `9cf6dd3`.
-- HEAD anterior a la actualización de este handoff: `9cf6dd3`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
+- Corrección de wire format raw/SDK: `e0f0ad2`.
+- HEAD anterior a la actualización de este handoff: `e0f0ad2`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
 - Licencia: MIT.
 - Tests: 68/68 aprobados en la última verificación; 23 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
@@ -45,6 +46,7 @@ Estado externo exacto:
 - resultado `/api/analyze`: un único POST local y cero reintentos; la ruta devolvió HTTP 503 por un fallo upstream HTTP/transporte. La versión ejecutada no conservó el estado upstream, por lo que no se puede demostrar invocación del modelo y el contrato no llegó a evaluarse;
 - perfil usado por la ruta: razonamiento desactivado por dos controles, esquema cerrado y obligatorio y revalidación de forma; el intento live falló antes de producir una salida observable;
 - perfil posterior `e8a926a`: conserva solo estado HTTP, request ID seguro y latencia, y retira dos keywords opcionales del esquema manteniendo validación client-side; aprobado solo con mocks y no ejecutado live;
+- corrección posterior `e0f0ad2`: el request raw envía `chat_template_kwargs` en la raíz en lugar de serializar el helper SDK `extra_body`; 68/68 tests pasan, pero la hipótesis no fue validada live;
 - telemetría visible del Playground: 447 ms, 3 s y 88 t/s; no sustituye una medición reproducible desde la aplicación;
 - facturación: trial visible de US$1, fallback configurado en `Stop usage`; la consulta inmediata mostró `No usage` y sin transacciones. El costo contabilizado real no estaba disponible, por lo que no debe afirmarse costo medido cero;
 - solicitud card-free: soporte respondió que el onboarding requiere método de pago y que la verificación de tarjeta es de US$0; no ofreció una vía card-free;
@@ -98,6 +100,7 @@ Antes de actuar, leer completos y en este orden:
 29. `docs/submission/nebius-api-smoke-run-2026-09-14.md`
 30. `docs/submission/nebius-tool-contract-hardening-2026-09-14.md`
 31. `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`
+32. `docs/submission/nebius-wire-format-correction-2026-09-14.md`
 
 Después ejecutar:
 
@@ -210,10 +213,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live falló upstream antes de una salida observable. El perfil posterior mejora localmente compatibilidad y diagnóstico, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live falló upstream antes de una salida observable. La auditoría posterior identificó que el raw JSON serializaba incorrectamente el helper SDK `extra_body`; `e0f0ad2` lo corrigió, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única, pero devolvió 503 tras un fallo upstream cuyo estado no quedó preservado; no prueba inferencia ni contrato. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales sin debilitar validaciones; `9cf6dd3` prueba explícitamente la unicidad client-side. El siguiente incremento externo de máximo impacto sería obtener una salida aceptada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única, pero devolvió 503 tras un fallo upstream cuyo estado no quedó preservado; no prueba inferencia ni contrato. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales; `e0f0ad2` corrige la serialización raw para enviar `chat_template_kwargs` top-level. El preflight sin red pesa 4.889 bytes. El siguiente incremento externo de máximo impacto sería validar esta corrección con una única llamada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

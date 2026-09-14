@@ -96,6 +96,13 @@ medida de compatibilidad informada, no una explicación probada. La corrección
 posterior tiene pruebas locales con transporte simulado y no fue llamada contra
 Nebius.
 
+Una auditoría posterior encontró además que el request raw serializaba
+`extra_body.chat_template_kwargs`, aunque `extra_body` es el helper con el que el
+SDK fusiona parámetros adicionales en la raíz. `e0f0ad2` corrige el wire format a
+`chat_template_kwargs` top-level. Es una hipótesis causal fuerte, no una causa
+confirmada, y tampoco abrió red. Véase
+`nebius-wire-format-correction-2026-09-14.md`.
+
 ## Estado de autorización
 
 La autorización de esta solicitud fue consumida. No queda autorización para

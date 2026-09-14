@@ -136,7 +136,11 @@ revoked and the key list was verified empty. See
 Commit `e8a926a` subsequently added safe upstream status/request-ID diagnostics and
 removed two optional JSON Schema keywords while retaining equivalent client-side
 validation. This change is locally tested only and is not a successful Nemotron
-result.
+result. A further documentation audit found that the raw `httpx` request had
+serialized the OpenAI SDK helper name `extra_body` instead of merging
+`chat_template_kwargs` into the JSON root. Commit `e0f0ad2` corrects the wire format;
+68/68 local tests pass, but the correction has not been sent to Nebius. See
+`docs/submission/nebius-wire-format-correction-2026-09-14.md`.
 
 ## License
 

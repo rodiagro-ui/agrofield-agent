@@ -11,7 +11,7 @@ El contrato sigue la API oficial de Token Factory:
 - endpoint compartido `https://api.tokenfactory.nebius.com/v1/chat/completions`;
 - function calling con `tool_choice` explícito;
 - `max_completion_tokens`, que incluye salida visible y tokens de razonamiento;
-- `reasoning_effort: none` y `extra_body.chat_template_kwargs.enable_thinking: false` para desactivar razonamiento por las dos vías documentadas;
+- `reasoning_effort: none` y `chat_template_kwargs.enable_thinking: false` en la raíz del JSON raw para desactivar razonamiento por las dos vías documentadas;
 - temperatura 0, coherente con generación greedy sin razonamiento, `n: 1`, sin streaming y `store: false`;
 - esquema estricto cerrado: todos los campos son obligatorios, la ausencia se representa con `null`, `unknown`, listas vacías o citas vacías y no se admiten propiedades adicionales.
 
@@ -85,9 +85,16 @@ enviado `minLength` y `uniqueItems`, manteniendo la validación equivalente del 
 cliente. La causa live sigue sin conocerse y el nuevo perfil solo está verificado
 localmente.
 
+Una revisión posterior detectó que el JSON raw incluía el nombre del helper SDK
+`extra_body`. Los ejemplos oficiales muestran que el SDK fusiona ese diccionario en
+el cuerpo: el cURL equivalente recibe el parámetro vendor-specific en la raíz. El
+commit `e0f0ad2` mueve `chat_template_kwargs` a la raíz y prueba la forma exacta del
+request simulado. Es la hipótesis principal para el fallo upstream, no una causa
+confirmada. Véase `nebius-wire-format-correction-2026-09-14.md`.
+
 ## Preflight actual, sin red
 
-Con la nota sintética congelada y los precios históricos —solo para reproducir el cálculo— el perfil endurecido serializa 4.904 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
+Con la nota sintética congelada y los precios históricos —solo para reproducir el cálculo— el perfil endurecido serializa 4.889 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
 
 ## Gate para una futura llamada
 
