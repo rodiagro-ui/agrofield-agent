@@ -62,7 +62,7 @@ The 30-case set is synthetic and currently has **zero human agronomy reviews and
 
 Copy `.env.example` to `.env` only after a live run has been explicitly authorized. Set `NEBIUS_API_KEY`, current input/output prices, a hard `NEBIUS_MAX_COST_USD`, and the exact one-use confirmation shown in the harness documentation; then launch with `AGROFIELD_PROVIDER=nebius`. The default model is `nvidia/nemotron-3-super-120b-a12b`; it can be changed with `NEBIUS_MODEL`.
 
-The application routes Nebius mode through the guarded OpenAI-compatible adapter. It forces a tool call whose arguments match the observation schema, validates literal evidence, requires usage telemetry, disables automatic retries, and permits at most one request per process. It refuses to start if confirmation, prices, cap, or key are absent. No key is ever sent to the browser.
+The application routes Nebius mode through the guarded OpenAI-compatible adapter. It disables Nemotron reasoning for this extraction step, forces a tool call with a closed schema, revalidates its exact argument shape, validates literal evidence, requires usage telemetry, disables automatic retries, and permits at most one request per process. It refuses to start if confirmation, prices, cap, or key are absent. No key is ever sent to the browser.
 
 ```bash
 set AGROFIELD_PROVIDER=nebius
@@ -86,7 +86,7 @@ python -m agrofield_agent.nebius_smoke \
   --max-cost-usd 0.01
 ```
 
-The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, and requires fresh human authorization plus an exact live-confirmation phrase. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires fresh human authorization plus an exact live-confirmation phrase. The hardened profile passes local mocks but has not yet passed the live endpoint. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
 
 ## Tavily policy
 
@@ -120,6 +120,12 @@ did not return exactly one tool call, so the strict contract rejected the respon
 The temporary key was revoked and the API-key list was verified empty. This is not a
 successful extraction, a live `/api/analyze` result, or a benchmark. See
 `docs/submission/nebius-api-smoke-run-2026-09-14.md`.
+
+After that run, the request contract was hardened locally in commit `911d786`: Nano
+reasoning is disabled explicitly, the function schema is closed and fully required,
+and failures preserve only safe response-shape diagnostics. This candidate has not
+been called live and is not a successful Nemotron result. See
+`docs/submission/nebius-tool-contract-hardening-2026-09-14.md`.
 
 ## License
 

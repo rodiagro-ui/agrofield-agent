@@ -23,7 +23,8 @@
 - [x] Core application and benchmark contract covered by 45 local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 - [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
 - [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
-- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized upstream failures, literal-evidence checks, telemetry requirements, and 16 mocked tests.
+- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 21 mocked tests.
+- [x] Post-failure compatibility profile hardened locally: reasoning explicitly disabled, strict defaults removed, exact argument shape revalidated, and budget-exhaustion diagnostics classified without retaining model text.
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
 
 ## Requires user authorization or external validation

@@ -22,13 +22,14 @@ The project should compete on a narrow operational failure: a plausible field me
 - `nebius-smoke-run-2026-09-14.md`: one real Nemotron Playground request, its adverse empty-output result, authenticated pricing, billing controls, and credential revocation.
 - `nebius-api-compatibility-harness.md`: strict one-request contract shared by the CLI harness and guarded application provider.
 - `nebius-api-smoke-run-2026-09-14.md`: one real request from AgroField's guarded harness, its adverse missing-tool-call result, cost preflight, and credential cleanup.
+- `nebius-tool-contract-hardening-2026-09-14.md`: local-only reasoning/schema/diagnostic hardening after the adverse request; not live-validated.
 
 ## Truthful status
 
 | Item | Current status |
 |---|---|
 | Local vertical MVP | Functional |
-| Local tests | 61/61 passing on 2026-09-14, including 16 mocked guarded-Nebius tests |
+| Local tests | 66/66 passing on 2026-09-14, including 21 mocked guarded-Nebius tests |
 | Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
 | Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
@@ -45,7 +46,7 @@ All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cas
 ## Path to a valid entry
 
 1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
-2. Investigate the missing-tool-call compatibility failure locally without another live request.
+2. Preserve the locally hardened compatibility candidate and do not describe it as live-validated.
 3. Obtain separate authorization and a hard spending limit before any additional Nebius or Tavily call.
 4. Only after the contract passes, consider a separately capped frozen-suite evaluation.
 5. Replace every placeholder in the submission and demo with measured values.

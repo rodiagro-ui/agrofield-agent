@@ -19,9 +19,10 @@
 - Harness API Nebius con preflight y mocks: `395322f`.
 - Integración guarded en `/api/analyze`: `f4efc11`.
 - Primera llamada real desde el harness guarded: documentada en `docs/submission/nebius-api-smoke-run-2026-09-14.md`; conectividad aprobada y contrato de tool call fallido.
-- HEAD anterior a la actualización de este handoff: `721b7f3`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
+- Endurecimiento local post-fallo del contrato Nemotron: `911d786`.
+- HEAD anterior a la actualización de este handoff: `911d786`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
 - Licencia: MIT.
-- Tests: 61/61 aprobados en la última verificación; 16 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
+- Tests: 66/66 aprobados en la última verificación; 21 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
 - Freeze candidato prehumano vigente: 34/34 hashes válidos.
 - `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
 
@@ -38,6 +39,7 @@ Estado externo exacto:
 - modelo mostrado: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, proveedor NVIDIA, temperatura 0, modo JSON y máximo 256 tokens;
 - resultado Playground: conectividad/autenticación aprobadas, pero el modelo consumió el límite en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`);
 - resultado harness AgroField: preflight US$0,00122880 bajo cap US$0,01, un único POST y cero reintentos; la API respondió pero no devolvió exactamente un tool call, por lo que el contrato bloqueó la salida;
+- perfil corregido después de esa llamada: razonamiento desactivado por dos controles, esquema cerrado y obligatorio, revalidación de forma y diagnósticos saneados; aprobado solo con mocks, nunca ejecutado live;
 - telemetría visible del Playground: 447 ms, 3 s y 88 t/s; no sustituye una medición reproducible desde la aplicación;
 - facturación: trial visible de US$1, fallback configurado en `Stop usage`; la consulta inmediata mostró `No usage` y sin transacciones. El costo contabilizado real no estaba disponible, por lo que no debe afirmarse costo medido cero;
 - solicitud card-free: soporte respondió que el onboarding requiere método de pago y que la verificación de tarjeta es de US$0; no ofreció una vía card-free;
@@ -89,6 +91,7 @@ Antes de actuar, leer completos y en este orden:
 27. `docs/submission/nebius-smoke-run-2026-09-14.md`
 28. `docs/submission/nebius-api-compatibility-harness.md`
 29. `docs/submission/nebius-api-smoke-run-2026-09-14.md`
+30. `docs/submission/nebius-tool-contract-hardening-2026-09-14.md`
 
 Después ejecutar:
 
@@ -114,7 +117,7 @@ Arquitectura ya construida:
 - FastAPI + interfaz web móvil;
 - SQLite con memoria por lote y auditoría;
 - extractor local determinista sin costo;
-- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField; la conectividad pasó pero el contrato de tool call falló; `/api/analyze` solo está verificado con mocks;
+- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField; la conectividad pasó pero el contrato de tool call falló; el perfil corregido y `/api/analyze` solo están verificados con mocks;
 - `policy.py` como autoridad de seguridad;
 - aprobación humana obligatoria;
 - Tavily opcional, restringido y nunca ejecutado.
@@ -201,10 +204,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-Ya existe conectividad real tanto desde Playground como desde el harness guarded de AgroField, pero todavía no hay una extracción Nemotron aceptada ni un recorrido live por `/api/analyze`: el Playground terminó sin salida final y el harness no recibió exactamente un tool call. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+Ya existe conectividad real tanto desde Playground como desde el harness guarded de AgroField, pero todavía no hay una extracción Nemotron aceptada ni un recorrido live por `/api/analyze`: el Playground terminó sin salida final y el harness no recibió exactamente un tool call. El perfil corregido resuelve localmente los riesgos de razonamiento, esquema y diagnóstico, pero aún no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 16 pruebas con transporte simulado. La primera ejecución real desde el CLI del proyecto envió exactamente una solicitud con cero reintentos: conectividad aprobada, contrato exactamente-un-tool-call fallido. La clave fue revocada, el portapapeles limpiado y la lista de claves quedó vacía. El incremento inmediato de máximo impacto es investigar y corregir localmente la compatibilidad de function calling sin abrir red. Cualquier segunda llamada exige una nueva autorización separada con límite concreto, precios reconfirmados y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 21 pruebas con transporte simulado. La primera ejecución real desde el CLI del proyecto envió exactamente una solicitud con cero reintentos: conectividad aprobada, contrato exactamente-un-tool-call fallido. La clave fue revocada, el portapapeles limpiado y la lista de claves quedó vacía. El riesgo se corrigió localmente en `911d786`: razonamiento desactivado, esquema estricto cerrado, comprobación exacta después de recibir y diagnósticos sin contenido sensible. El siguiente incremento de máximo impacto es validar este candidato en una única llamada por `/api/analyze`, pero solo tras una nueva autorización separada con límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

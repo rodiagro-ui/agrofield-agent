@@ -114,3 +114,12 @@ The next highest-ROI work is network-free: inspect the official function-calling
 contract and harden the parser/request compatibility using captured synthetic mocks.
 Any second live request requires a new explicit authorization, a new cap, fresh price
 and billing checks, and a new temporary key.
+
+## Subsequent local hardening
+
+After this historical run, commit `911d786` created a new local-only compatibility
+candidate: reasoning is disabled through both the Token Factory effort control and
+Nemotron's documented chat-template flag; the tool schema is closed and fully
+required; argument shape is revalidated client-side; and failures retain only safe
+shape/usage diagnostics. It passes mocked tests but has not been called live. This
+does not change the result above and does not prove its suspected root cause.
