@@ -1,10 +1,10 @@
 # Nebius API compatibility harness
 
-> Estado: endurecido localmente después de dos ejecuciones reales adversas desde el repositorio. Hay 23 pruebas con transporte simulado. El contrato corregido todavía no fue validado con una salida real y este documento no autoriza otra llamada.
+> Estado: endurecido localmente después de dos pruebas reales adversas desde el repositorio y una ruta real con fallo de contrato de evidencia. Hay 23 pruebas con transporte simulado. El contrato corregido todavía no fue validado con una salida real y este documento no autoriza otra llamada.
 
 ## Propósito
 
-`python -m agrofield_agent.nebius_smoke` convierte una eventual autorización limitada en una sola solicitud controlada. El mismo contrato está conectado a `create_app()` cuando `AGROFIELD_PROVIDER=nebius`. El harness existe porque el smoke del Playground del 2026-09-14 agotó 256 tokens en razonamiento y porque la primera llamada desde el repositorio respondió sin el tool call obligatorio. Una ejecución posterior por `/api/analyze` falló upstream antes de que pudiera observarse una salida del modelo.
+`python -m agrofield_agent.nebius_smoke` convierte una eventual autorización limitada en una sola solicitud controlada. El mismo contrato está conectado a `create_app()` cuando `AGROFIELD_PROVIDER=nebius`. El harness existe porque el smoke del Playground del 2026-09-14 agotó 256 tokens en razonamiento y porque la primera llamada desde el repositorio respondió sin el tool call obligatorio. Una ejecución posterior por `/api/analyze` falló con contrato de evidencia no literal (`non-literal evidence quote for: event_type`) antes de producir salida útil del modelo.
 
 El contrato sigue la API oficial de Token Factory:
 
@@ -74,10 +74,9 @@ El perfil de esa ejecución histórica usó `reasoning_effort: low` y el esquema
 
 Una tercera autorización separada permitió una única solicitud por `/api/analyze`,
 cero reintentos, hasta US$0,01 promocional y US$0 personal. La ruta local respondió
-HTTP 503 con un fallo upstream saneado. La versión ejecutada no distinguía HTTP de
-transporte ni preservaba estado/request ID, de modo que no se puede probar que el
-modelo haya iniciado inferencia. No hubo tool call ni salida evaluable. La clave fue
-revocada y la lista quedó vacía. Véase
+HTTP 503 con un fallo de contrato de evidencia: `non-literal evidence quote for: event_type`.
+La salida fue rechazada antes de completar un `ObservationDraft`; no hubo salida evaluable.
+La clave fue revocada y la lista quedó vacía. Véase
 `nebius-live-route-smoke-run-2026-09-14.md`.
 
 Después de ese intento, `e8a926a` agregó metadatos HTTP seguros y eliminó del esquema
@@ -89,8 +88,8 @@ Una revisión posterior detectó que el JSON raw incluía el nombre del helper S
 `extra_body`. Los ejemplos oficiales muestran que el SDK fusiona ese diccionario en
 el cuerpo: el cURL equivalente recibe el parámetro vendor-specific en la raíz. El
 commit `e0f0ad2` mueve `chat_template_kwargs` a la raíz y prueba la forma exacta del
-request simulado. Es la hipótesis principal para el fallo upstream, no una causa
-confirmada. Véase `nebius-wire-format-correction-2026-09-14.md`.
+request simulado. Es una hipótesis principal para la compatibilidad del proveedor,
+aún sin validación viva adicional. Véase `nebius-wire-format-correction-2026-09-14.md`.
 
 ## Preflight actual, sin red
 

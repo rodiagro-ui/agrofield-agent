@@ -20,7 +20,7 @@
 - Integración guarded en `/api/analyze`: `f4efc11`.
 - Primera llamada real desde el harness guarded: documentada en `docs/submission/nebius-api-smoke-run-2026-09-14.md`; conectividad aprobada y contrato de tool call fallido.
 - Endurecimiento local post-fallo del contrato Nemotron: `911d786`.
-- Intento live por `/api/analyze`: documentado en `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`; la ruta local devolvió 503 tras un fallo upstream anterior al contrato y no demuestra inferencia.
+- Intento live por `/api/analyze`: documentado en `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`; la ruta local devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type` y no produjo un `ObservationDraft` válido, por lo que no demuestra inferencia ni evaluación.
 - Diagnóstico HTTP seguro post-intento: `e8a926a`.
 - Prueba explícita de unicidad client-side: `9cf6dd3`.
 - Corrección de wire format raw/SDK: `e0f0ad2`.
@@ -43,7 +43,7 @@ Estado externo exacto:
 - modelo mostrado: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, proveedor NVIDIA, temperatura 0, modo JSON y máximo 256 tokens;
 - resultado Playground: conectividad/autenticación aprobadas, pero el modelo consumió el límite en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`);
 - resultado harness AgroField: preflight US$0,00122880 bajo cap US$0,01, un único POST y cero reintentos; la API respondió pero no devolvió exactamente un tool call, por lo que el contrato bloqueó la salida;
-- resultado `/api/analyze`: un único POST local y cero reintentos; la ruta devolvió HTTP 503 por un fallo upstream HTTP/transporte. La versión ejecutada no conservó el estado upstream, por lo que no se puede demostrar invocación del modelo y el contrato no llegó a evaluarse;
+- resultado `/api/analyze`: un único POST local y cero reintentos; la ruta devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type`. Alcanzó la validación del contrato local, pero al no validar cita literal de `event_type` no produjo `ObservationDraft` válido.
 - perfil usado por la ruta: razonamiento desactivado por dos controles, esquema cerrado y obligatorio y revalidación de forma; el intento live falló antes de producir una salida observable;
 - perfil posterior `e8a926a`: conserva solo estado HTTP, request ID seguro y latencia, y retira dos keywords opcionales del esquema manteniendo validación client-side; aprobado solo con mocks y no ejecutado live;
 - corrección posterior `e0f0ad2`: el request raw envía `chat_template_kwargs` en la raíz en lugar de serializar el helper SDK `extra_body`; 68/68 tests pasan, pero la hipótesis no fue validada live;
@@ -126,7 +126,7 @@ Arquitectura ya construida:
 - FastAPI + interfaz web móvil;
 - SQLite con memoria por lote y auditoría;
 - extractor local determinista sin costo;
-- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField y una vez por `/api/analyze`; el primero falló el contrato de tool call y el segundo falló upstream antes de una salida observable;
+- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField y una vez por `/api/analyze`; el primero falló el contrato de tool call y el segundo devolvió HTTP 503 por cita literal de `event_type` inválida antes de completar salida evaluable;
 - `policy.py` como autoridad de seguridad;
 - aprobación humana obligatoria;
 - Tavily opcional, restringido y nunca ejecutado.
@@ -213,10 +213,10 @@ Pruebas relevantes:
 
 ## Única debilidad crítica residual
 
-Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live falló upstream antes de una salida observable. La auditoría posterior identificó que el raw JSON serializaba incorrectamente el helper SDK `extra_body`; `e0f0ad2` lo corrigió, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type` sin `ObservationDraft` válido. La auditoría posterior identificó que el raw JSON serializaba incorrectamente el helper SDK `extra_body`; `e0f0ad2` lo corrigió, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
 
 ## Siguiente acción permitida
 
 El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
 
-El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única, pero devolvió 503 tras un fallo upstream cuyo estado no quedó preservado; no prueba inferencia ni contrato. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales; `e0f0ad2` corrige la serialización raw para enviar `chat_template_kwargs` top-level. El preflight sin red pesa 4.889 bytes. El siguiente incremento externo de máximo impacto sería validar esta corrección con una única llamada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única y devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type`; no se pudo producir `ObservationDraft` y no hay inferencia evaluable. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales; `e0f0ad2` corrige la serialización raw para enviar `chat_template_kwargs` top-level. El preflight sin red pesa 4.889 bytes. El siguiente incremento externo de máximo impacto sería validar esta corrección con una única llamada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.

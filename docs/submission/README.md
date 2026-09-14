@@ -23,7 +23,7 @@ The project should compete on a narrow operational failure: a plausible field me
 - `nebius-api-compatibility-harness.md`: strict one-request contract shared by the CLI harness and guarded application provider.
 - `nebius-api-smoke-run-2026-09-14.md`: one real request from AgroField's guarded harness, its adverse missing-tool-call result, cost preflight, and credential cleanup.
 - `nebius-tool-contract-hardening-2026-09-14.md`: local-only reasoning/schema/diagnostic hardening after the adverse request; not live-validated.
-- `nebius-live-route-smoke-run-2026-09-14.md`: the separately authorized live `/api/analyze` attempt, its upstream failure, strict claim boundary, and cleanup evidence.
+- `nebius-live-route-smoke-run-2026-09-14.md`: the separately authorized live `/api/analyze` attempt, its evidence-contract failure (`non-literal event_type`), strict claim boundary, and cleanup evidence.
 - `nebius-wire-format-correction-2026-09-14.md`: local correction of the SDK-vs-raw `extra_body` serialization error and its evidence boundary.
 
 ## Truthful status
@@ -38,7 +38,7 @@ The project should compete on a narrow operational failure: a plausible field me
 | Independent human validation | Not completed |
 | `benchmark_validated` | `false` |
 | Real Nemotron runtime | Three separately authorized request attempts ran on 2026-09-14; only Playground proves model execution, none produced an accepted extraction, and no benchmark ran |
-| AgroField API integration / Nemotron evaluation | The guarded CLI reached the live API once; a separate `/api/analyze` attempt failed upstream before model output was observable; no Nemotron evaluation has run |
+| AgroField API integration / Nemotron evaluation | The guarded CLI reached the live API once; a separate `/api/analyze` attempt returned HTTP 503 with strict evidence contract failure (`non-literal event_type`) and no `ObservationDraft`; no Nemotron evaluation has run |
 | Current compatibility candidate | Raw `httpx` now sends top-level `chat_template_kwargs`; 68/68 local tests pass, but the correction is not live-validated |
 | Card-free access request | Support confirmed that no card-free activation path is available |
 | Tavily runtime evidence | Not run |

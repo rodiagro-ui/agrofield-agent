@@ -38,8 +38,8 @@
 - [x] Run one authorized real Nemotron Playground smoke test; connectivity passed but the structured final output failed because the 256-token budget ended during reasoning.
 - [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
 - [x] Run one separately authorized guarded AgroField-harness API smoke with a US$0.01 promotional cap and zero retries; connectivity passed, the exactly-one-tool-call contract failed, and the key was revoked.
-- [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request and returned local HTTP 503 after an upstream HTTP/transport failure, without proving model invocation or reaching the tool contract.
-- [ ] Pass the structured tool contract through the live `/api/analyze` path; the route is tested with mocks, but its only live attempt failed before a model output was observable.
+- [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request, returned HTTP 503, and failed strict contract validation with `non-literal evidence quote for: event_type`, so the tool contract did not pass.
+- [ ] Pass the structured tool contract through the live `/api/analyze` path with a valid `ObservationDraft`; the route is tested with mocks, but its only live attempt failed on evidence literality.
 - [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.

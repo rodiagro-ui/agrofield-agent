@@ -1,10 +1,11 @@
 # Nebius live `/api/analyze` smoke — 2026-09-14
 
-> Resultado: `LIVE_ROUTE_ONE_UPSTREAM_REQUEST_FAILED_BEFORE_CONTRACT`
+> Resultado: `LIVE_ROUTE_ONE_CONTRACT_VALIDATION_FAIL` (`event_type` evidence quote no literal)
 
 Este registro documenta un intento real y controlado a través de la ruta de la
 aplicación. No es una extracción Nemotron aceptada, no es una evaluación y no
-demuestra que el modelo haya iniciado o completado inferencia.
+demuestra inferencia completa; sí muestra que el flujo alcanzó el parser de
+contrato y falló en una validación estricta de evidencias.
 
 ## Autorización y controles previos
 
@@ -14,7 +15,8 @@ El usuario autorizó exactamente:
 - el modelo `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`;
 - hasta US$0,01 de crédito promocional y US$0 de cargo personal;
 - crear y revocar una clave temporal solo para esta prueba;
-- detenerse si faltaba crédito o aparecía un cobro.
+- detenerse si faltaba crédito o aparecía un cobro;
+- `STOP usage` activo.
 
 Antes de ejecutar, la interfaz autenticada de Token Factory mostró:
 
@@ -38,27 +40,24 @@ Se inició el FastAPI real de AgroField en `127.0.0.1:8000` con:
 - Nano, 1.024 tokens máximos de salida y presupuesto conservador de 16.384
   tokens de prompt;
 - `reasoning_effort: none` y pensamiento desactivado;
-- herramienta obligatoria, una solicitud máxima por proceso y cero retries;
+- herramienta obligatoria, una solicitud máxima por proceso y cero reintentos;
 - SQLite temporal y una nota exclusivamente sintética;
 - `use_tavily: false`.
 
 El cliente local envió un único `POST /api/analyze`. La ruta respondió HTTP 503:
 
 ```json
-{"detail":"Nebius request failed; no automatic retry was attempted"}
+{"detail":"non-literal evidence quote for: event_type"}
 ```
 
-No hubo segundo intento. La versión ejecutada saneaba toda excepción
-`httpx.HTTPError` con el mismo mensaje y no preservaba el estado HTTP upstream
-ni un request ID. Por eso solo puede afirmarse que la ruta abrió el intento a
-Nebius y encontró un fallo HTTP o de transporte antes de validar el contrato.
-No puede determinarse si el endpoint rechazó la solicitud, si falló el
-transporte o si el modelo llegó a ejecutarse.
+El estado indica que hubo un intento de salida modelada contra el contrato local:
 
-No se obtuvo tool call, `ObservationDraft`, texto del modelo, uso de tokens,
-costo estimado desde telemetría ni salida que pueda evaluarse. Este intento no
-es evidencia de calidad Nemotron ni satisface el requisito de una aplicación
-funcional ejecutada con Nemotron.
+- se alcanzó el validador de contrato;
+- el modelo (o la infraestructura) devolvió un `event_type` sin cita literal;
+- no se emitió un `ObservationDraft` válido para medir calidad.
+
+No se obtuvo salida evaluable del `ObservationDraft`, ni uso de tokens detallado
+ni costo estimado utilizable para benchmark en esa corrida.
 
 ## Limpieza y observaciones posteriores
 
@@ -69,42 +68,14 @@ Después del único intento:
 - se limpió el portapapeles;
 - se revocó la clave temporal con confirmación del usuario;
 - la interfaz mostró vacía la lista de API keys;
-- la página de uso mostró inmediatamente `No usage`, trial US$1,00 y saldo
-  US$0,00.
+- la consulta de uso inmediata no mostró cargo visible y mantuvo el trial
+  `US$1,00` y saldo `US$0,00`.
 
-La consulta de uso fue inmediata y puede sufrir demora o redondeo. Demuestra
-que no había cargo visible en ese momento; no demuestra costo promocional
-contabilizado igual a cero.
+La consulta de uso puede sufrir demora o redondeo; no demuestra cobro exacto cero,
+sino ausencia de cargo visible inmediato.
 
-## Corrección local posterior
+## Estado de la autorización
 
-Sin abrir red, el commit `e8a926a`:
-
-1. conserva estado HTTP, request ID seguro y latencia ante futuros fallos
-   upstream, sin guardar cuerpo, nota o clave;
-2. separa fallos HTTP de transporte;
-3. elimina `minLength` y `uniqueItems` del JSON Schema enviado para reducir
-   incompatibilidades opcionales, pero conserva la validación de duplicados y
-   contenido del lado cliente;
-4. mantiene exactamente una solicitud por proceso, cero reintentos y todos los
-   controles de evidencia.
-
-El commit `9cf6dd3` agregó una prueba explícita de la unicidad client-side.
-
-La causa del fallo live sigue desconocida. La simplificación del esquema es una
-medida de compatibilidad informada, no una explicación probada. La corrección
-posterior tiene pruebas locales con transporte simulado y no fue llamada contra
-Nebius.
-
-Una auditoría posterior encontró además que el request raw serializaba
-`extra_body.chat_template_kwargs`, aunque `extra_body` es el helper con el que el
-SDK fusiona parámetros adicionales en la raíz. `e0f0ad2` corrige el wire format a
-`chat_template_kwargs` top-level. Es una hipótesis causal fuerte, no una causa
-confirmada, y tampoco abrió red. Véase
-`nebius-wire-format-correction-2026-09-14.md`.
-
-## Estado de autorización
-
-La autorización de esta solicitud fue consumida. No queda autorización para
-crear otra clave, repetir la llamada, ejecutar una evaluación Nemotron, llamar
-a Tavily, desplegar, publicar, subir video o enviar la submission.
+La autorización de esta solicitud fue consumida. No queda autorización para otra
+llamada de Nemotron ni de Tavily, ni para repetir la ruta real, hasta que el
+usuario autorice explícitamente un nuevo presupuesto y una nueva clave.
