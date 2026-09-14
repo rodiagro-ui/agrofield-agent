@@ -352,6 +352,28 @@ def test_nonliteral_notes_are_rejected_as_unsupported_claims():
         )
 
 
+def test_duplicate_uncertainties_are_rejected_client_side():
+    arguments = json.loads(
+        valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
+            "arguments"
+        ]
+    )
+    arguments["uncertainties"] = ["crop_stage", "crop_stage"]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=valid_body(arguments))
+
+    with pytest.raises(ContractViolation, match="duplicate fields"):
+        asyncio.run(
+            execute_one_request(
+                NOTE,
+                plan(),
+                "test-secret",
+                transport=httpx.MockTransport(handler),
+            )
+        )
+
+
 def test_missing_usage_is_not_counted_as_contract_pass():
     body = valid_body()
     body.pop("usage")
