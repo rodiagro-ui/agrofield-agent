@@ -1,0 +1,69 @@
+{
+  "timestamp_utc": "2026-09-14T23:03:25.104817+00:00",
+  "route_transport": "FastAPI TestClient in-process; real Nebius HTTPS",
+  "http_status": 200,
+  "analyze_requests": 1,
+  "automatic_retries": 0,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "code_commit": "1c432ed",
+  "fixture": "fixtures/nebius_smoke_note.txt",
+  "normalized_note_sha256": "6bf557787620626e3f9542d116f83a803fcefa9d84f1970beebdb73f5dac0f7d",
+  "cost_preflight": {
+    "serialized_request_bytes": 5885,
+    "prompt_token_ceiling": 16384,
+    "completion_token_ceiling": 1024,
+    "estimated_cost_ceiling_usd": "0.00122880"
+  },
+  "status": "live_route_contract_pass",
+  "policy_status": "blocked",
+  "missing_critical": ["event_hours_ago", "standing_water_pct", "water_duration_hours", "stand_count_per_m"],
+  "observation": {
+    "crop_stage": "V3",
+    "event_type": "mixed",
+    "event_hours_ago": null,
+    "access_safe": true,
+    "sample_points": 6,
+    "affected_area_pct": 35.0,
+    "standing_water_pct": null,
+    "water_duration_hours": null,
+    "lodging_pct": null,
+    "stem_damage_pct": null,
+    "stand_count_per_m": null,
+    "general_condition": "mixed",
+    "notes": [
+      "Soja V3.",
+      "Tormenta hace 18 horas, acceso seguro.",
+      "Recorrí 6 puntos.",
+      "El agua parada afecta 35% del lote desde hace 14 horas."
+    ],
+    "evidence_quotes": {
+      "crop_stage": "Soja V3.",
+      "event_type": "Tormenta hace 18 horas, acceso seguro.",
+      "event_hours_ago": "",
+      "access_safe": "Tormenta hace 18 horas, acceso seguro.",
+      "sample_points": "Recorrí 6 puntos.",
+      "affected_area_pct": "El agua parada afecta 35% del lote desde hace 14 horas.",
+      "standing_water_pct": "",
+      "water_duration_hours": "",
+      "lodging_pct": "",
+      "stem_damage_pct": "",
+      "stand_count_per_m": "",
+      "general_condition": "Tormenta hace 18 horas, acceso seguro."
+    },
+    "uncertainties": ["event_hours_ago", "standing_water_pct", "water_duration_hours", "lodging_pct", "stem_damage_pct", "stand_count_per_m"],
+    "provider": "nebius"
+  },
+  "telemetry": {
+    "provider": "nebius",
+    "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "latency_ms": 7591.6710999990755,
+    "input_tokens": 2288,
+    "output_tokens": 311,
+    "request_id": "1241cbf8361bc9bf1946f1834ab18b1e"
+  },
+  "estimated_usage_cost_usd": "0.00021192",
+  "all_tasks_pending": true,
+  "task_count": 1,
+  "audit_event_types": ["analysis_created", "demo_seeded"],
+  "literal_quotes": true
+}

@@ -1,0 +1,19 @@
+{
+  "reference_status": "synthetic_developer_reference_not_human_validated",
+  "provenance": "Values already present in tests/test_nebius_smoke.py valid_body before the live call; isolated single-note diagnostic, not holdout.",
+  "normalized_note_sha256": "6bf557787620626e3f9542d116f83a803fcefa9d84f1970beebdb73f5dac0f7d",
+  "expected": {
+    "crop_stage": "V3",
+    "event_type": "flooding",
+    "event_hours_ago": 18,
+    "access_safe": true,
+    "sample_points": 6,
+    "affected_area_pct": 35,
+    "standing_water_pct": 35,
+    "water_duration_hours": 14,
+    "lodging_pct": null,
+    "stem_damage_pct": null,
+    "stand_count_per_m": null,
+    "general_condition": "unknown"
+  }
+}
