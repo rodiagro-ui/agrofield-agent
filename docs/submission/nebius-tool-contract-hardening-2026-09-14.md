@@ -58,8 +58,14 @@ Una respuesta solo cuenta como éxito si supera todos los controles en la primer
 ## Nota histórica posterior
 
 Este documento describía el estado inmediatamente posterior a `911d786`. Luego se
-ejecutó una única solicitud autorizada por la ruta real `/api/analyze`; falló upstream
-antes de una salida observable y no validó el contrato. El registro completo está en
+ejecutó una única solicitud autorizada por la ruta real `/api/analyze`; alcanzó la
+validación local y falló por una cita no literal de `event_type`, no por conexión
+upstream. No produjo una observación aceptada. El registro completo está en
 `nebius-live-route-smoke-run-2026-09-14.md`. El commit local posterior `e8a926a`
 agregó diagnóstico HTTP seguro y simplificó dos keywords opcionales del esquema sin
 debilitar la validación client-side. No se abrió red para esa corrección.
+
+La aceptación real llegó después de cambios adicionales de wire format y anclaje
+de fuentes, en otra solicitud autorizada. El resultado pasó formato pero falló
+calidad semántica; véase `nebius-source-anchor-run-2026-09-14.md`. Esta nota no
+convierte los tests simulados históricos en resultados live.

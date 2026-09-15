@@ -38,12 +38,11 @@ raíz como la ausencia de la clave `extra_body`.
 
 ## Alcance probatorio
 
-Este hallazgo explica de forma coherente la diferencia entre el primer request
-del harness —que no incluía `extra_body` y obtuvo HTTP/JSON 2xx— y el intento
-posterior por `/api/analyze`, que falló upstream antes de una salida observable.
-No confirma causalidad: la versión live no conservó el estado ni el cuerpo
-upstream. Por lo tanto, `extra_body` mal serializado es la hipótesis principal,
-no una causa demostrada.
+Corrección documental del 2026-09-15: el intento anterior por `/api/analyze`
+devolvió `non-literal evidence quote for: event_type` y alcanzó la validación
+local. No fue un fallo upstream de conexión. La corrección raw/SDK está
+justificada por la forma documentada del request, pero no demuestra la causa de
+esa cita inválida ni de los otros fallos. El cuerpo rechazado no se conservó.
 
 ## Verificación local
 
@@ -56,7 +55,8 @@ no una causa demostrada.
 - `policy.py`: sin cambios;
 - Tavily: no llamado.
 
-La única validación concluyente sería una nueva solicitud con estado/request ID
-saneados. Requiere una autorización independiente, cap explícito, verificación
-de precio/crédito/`Stop usage` y una clave temporal nueva. Este documento no la
-autoriza.
+Los números de arriba preservan el checkpoint histórico de este cambio local.
+Posteriormente, otra solicitud autorizada con este wire format **y** anclaje de
+fuentes produjo una observación aceptada, pero con errores semánticos. No permite
+aislar el efecto de cada cambio. Véase `nebius-source-anchor-run-2026-09-14.md`.
+Su autorización ya fue consumida; este documento no autoriza otra llamada.

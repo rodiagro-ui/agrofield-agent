@@ -23,11 +23,14 @@
 - [x] Core application and benchmark contract covered by local tests, including per-gate negatives and an explicitly non-evidentiary 30/10 positive fixture.
 - [x] Local submission workspace with English Devpost copy, a timed demo runbook, and explicit truth/authorization gates.
 - [x] One sanitized first-party workflow account recorded as non-independent founder domain input; it is not counted as external validation.
-- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 23 mocked tests.
+- [x] Network-free Nebius compatibility harness wired into the application with hard cost preflight, exact one-request confirmation, one-request-per-process enforcement, no retries, sanitized diagnostics, closed-schema and literal-evidence checks, telemetry requirements, and 31 mocked tests.
 - [x] Post-failure compatibility profile hardened locally: reasoning explicitly disabled, strict defaults removed, exact argument shape revalidated, and budget-exhaustion diagnostics classified without retaining model text.
 - [x] Live-route failure hardened locally: future upstream failures preserve only status, safe request ID and latency; optional schema keywords were removed while equivalent client-side validation remains.
 - [x] Raw wire format corrected locally: `chat_template_kwargs` is top-level for direct `httpx`; the OpenAI SDK-only `extra_body` wrapper is no longer serialized.
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
+- [x] Model-selected source IDs resolved to exact original-note excerpts, with nine source-span tests; this verifies provenance, not semantic support.
+- [x] Offline audit of the first accepted live response with three regression tests: all 12 fields examined, adverse errors preserved, no network calls.
+- [x] Current local suite: 88 tests passing; candidate freeze 34/34 unchanged.
 
 ## Requires user authorization or external validation
 
@@ -39,7 +42,9 @@
 - [x] Revoke the temporary API key after its value became visible to the automation session; the API-key list was verified empty.
 - [x] Run one separately authorized guarded AgroField-harness API smoke with a US$0.01 promotional cap and zero retries; connectivity passed, the exactly-one-tool-call contract failed, and the key was revoked.
 - [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request, returned HTTP 503, and failed strict contract validation with `non-literal evidence quote for: event_type`, so the tool contract did not pass.
-- [ ] Pass the structured tool contract through the live `/api/analyze` path with a valid `ObservationDraft`; the route is tested with mocks, but its only live attempt failed on evidence literality.
+- [x] First accepted `ObservationDraft` from real Nebius through `/api/analyze` in-process TestClient, HTTP 200; fourth separately authorized inference, one request and zero retries. See `submission/nebius-source-anchor-run-2026-09-14.md`.
+- [ ] Acceptable extraction quality: the first accepted response got only 4/8 expected observed fields right on one synthetic development note and added an unsupported condition; literal quotes alone did not ensure correctness.
+- [ ] Live browser-to-server Nemotron demo with both incomplete and complete notes; the accepted in-process smoke does not establish this.
 - [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.

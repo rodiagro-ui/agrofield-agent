@@ -1,222 +1,155 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 14 de septiembre de 2026. Repositorio local y privado, sin despliegue. Las tres autorizaciones Nebius de esta fecha ya fueron consumidas; este documento no autoriza a la IA a contactar personas, gastar o ejecutar nuevas llamadas externas.
+> Snapshot: 15 de septiembre de 2026. Repositorio local, sin publicación ni despliegue. Primera extracción Nemotron aceptada, pero calidad insuficiente. Las cuatro autorizaciones de solicitud única están consumidas.
 
-## Estado verificable
+## Ubicación y estado
 
-- Rama: `main`.
-- MVP base: `32855c4` — `Build AgroField Agent vertical MVP`.
-- Separación Fase A/B: `4390a4c`.
-- Gates humanos estrictos: `19ab37f`.
-- Freeze candidato P0-closed: `42f4e97`.
-- Sensibilidad de exposición e independencia global de roles: `1bd5a0e`.
-- Autorización humana limitada registrada: `ff65472`.
-- Freeze prehumano vigente: `bee339e`.
-- Paquete local de presentación honesta: `4245d0e`.
-- Solicitud card-free registrada como enviada: `2e14762`.
-- Modo seguro de ensayo para grabación: `7d88880`.
-- Smoke real de Nebius/Nemotron documentado: `af29edf`.
-- Harness API Nebius con preflight y mocks: `395322f`.
-- Integración guarded en `/api/analyze`: `f4efc11`.
-- Primera llamada real desde el harness guarded: documentada en `docs/submission/nebius-api-smoke-run-2026-09-14.md`; conectividad aprobada y contrato de tool call fallido.
-- Endurecimiento local post-fallo del contrato Nemotron: `911d786`.
-- Intento live por `/api/analyze`: documentado en `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`; la ruta local devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type` y no produjo un `ObservationDraft` válido, por lo que no demuestra inferencia ni evaluación.
-- Diagnóstico HTTP seguro post-intento: `e8a926a`.
-- Prueba explícita de unicidad client-side: `9cf6dd3`.
-- Corrección de wire format raw/SDK: `e0f0ad2`.
-- HEAD anterior a la actualización de este handoff: `e0f0ad2`; ejecutar `git log -1 --oneline` para obtener el commit efectivo.
-- Licencia: MIT.
-- Tests: 68/68 aprobados en la última verificación; 23 cubren el harness y la ruta de aplicación Nebius con transporte simulado.
-- Freeze candidato prehumano vigente: 34/34 hashes válidos.
-- `src/agrofield_agent/policy.py`: sin cambios respecto del MVP; hash canónico `e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b`.
+El repositorio Git es outputs/agrofield-agent dentro del workspace nebius-nvidia-agrofield-agent; ejecutar todos los comandos desde esa raíz, no desde el directorio padre.
 
-Estado externo exacto:
-
-- entrevistas reales: 0;
-- aportes saneados del fundador con experiencia de dominio: 1, no independiente y fuera del benchmark;
-- slots de invitación enviados: 8/8 autorizados;
-- revisiones primarias reales: 0/30;
-- revisiones secundarias reales: 0/10;
-- revisiones de salida reales: 0/30 primarias y 0/10 secundarias;
-- adjudicaciones reales: 0/30;
-- llamadas Nebius: 3 intentos reales y controlados el 2026-09-14, bajo autorizaciones separadas: Playground, `python -m agrofield_agent.nebius_smoke` y la ruta real `/api/analyze`; ninguno fue un benchmark;
-- modelo mostrado: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, proveedor NVIDIA, temperatura 0, modo JSON y máximo 256 tokens;
-- resultado Playground: conectividad/autenticación aprobadas, pero el modelo consumió el límite en razonamiento y la respuesta final quedó vacía (`Received empty assistant message`);
-- resultado harness AgroField: preflight US$0,00122880 bajo cap US$0,01, un único POST y cero reintentos; la API respondió pero no devolvió exactamente un tool call, por lo que el contrato bloqueó la salida;
-- resultado `/api/analyze`: un único POST local y cero reintentos; la ruta devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type`. Alcanzó la validación del contrato local, pero al no validar cita literal de `event_type` no produjo `ObservationDraft` válido.
-- perfil usado por la ruta: razonamiento desactivado por dos controles, esquema cerrado y obligatorio y revalidación de forma; el intento live falló antes de producir una salida observable;
-- perfil posterior `e8a926a`: conserva solo estado HTTP, request ID seguro y latencia, y retira dos keywords opcionales del esquema manteniendo validación client-side; aprobado solo con mocks y no ejecutado live;
-- corrección posterior `e0f0ad2`: el request raw envía `chat_template_kwargs` en la raíz en lugar de serializar el helper SDK `extra_body`; 68/68 tests pasan, pero la hipótesis no fue validada live;
-- telemetría visible del Playground: 447 ms, 3 s y 88 t/s; no sustituye una medición reproducible desde la aplicación;
-- facturación: trial visible de US$1, fallback configurado en `Stop usage`; la consulta inmediata mostró `No usage` y sin transacciones. El costo contabilizado real no estaba disponible, por lo que no debe afirmarse costo medido cero;
-- solicitud card-free: soporte respondió que el onboarding requiere método de pago y que la verificación de tarjeta es de US$0; no ofreció una vía card-free;
-- claves temporales usadas para las pruebas: revocadas y lista de API keys verificada vacía; los secretos no están en Git y no deben reproducirse;
-- llamadas Tavily: 0;
-- cargo personal observado: US$0; costo promocional contabilizado de la inferencia: no disponible al consultar inmediatamente;
-- publicación, despliegue, video y submission: no realizados;
-- invitaciones enviadas: 5/5 de entrevista y 3/3 de revisión, según parte del usuario;
-- aceptaciones preliminares verbales de entrevista: 5/5, según parte del usuario;
-- cobertura preliminar verbal de roles: `R01`, `R02` y `A01`, según parte del usuario;
-- consentimientos informados escritos obligatorios válidos: 5/5 entrevistas y `R01`, `R02`, `A01`, según atestación saneada del custodio;
-- alcances de evidencia: 5/5 conclusiones agregadas, 5/5 escenarios saneados y resultados anónimos/agregados aceptados por `R01`, `R02`, `A01`, según atestación saneada;
-- grabación consentida: 0/8;
-- configuración privada: atestiguada por el usuario sin PII adicional el 2026-09-02;
-- desviación saneada: `DV-OUTREACH-001`, documentada en `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`;
-- autorización humana vigente: `AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED`.
-- subestado operativo: `SUBMISSION_PREPARATION_WITH_UNVALIDATED_BENCHMARK`.
+- Rama: main. Ejecutar git status y git log para conocer HEAD y cambios efectivos.
+- MVP base: 32855c4; política determinista intacta desde ese commit.
+- Fase A/B: 4390a4c; gates humanos: 19ab37f; P1 de exposición/roles: 1bd5a0e.
+- Freeze prehumano vigente: bee339e; 34/34 hashes, versión 1.2.1-authorized-prehuman.
+- Preparación honesta de presentación: 4245d0e; ensayo local seguro: 7d88880.
+- Harness guarded: 395322f; integración en app: f4efc11.
+- Perfil sin razonamiento: 911d786; diagnósticos: e8a926a; wire raw/SDK: e0f0ad2.
+- Anclaje por IDs de fuente: 1c432ed. Este es el commit ejecutado en la primera extracción aceptada.
+- Auditoría offline y registro saneado de la llamada: 8d994c4. Consultar git log para el commit posterior de actualización documental.
+- Licencia MIT.
+- 88 pruebas aprobadas: incluyen 31 pruebas Nebius simuladas, nueve de fuentes y tres de auditoría guardada.
+- Cero cambios en policy.py, extractor local o benchmark congelado durante este incremento.
+- Hash SHA-256 canónico de policy.py: e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b.
 
 ## Lectura obligatoria
 
-Antes de actuar, leer completos y en este orden:
+Leer completos y en este orden:
 
-1. `README.md`
-2. `docs/research/official-rules-freeze-2026-09-01.md`
-3. `docs/architecture.md`
-4. `docs/evaluation/evaluation-spec.md`
-5. `docs/submission-readiness.md`
-6. `docs/research/landscape-and-idea-matrix.md`
-7. `docs/video-outline.md`
-8. `HANDOFF_PARA_OTRA_IA.md`
-9. `RESUMEN_COMPLETO_PARA_OTRA_IA.md`
-10. `benchmark/agronomy_blind_v1/authorization/README.md`
-11. `benchmark/agronomy_blind_v1/authorization/preflight-findings.md`
-12. `benchmark/agronomy_blind_v1/authorization/authorization-decision-2026-09-02.md`
-13. `benchmark/agronomy_blind_v1/authorization/email-outreach-pack.md`
-14. `benchmark/agronomy_blind_v1/authorization/outreach-status-2026-09-02.md`
-15. `benchmark/agronomy_blind_v1/authorization/post-acceptance-consent-pack.md`
-16. `benchmark/agronomy_blind_v1/authorization/written-consent-status-2026-09-03.md`
-17. `benchmark/agronomy_blind_v1/authorization/email-interview-fieldwork-pack.md`
-18. `benchmark/agronomy_blind_v1/authorization/evidence-scope-status-2026-09-03.md`
-19. `docs/submission/README.md`
-20. `docs/submission/strategy-decision-2026-09-08.md`
-21. `docs/submission/founder-domain-input-2026-09-08.md`
-22. `docs/submission/devpost-draft.md`
-23. `docs/submission/demo-runbook.md`
-24. `docs/submission/rules-recheck-2026-09-08.md`
-25. `docs/submission/nebius-smoke-attempt-2026-09-08.md`
-26. `docs/submission/card-free-access-request.md`
-27. `docs/submission/nebius-smoke-run-2026-09-14.md`
-28. `docs/submission/nebius-api-compatibility-harness.md`
-29. `docs/submission/nebius-api-smoke-run-2026-09-14.md`
-30. `docs/submission/nebius-tool-contract-hardening-2026-09-14.md`
-31. `docs/submission/nebius-live-route-smoke-run-2026-09-14.md`
-32. `docs/submission/nebius-wire-format-correction-2026-09-14.md`
+1. README.md
+2. docs/research/official-rules-freeze-2026-09-01.md
+3. docs/architecture.md
+4. docs/evaluation/evaluation-spec.md
+5. docs/submission-readiness.md
+6. docs/research/landscape-and-idea-matrix.md
+7. docs/video-outline.md
+8. HANDOFF_PARA_OTRA_IA.md
+9. RESUMEN_COMPLETO_PARA_OTRA_IA.md
+10. benchmark/agronomy_blind_v1/authorization/README.md
+11. benchmark/agronomy_blind_v1/authorization/preflight-findings.md
+12. docs/submission/README.md
+13. docs/submission/nebius-source-anchor-run-2026-09-14.md
 
-Después ejecutar:
+Para trabajo Nebius: leer además nebius-api-compatibility-harness.md, nebius-source-anchors-2026-09-14.md y los registros de intentos anteriores dentro de docs/submission/.
+Para evidencia humana: leer los estados, consentimiento, alcance y fieldwork pack enlazados desde authorization/README.md.
+Para entrega: leer strategy-decision-2026-09-08.md, founder-domain-input-2026-09-08.md, rules-recheck-2026-09-08.md, devpost-draft.md y demo-runbook.md dentro de docs/submission/.
 
-```powershell
-git status --short --branch
-git log --oneline -10
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m agrofield_agent.evaluate fixtures/eval_cases.jsonl
-.\.venv\Scripts\python.exe -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
-.\.venv\Scripts\python.exe -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json --root .
-```
+Después reproducir sin servicios externos:
 
-## Producto
+    git status --short --branch
+    git log --oneline -12
+    .\.venv\Scripts\python.exe -m pytest -q
+    .\.venv\Scripts\python.exe -m agrofield_agent.evaluate fixtures/eval_cases.jsonl
+    .\.venv\Scripts\python.exe -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
+    .\.venv\Scripts\python.exe -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json --root .
+    .\.venv\Scripts\python.exe -m agrofield_agent.smoke_audit
 
-AgroField Agent es un agente operativo para recorridas de soja posteriores a lluvia intensa, granizo o viento. Convierte una nota por texto o voz del navegador en hechos estructurados con citas, omisiones críticas, prioridades y tareas. Las reglas deterministas deciden completitud y bloqueos; las decisiones sensibles permanecen pendientes hasta aprobación humana auditada.
+## Producto y límites de confianza
 
-Para ensayar una toma reproducible existe `python -m agrofield_agent --recording`: fuerza proveedor local, anula las credenciales externas durante el proceso, crea una base SQLite temporal nueva, muestra `ENSAYO LOCAL · SINTÉTICO` y elimina esa base al cerrar. No satisface el requisito Nemotron.
+AgroField Agent coordina recorridas de soja después de lluvia intensa, viento o granizo. FastAPI, SQLite e interfaz móvil convierten notas de texto o voz del navegador en observaciones, omisiones, prioridades y tareas pendientes. Memoria por lote y auditoría conservan trazabilidad. No es un prescriptor autónomo.
 
-No es un chatbot generalista ni un prescriptor autónomo. El diferenciador es demostrar que existe evidencia suficiente antes de actuar.
+El modo local usa deterministic-es-v0.1. El modo Nebius de la aplicación usa un adaptador guarded: una solicitud por proceso, cero retries, autorización/cap/precios obligatorios, esquema cerrado, fuentes por IDs, citas resueltas contra la nota original y telemetría. La app nunca permite al modelo desactivar policy.py.
 
-Arquitectura ya construida:
+El anclaje de fuentes evita citas inventadas o parafraseadas: no garantiza que la frase respalde el valor elegido. La prueba real documentó precisamente ese límite.
 
-- FastAPI + interfaz web móvil;
-- SQLite con memoria por lote y auditoría;
-- extractor local determinista sin costo;
-- adaptador Nebius/Nemotron ejecutado una vez desde el harness guarded de AgroField y una vez por `/api/analyze`; el primero falló el contrato de tool call y el segundo devolvió HTTP 503 por cita literal de `event_type` inválida antes de completar salida evaluable;
-- `policy.py` como autoridad de seguridad;
-- aprobación humana obligatoria;
-- Tavily opcional, restringido y nunca ejecutado.
+El modo python -m agrofield_agent --recording fuerza local, desactiva credenciales externas, usa SQLite temporal y muestra ENSAYO LOCAL · SINTÉTICO. Su ensayo fue verificado de extremo a extremo. No es evidencia de una demo Nemotron. Tavily es opcional, restringido a fuentes permitidas y nunca fue llamado.
 
-## Resultados locales que no deben confundirse
+## Resultados de referencia: solo proveedor local
 
-Baseline heredado, 12 fixtures sintéticos, proveedor `local/deterministic-es-v0.1`:
+| Métrica | 12 casos sintéticos | 30 casos candidatos sintéticos |
+|---|---:|---:|
+| Precisión | 0.9884 | 0.9851 |
+| Recall | 0.9239 | 0.8609 |
+| F1 micro | 0.9551 | 0.9188 |
+| Recall de omisiones | 1.0000 | 0.9714 |
+| Afirmaciones no respaldadas | 0.0000 | 0.0050 |
+| Cobertura de citas | 1.0000 | 1.0000 |
+| Seguridad de bloqueo | 1.0000 | 1.0000 |
+| Integridad de aprobación | 1.0000 | 1.0000 |
+| nDCG | 1.0000 | 0.9877 |
+| Fallos adversos | 8 | 53 |
 
-| Métrica | Valor |
-|---|---:|
-| Precisión | 0,9884 |
-| Recall | 0,9239 |
-| F1 micro | 0,9551 |
-| Recall de omisiones críticas | 1,0000 |
-| Afirmaciones no respaldadas | 0,0000 |
-| Cobertura de citas | 1,0000 |
-| Seguridad de bloqueo | 1,0000 |
-| Integridad de aprobación | 1,0000 |
-| nDCG | 1,0000 |
-| Fallos adversos | 8 |
+Proveedor de ambas columnas: local/deterministic-es-v0.1. Task precision humana: no disponible. Benchmark candidato: 7/17 gates y benchmark_validated false. El recall de omisiones del candidato tampoco alcanza su umbral 0.98. Estos números no se atribuyen a Nemotron ni a agrónomos.
 
-Benchmark candidato, 30 casos sintéticos, referencia provisional:
+## Cuatro solicitudes reales Nebius, cronología correcta
 
-| Métrica | Valor |
-|---|---:|
-| Precisión | 0,9851 |
-| Recall | 0,8609 |
-| F1 micro | 0,9188 |
-| Recall de omisiones críticas | 0,9714 |
-| Afirmaciones no respaldadas | 0,0050 |
-| Cobertura de citas | 1,0000 |
-| Seguridad de bloqueo | 1,0000 |
-| Integridad de aprobación | 1,0000 |
-| nDCG | 0,9877 |
-| Task precision humana | no disponible |
-| Fallos adversos | 53 |
-| `benchmark_validated` | `false` |
+Modelo en todos los intentos: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B. Cada solicitud tuvo autorización separada; ninguna fue una evaluación de benchmark.
 
-Ambos resultados son locales y sintéticos. No son resultados Nemotron ni evidencia agronómica humana.
+1. Playground: el presupuesto de 256 tokens se agotó en razonamiento y no hubo mensaje final.
+2. Harness CLI: API respondió, pero no exactamente un tool call; salida rechazada.
+3. Ruta local /api/analyze: HTTP 503, non-literal evidence quote for: event_type. Alcanzó validación de evidencia; NO fue un fallo upstream de conexión. La respuesta rechazada no fue retenida, por lo que no se conoce la causa textual.
+4. Tras wire format y source IDs, primera observación aceptada: HTTP 200, 2026-09-14 23:03 UTC, commit 1c432ed. FastAPI TestClient in-process con HTTPS real a Nebius; no despliegue público ni recorrido browser E2E.
 
-## Cierre de P0 y P1
+Resultado del cuarto intento:
 
-1. **Anclaje de referencia:** Fase A y Fase B son archivos distintos. Fase A contiene solo nota/contexto. Fase B se vincula al hash canónico de la anotación Fase A del mismo revisor.
-2. **Gate incompleto:** `benchmark_validated` depende ahora de 17 gates explícitos con valor, requisito y razón de fallo. `--require-validated` sale con código 2 si falla uno.
-3. **Formularios vacíos:** esquema `1.1.0-candidate` valida IDs, asignación, fecha, privacidad, evidencia, campos, tareas y estados. Las plantillas vacías no cuentan y se registran como inválidas.
-4. **Task precision duplicada:** la métrica vinculante es `primary_task_precision`; la secundaria solo mide acuerdo. `adjudicated_task_precision` permanece separado y `null` hasta existir.
-5. **Dobles de salida ausentes:** se exigen 30 salidas primarias y 10 secundarias completas, mismas salida/alias, revisores distintos y locks válidos. El reporte lista IDs faltantes.
-6. **Exposición previa:** el resultado vinculante conserva todos los pares; una sensibilidad separada recalcula referencia y salida sin pares donde cualquiera declaró exposición.
-7. **Superposición de roles:** un ID no puede cruzarse entre primario/secundario ni entre revisor/adjudicador en ningún caso de la ronda. El cruce se reporta y bloquea readiness.
+- Una nota sintética de desarrollo; una solicitud, cero reintentos.
+- Latencia: 7,591.67 ms; 2,288 tokens de entrada y 311 de salida.
+- Preflight: 5,885 bytes; techo US$0.00122880 con precios observados US$0.06/M entrada y US$0.24/M salida.
+- Costo estimado desde uso: US$0.00021192, no factura contabilizada.
+- Trial visible US$1, 29 días; Usage stops after the trial; saldo de cuenta cero antes de llamar.
+- Consulta posterior redondeada sin cargo personal visible; no demuestra costo exacto cero.
+- Clave temporal revocada; lista de claves verificada vacía; variables/portapapeles limpiados y helper transitorio eliminado.
+- Política blocked; una tarea pendiente, ninguna aprobada ni ejecutada.
+- Todas las citas no vacías eran literales.
+- Calidad contra referencia sintética de desarrollo: 4/8 campos observados correctos, tres omisiones, un evento incorrecto y una condición general sin respaldo. Local: 8/8 en esa nota.
+- Las omisiones del modelo fueron edad del evento (18 h), agua parada (35%) y duración (14 h). No eran omisiones reales de la nota.
+- El diagnóstico examina 12 campos, incluidos cuatro que deberían permanecer desconocidos. No se mezcla con F1 del benchmark.
+- Contrato aceptado no equivale a calidad aceptable. No hay superioridad Nemotron demostrada.
 
-Pruebas relevantes:
+Registro saneado: docs/submission/evidence/nebius-source-anchor-smoke-2026-09-14.json.
+Referencia sintética: fixtures/nebius_smoke_reference.json; sus valores ya estaban en tests antes de la llamada, no son etiquetas humanas.
+Auditoría reproducible: python -m agrofield_agent.smoke_audit; sin red, con hash de la nota.
+Reporte interpretado: docs/submission/nebius-source-anchor-run-2026-09-14.md.
 
-- Fase A rechaza claves de salida y ambos paquetes no pueden compartir destino;
-- hash Fase A alterado bloquea completitud;
-- las cuatro plantillas incompletas se rechazan;
-- una secundaria insegura no cambia la precisión primaria;
-- quitar una sola salida secundaria hace fallar `--require-validated` con código 2;
-- cada gate falla de forma independiente;
-- fixture positivo completo 30/10 prueba la ruta feliz, marcado `test_fixture_only` y nunca tratado como evidencia humana.
-- tests adversos prueban exposición declarada y cruces de roles entre casos.
+## Estado humano, privacidad y estrategia
 
-## Freeze
+- Entrevistas completadas: 0.
+- Revisiones primarias: 0/30; dobles de referencia: 0/10.
+- Revisiones de salida: 0/30 primarias, 0/10 secundarias.
+- Adjudicaciones: 0/30. Acuerdo y task precision humanos: no disponibles.
+- Aporte del fundador: uno saneado, no independiente, fuera del benchmark.
+- Invitaciones enviadas según atestación del usuario: 5/5 entrevistas y 3/3 revisión; no se autorizan más destinatarios.
+- Aceptaciones, consentimientos escritos privados y alcances agregados/anónimos: atestiguados por usuario para 5/5 y R01/R02/A01. No equivalen a entrevistas o anotaciones terminadas.
+- Remitente y custodio privado: usuario. Solo correo; sin grabación ni compensación.
+- Estado humano registrado: AUTHORIZED_EMAIL_ONLY_PRIVATE_SETUP_ATTESTED.
+- Desviación histórica DV-OUTREACH-001 registrada; la IA no recibe nuevos destinatarios, identidades ni notas crudas.
+- Subestado: SUBMISSION_PREPARATION_WITH_UNVALIDATED_BENCHMARK.
 
-- `benchmark/agronomy_blind_v1/freeze/manifest-v1.0.0-candidate.json` conserva exactamente el freeze histórico de 18 artefactos.
-- `manifest-v1.1.0-candidate.json` y `manifest-v1.2.0-authorized-prehuman.json` preservan los freezes intermedios exactos.
-- `benchmark/agronomy_blind_v1/freeze/manifest.json` es el freeze vigente `1.2.1-authorized-prehuman`, 34/34 hashes.
-- El vigente declara `candidate_only: true`, `human_validated: false`, `benchmark_validated: false`, 0 contactos y `authorization: AUTHORIZED_EMAIL_ONLY_PENDING_PRIVATE_SETUP`.
-- Esos conteos describen el instante del freeze. La invitación `I01` ocurrió después y se registra fuera del manifiesto; no se reescribe un snapshot histórico.
-- El reporte asociado es `benchmark/agronomy_blind_v1/reports/local-candidate-prehuman-v1.2-2026-09-02.json`.
-- Un futuro freeze humano debe ser un manifiesto nuevo con `freeze_scope: human_reviewed_benchmark_inputs`; nunca se reetiqueta el candidato.
+El usuario decidió preparar una presentación lean sin esperar el protocolo humano completo. No bajar los gates ni relabelar evidencia. La revisión humana independiente sigue siendo una debilidad de credibilidad, aunque no sea requisito oficial de submission.
 
-## Reglas inviolables
+## P0/P1 y freeze que deben preservarse
 
-- No modificar ni debilitar `policy.py` para mejorar métricas.
-- Mantener hechos → inferencias → recomendaciones.
-- No convertir falta de evidencia en evidencia de ausencia.
-- Toda alerta debe enlazar nota, regla o fuente identificable.
-- Toda decisión sensible requiere aprobación nominada y auditoría.
-- No inventar entrevistas, revisiones, acuerdos o etiquetas humanas.
-- Cero datos personales, nombres, establecimientos o coordenadas exactas en Git.
-- En adelante, solo el usuario envía correos dentro de los cupos autorizados y después del setup privado. Tras `DV-OUTREACH-001`, la IA no debe recibir nuevos destinatarios, PII ni notas crudas.
-- No publicar, desplegar, consumir Nebius/Tavily, gastar, subir video ni enviar la submission sin autorización expresa.
-- Antes de un servicio potencialmente pago: autorización separada y límite de gasto concreto.
+- Fase A sin salida del sistema; Fase B separada y ligada al hash de A del mismo revisor.
+- Formularios incompletos/placeholder no cuentan.
+- primary_task_precision usa solo revisiones primarias.
+- Exige 30 primarias y diez dobles completas de referencia y salida.
+- benchmark_validated depende de 17 gates; --require-validated sale 2 ante fallo.
+- Acuerdo vinculante conserva todos los pares; sensibilidad de exposición se informa aparte.
+- Cruces globales entre primario, secundario y adjudicador bloquean validación.
+- Fixtures positivos 30/10 son pruebas sintéticas, nunca evidencia humana.
 
-## Única debilidad crítica residual
+manifest.json es 1.2.1-authorized-prehuman, candidate_only y human_validated false; 34 hashes. Los conteos de autorización/contacto del manifiesto describen el momento histórico del freeze, no el estado actual. Los manifests anteriores se preservan. Un freeze humano deberá ser nuevo; no reescribir este snapshot.
 
-Ya existe acceso real desde Playground y el harness guarded, y `/api/analyze` abrió una solicitud real, pero todavía no hay una extracción Nemotron aceptada: Playground terminó sin salida final, el harness no recibió exactamente un tool call y la ruta live devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type` sin `ObservationDraft` válido. La auditoría posterior identificó que el raw JSON serializaba incorrectamente el helper SDK `extra_body`; `e0f0ad2` lo corrigió, pero no fue probado live. No hay métricas Nemotron pareadas de calidad, latencia y costo. También faltan URL, repositorio y video públicos. La evidencia agronómica independiente sigue en cero; el usuario decidió no esperar el protocolo humano completo para preparar la submission, por lo que `benchmark_validated` permanece `false` y esa limitación debe declararse.
+## Reglas y permisos
 
-## Siguiente acción permitida
+No modificar ni debilitar policy.py. Separar hechos, inferencias y recomendaciones; toda alerta trazable, toda decisión sensible con aprobación nominada y auditoría. Desconocido no significa ausente. No inventar etiquetas, personas, revisiones, acuerdos o métricas.
 
-El paquete local de presentación está en `docs/submission/`: borrador de Devpost en inglés, guion cronometrado a 2:42, controles de claims y un aporte del fundador saneado y rotulado como no independiente. El recorrido local fue ensayado de extremo a extremo en modo grabación: bloqueo por dos omisiones, pase a revisión, aprobación nominada y auditoría; todas las rutas observadas respondieron 200. Puede repetirse y seguir mejorándose sin servicios externos.
+Cero secretos, PII, establecimientos reales o coordenadas exactas en Git. Solo registros saneados con el alcance autorizado.
 
-El harness de compatibilidad está conectado a `/api/analyze` y cubierto por 23 pruebas con transporte simulado. El CLI envió una solicitud con cero reintentos y falló el contrato exactamente-un-tool-call. La ruta real envió otra solicitud única y devolvió HTTP 503 con `detail: non-literal evidence quote for: event_type`; no se pudo producir `ObservationDraft` y no hay inferencia evaluable. Las claves fueron revocadas, el portapapeles limpiado y la lista quedó vacía. `e8a926a` agrega diagnóstico HTTP seguro y simplifica dos keywords opcionales; `e0f0ad2` corrige la serialización raw para enviar `chat_template_kwargs` top-level. El preflight sin red pesa 4.889 bytes. El siguiente incremento externo de máximo impacto sería validar esta corrección con una única llamada por `/api/analyze`, pero exige otra autorización separada, límite concreto, precios y `Stop usage` reconfirmados y una clave nueva manejada privadamente; no existe esa autorización ahora. Tavily sigue fuera del camino crítico hasta una ablación autorizada. Publicación, despliegue, video y submission continúan bloqueados hasta autorizaciones separadas.
+Las cuatro autorizaciones Nebius de una solicitud están consumidas. No llamar de nuevo ni crear otra clave sin autorización específica y cap concreto. No Tavily, gastos, publicación de repo, despliegue, video ni submission sin autorización. Verificar precio, crédito y Stop usage antes de una llamada autorizada; detenerse ante cobro o crédito insuficiente.
+
+## Próximo incremento de mayor impacto
+
+Mejorar las definiciones de campos y la extracción semántica en desarrollo: distinguir evento/condición, edad/duración y área/agua; cubrir negación y desconocidos. Preservar respuesta adversa y holdout; nunca completar silenciosamente la salida Nemotron con valores del extractor local.
+
+Verificación local: tests del contrato y nuevos casos de desarrollo, auditoría guardada, baselines y freeze. Eso no demuestra mejora del modelo; una comparación live posterior necesita autorización separada. Antes de presentar, falta demo completa Nemotron, evaluación más amplia y URL/repo/video públicos autorizados.
+
+Fecha límite de las bases congeladas: 30/10/2026 10:00 PDT / 14:00 Argentina. Última revisión oficial registrada: 08/09/2026; no se hizo una nueva comprobación de bases en este incremento.

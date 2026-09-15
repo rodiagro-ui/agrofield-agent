@@ -1,6 +1,6 @@
 # Nebius API compatibility harness
 
-> Estado: endurecido localmente después de dos pruebas reales adversas desde el repositorio y una ruta real con fallo de contrato de evidencia. Hay 23 pruebas con transporte simulado. El contrato corregido todavía no fue validado con una salida real y este documento no autoriza otra llamada.
+> Estado al 2026-09-15: 31 pruebas con transporte simulado y una primera observación real aceptada después de tres intentos adversos. El contrato pasó; la calidad semántica del único caso aceptado no. Este documento no autoriza otra llamada.
 
 ## Propósito
 
@@ -40,7 +40,7 @@ Durante y después de la llamada:
 - fuerza exactamente un tool call `record_field_observation`;
 - rechaza respuesta vacía, texto libre, JSON inválido, herramienta equivocada o múltiples tool calls;
 - vuelve a comprobar que los argumentos contienen exactamente el esquema cerrado, aunque el servidor ignore `strict`;
-- valida `ObservationDraft`, exige citas literales por cada hecho no nulo, citas vacías para campos ausentes y notas estrictamente literales;
+- recibe IDs de fuentes del catálogo exacto de la nota, rechaza IDs desconocidos/duplicados y los resuelve a citas originales; valida `ObservationDraft`, exige citas literales por cada hecho no nulo, citas vacías para campos ausentes y notas estrictamente literales;
 - exige `prompt_tokens`, `completion_tokens` y request ID;
 - calcula costo estimado desde el uso reportado;
 - ante un fallo conserva solo diagnóstico saneado: forma de respuesta, conteos, presencia y longitud de contenido/razonamiento, uso, latencia y request ID; nunca el texto generado, la clave ni la nota cruda.
@@ -81,19 +81,28 @@ La clave fue revocada y la lista quedó vacía. Véase
 
 Después de ese intento, `e8a926a` agregó metadatos HTTP seguros y eliminó del esquema
 enviado `minLength` y `uniqueItems`, manteniendo la validación equivalente del lado
-cliente. La causa live sigue sin conocerse y el nuevo perfil solo está verificado
-localmente.
+cliente. El fallo observado fue la cita no literal; no se retuvo el texto
+rechazado y no se conoce por qué se produjo. Esos cambios se verificaron
+localmente antes del siguiente intento.
 
 Una revisión posterior detectó que el JSON raw incluía el nombre del helper SDK
 `extra_body`. Los ejemplos oficiales muestran que el SDK fusiona ese diccionario en
 el cuerpo: el cURL equivalente recibe el parámetro vendor-specific en la raíz. El
 commit `e0f0ad2` mueve `chat_template_kwargs` a la raíz y prueba la forma exacta del
-request simulado. Es una hipótesis principal para la compatibilidad del proveedor,
-aún sin validación viva adicional. Véase `nebius-wire-format-correction-2026-09-14.md`.
+request simulado. Esto no demuestra que el wrapper causara el fallo de cita literal.
+Véase `nebius-wire-format-correction-2026-09-14.md`.
+
+El commit `1c432ed` agregó anclaje por IDs y resolución local de citas, conservando
+la validación literal exacta. Una cuarta solicitud autorizada devolvió HTTP 200 y
+una observación aceptada por `/api/analyze` en TestClient, con HTTPS real a Nebius.
+Hubo 2.288/311 tokens y US$0,00021192 de costo estimado. La auditoría offline
+identificó tres omisiones, un evento incorrecto y una condición no respaldada.
+El formato pasó, la calidad no. La clave se revocó; no se reintentó. Véase
+`nebius-source-anchor-run-2026-09-14.md`.
 
 ## Preflight actual, sin red
 
-Con la nota sintética congelada y los precios históricos —solo para reproducir el cálculo— el perfil endurecido serializa 4.889 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
+Con la nota sintética de desarrollo y los precios históricos —solo para reproducir el cálculo— el perfil con IDs serializa 5.885 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
 
 ## Gate para una futura llamada
 
@@ -107,6 +116,6 @@ No volver a ejecutar. Solo después de una nueva autorización explícita que in
 
 Para probar el recorrido mediante la aplicación en vez del CLI, configurar además `AGROFIELD_PROVIDER=nebius` y `AGROFIELD_NEBIUS_LIVE_CONFIRMATION=RUN_ONE_NEBIUS_REQUEST`. El arranque se bloquea si faltan clave, precios o cap. Al terminar, cerrar el proceso, limpiar las variables sensibles y revocar la clave.
 
-La aceptación requiere, en la misma única respuesta: HTTP/JSON válido, exactamente un tool call, argumentos cerrados y válidos, citas literales, telemetría completa y costo estimado dentro del cap. Cualquier otra salida es fallo y no se reintenta.
+La aceptación del contrato requiere, en la misma única respuesta: HTTP/JSON válido, exactamente un tool call, argumentos cerrados y válidos, citas literales, telemetría completa y costo estimado dentro del cap. Cualquier otra salida es fallo y no se reintenta. Pasar el contrato no demuestra corrección semántica ni calidad agronómica.
 
-Las autorizaciones del Playground, del primer harness y de la ruta `/api/analyze` están agotadas. El endurecimiento local no amplía esos permisos.
+Las cuatro autorizaciones de solicitud única están agotadas, incluida la primera extracción aceptada. El endurecimiento local no amplía esos permisos. `python -m agrofield_agent.smoke_audit` reproduce su diagnóstico sin red usando la respuesta guardada.

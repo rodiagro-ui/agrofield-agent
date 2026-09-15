@@ -1,59 +1,59 @@
 # AgroField Agent submission workspace
 
-> Local preparation only. Do not publish, deploy, upload, or submit any artifact in this directory without a separate explicit authorization from the project owner.
+> Local preparation only. Publication, deployment, upload and submission require separate explicit owner authorization. Snapshot: 2026-09-15.
 
-This directory contains the judge-facing narrative and demo plan for the Nebius x NVIDIA Global AI Hackathon 2026. It is intentionally outside the frozen blind-benchmark package.
+## Positioning
 
-## Current positioning
-
-**AgroField Agent turns an incomplete post-storm soybean scouting note into traceable evidence, explicit missing checks, prioritized follow-up work, and human-approved decisions.**
-
-The project should compete on a narrow operational failure: a plausible field message can look complete while omitting the measurements required to act safely. It should not be presented as a generic agronomy chatbot or an autonomous prescriber.
-
-## Artifact map
-
-- `devpost-draft.md`: English submission copy with unresolved fields clearly marked.
-- `demo-runbook.md`: sub-three-minute recording plan and retake criteria.
-- `founder-domain-input-2026-09-08.md`: sanitized, non-independent product-discovery evidence.
-- `strategy-decision-2026-09-08.md`: decision to proceed without waiting for the full 30/10 human benchmark.
-- `rules-recheck-2026-09-08.md`: current official requirements and judging implications.
-- `nebius-smoke-attempt-2026-09-08.md`: stopped pre-inference attempt and zero-cost evidence.
-- `card-free-access-request.md`: exact support request and the later support outcome.
-- `nebius-smoke-run-2026-09-14.md`: one real Nemotron Playground request, its adverse empty-output result, authenticated pricing, billing controls, and credential revocation.
-- `nebius-api-compatibility-harness.md`: strict one-request contract shared by the CLI harness and guarded application provider.
-- `nebius-api-smoke-run-2026-09-14.md`: one real request from AgroField's guarded harness, its adverse missing-tool-call result, cost preflight, and credential cleanup.
-- `nebius-tool-contract-hardening-2026-09-14.md`: local-only reasoning/schema/diagnostic hardening after the adverse request; not live-validated.
-- `nebius-live-route-smoke-run-2026-09-14.md`: the separately authorized live `/api/analyze` attempt, its evidence-contract failure (`non-literal event_type`), strict claim boundary, and cleanup evidence.
-- `nebius-wire-format-correction-2026-09-14.md`: local correction of the SDK-vs-raw `extra_body` serialization error and its evidence boundary.
+AgroField Agent turns an incomplete post-storm soybean scouting note into traceable observations, missing checks, prioritized follow-up work and human-reviewed decisions. It is not an autonomous agronomist or a generic chatbot.
 
 ## Truthful status
 
-| Item | Current status |
+| Item | Current evidence |
 |---|---|
-| Local vertical MVP | Functional |
-| Local tests | 68/68 passing on 2026-09-14, including 23 mocked guarded-Nebius tests |
-| Safe recording rehearsal | Verified end to end with fresh temporary data and explicit local/synthetic label |
-| Local 12-case regression baseline | F1 0.9551; critical-omission recall 1.0000 |
-| Local 30-case candidate | F1 0.9188; critical-omission recall 0.9714 |
-| Independent human validation | Not completed |
-| `benchmark_validated` | `false` |
-| Real Nemotron runtime | Three separately authorized request attempts ran on 2026-09-14; only Playground proves model execution, none produced an accepted extraction, and no benchmark ran |
-| AgroField API integration / Nemotron evaluation | The guarded CLI reached the live API once; a separate `/api/analyze` attempt returned HTTP 503 with strict evidence contract failure (`non-literal event_type`) and no `ObservationDraft`; no Nemotron evaluation has run |
-| Current compatibility candidate | Raw `httpx` now sends top-level `chat_template_kwargs`; 68/68 local tests pass, but the correction is not live-validated |
-| Card-free access request | Support confirmed that no card-free activation path is available |
-| Tavily runtime evidence | Not run |
+| Local vertical MVP | Functional; safe local/synthetic recording rehearsal verified |
+| Local tests | 88 passing, including 31 mocked guarded-Nebius tests |
+| Local 12-case baseline | F1 0.9551; omission recall 1.0000 |
+| Local 30-case candidate | F1 0.9188; omission recall 0.9714; 53 adverse failures |
+| Candidate freeze | 34/34 hashes valid; 7/17 gates; benchmark_validated false |
+| Human evidence | Zero independent interviews/reviews; one sanitized non-independent founder input |
+| Real Nemotron | Four separately authorized requests; first accepted extraction on request four |
+| Accepted route | In-process FastAPI TestClient /api/analyze with real Nebius HTTPS, not public browser E2E |
+| Accepted output quality | Only 4/8 expected observed fields right on one synthetic development note; three omissions, one wrong event, one unsupported condition |
+| Accepted request telemetry | 7.59 s; 2,288 input / 311 output tokens; estimated US$0.00021192 |
+| Aggregate Nemotron benchmark | Not run |
+| Credentials and authorization | Temporary key revoked, list verified empty; single-request permissions consumed |
+| Tavily | No runtime requests; no measured bonus value |
 | Public repository, URL, video, submission | Not created |
 
-All evaluation numbers above use `local/deterministic-es-v0.1` and synthetic cases. They are neither Nemotron results nor agronomist-validated evidence.
+The 12/30-case aggregate metrics use local/deterministic-es-v0.1 only. The saved real Nemotron result is a separate one-case development diagnostic, not a held-out score or independent agronomy validation. Immediate rounded billing showed no personal charge; it does not prove zero inference cost.
 
-## Path to a valid entry
+## Artifact map
 
-1. Keep the verified local rehearsal and judge-facing copy synchronized without presenting it as a Nemotron run.
-2. Preserve the locally hardened compatibility candidate and do not describe its tool contract as live-validated.
-3. Obtain separate authorization and a hard spending limit before any additional Nebius or Tavily call; all three existing authorizations are consumed.
-4. Only after the contract passes, consider a separately capped frozen-suite evaluation.
-5. Replace every placeholder in the submission and demo with measured values.
-6. Decide whether Tavily earns demo time through a documented ablation; omit it if it does not.
-7. Request separate authorization before repository publication, deployment, video upload, or Devpost submission.
+- devpost-draft.md: English draft with unresolved links, measured limitations and claim boundaries.
+- demo-runbook.md: sub-three-minute local recording plan; the described live demo still needs verification.
+- founder-domain-input-2026-09-08.md: sanitized non-independent workflow input.
+- strategy-decision-2026-09-08.md: decision to prepare a lean submission without waiting for the full human benchmark.
+- rules-recheck-2026-09-08.md: last recorded official-rules recheck, not a new verification on this snapshot date.
+- card-free-access-request.md: support outcome; no card-free activation path was offered.
+- nebius-smoke-attempt-2026-09-08.md: historical attempt stopped before inference.
+- nebius-smoke-run-2026-09-14.md: first actual request, Playground reasoning-budget failure.
+- nebius-api-smoke-run-2026-09-14.md: second request, CLI exactly-one-tool-call failure.
+- nebius-live-route-smoke-run-2026-09-14.md: third request, nonliteral event_type evidence failure, not a connection failure.
+- nebius-api-compatibility-harness.md: current guarded contract and no-network preflight.
+- nebius-tool-contract-hardening-2026-09-14.md: historical reasoning/schema changes.
+- nebius-wire-format-correction-2026-09-14.md: raw/SDK correction; not a demonstrated cause of earlier failures.
+- nebius-source-anchors-2026-09-14.md: local source-ID design and pre-run verification.
+- [nebius-source-anchor-run-2026-09-14.md](nebius-source-anchor-run-2026-09-14.md): fourth request, accepted format and adverse quality audit.
+- [evidence/nebius-source-anchor-smoke-2026-09-14.json](evidence/nebius-source-anchor-smoke-2026-09-14.json): sanitized accepted response and telemetry.
 
-The full 30-primary/10-double human benchmark remains the gold-standard research target. It is not weakened or relabeled by the lean submission strategy.
+## Next steps and boundaries
+
+1. Preserve the adverse live response; improve extraction semantics on development cases without changing policy.py or the frozen holdout.
+2. Use python -m agrofield_agent.smoke_audit to reproduce the current comparison offline. Mock tests do not prove better live quality.
+3. Obtain a new scoped authorization and cost cap before another Nebius or Tavily request. Recheck prices, trial credit and Stop usage immediately before any authorized call.
+4. Demonstrate better extraction and the actual browser demo before claiming readiness; run a broader evaluation only under its own approved scope.
+5. Complete independent review if available, without representing founder input or synthetic labels as independent evidence.
+6. Keep Tavily only if an authorized ablation demonstrates useful, traceable value.
+7. Request separate authorization for a public repository, deployment and its operating budget, video upload and Devpost submission.
+
+The full human benchmark remains a credibility target, not a completed requirement. Its gates and frozen references are not weakened by the lean submission strategy.

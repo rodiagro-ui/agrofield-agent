@@ -16,7 +16,7 @@ Field notes are easy to capture and easy to over-trust. A plausible narrative ca
 - Evidence-completeness gate and targeted follow-up questions.
 - Explainable priority score across fields.
 - Proposed tasks that remain pending until explicit human approval.
-- Immutable audit events stored in SQLite.
+- Append-only application audit events stored in SQLite.
 - Optional Tavily adapter restricted to authoritative agronomy and weather domains.
 - Offline evaluation harness for extraction, critical omissions, ranking, latency, and estimated inference cost.
 - Blind agronomy benchmark candidate with 30 cases, physically separated Phase A/B packets, strict human-evidence gates, E1–E8 failure analysis, and reviewer-agreement metrics.
@@ -62,7 +62,7 @@ The 30-case set is synthetic and currently has **zero human agronomy reviews and
 
 Copy `.env.example` to `.env` only after a live run has been explicitly authorized. Set `NEBIUS_API_KEY`, current input/output prices, a hard `NEBIUS_MAX_COST_USD`, and the exact one-use confirmation shown in the harness documentation; then launch with `AGROFIELD_PROVIDER=nebius`. The default model is `nvidia/nemotron-3-super-120b-a12b`; it can be changed with `NEBIUS_MODEL`.
 
-The application routes Nebius mode through the guarded OpenAI-compatible adapter. It disables Nemotron reasoning for this extraction step, forces a tool call with a closed schema, revalidates its exact argument shape, validates literal evidence, requires usage telemetry, disables automatic retries, and permits at most one request per process. It refuses to start if confirmation, prices, cap, or key are absent. No key is ever sent to the browser.
+The application routes Nebius mode through the guarded OpenAI-compatible adapter. It disables Nemotron reasoning for this extraction step, forces a tool call with a closed schema, and asks the model to select source IDs from exact input fragments. The application resolves those IDs to original quotes, revalidates argument shape and literal evidence, requires usage telemetry, disables automatic retries, and permits at most one request per process. It refuses to start if confirmation, prices, cap, or key are absent. Application responses never expose provider credentials. Literal provenance does not guarantee that a selected value is supported by its quote.
 
 ```bash
 set AGROFIELD_PROVIDER=nebius
@@ -86,7 +86,15 @@ python -m agrofield_agent.nebius_smoke \
   --max-cost-usd 0.01
 ```
 
-The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires fresh human authorization plus an exact live-confirmation phrase. A separate authorized live `/api/analyze` attempt returned HTTP 503 with `detail: non-literal evidence quote for: event_type`; the attempt did not produce an accepted `ObservationDraft`. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires human authorization plus an exact live-confirmation phrase. Existing single-request authorizations have been consumed. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+
+Audit the first accepted real response **offline**, without provider credentials:
+
+```bash
+python -m agrofield_agent.smoke_audit
+```
+
+This compares a saved Nemotron response and current local extraction against one developer-authored synthetic reference. It is not a blind benchmark: Nemotron got four of eight expected observed fields right, omitted three, misclassified the event, and added an unsupported general condition. The local extractor got eight of eight observed fields right on this one development note. See the [full adverse result](docs/submission/nebius-source-anchor-run-2026-09-14.md).
 
 ## Tavily policy
 
@@ -138,8 +146,19 @@ validation. This change is locally tested only and is not a successful Nemotron
 result. A further documentation audit found that the raw `httpx` request had
 serialized the OpenAI SDK helper name `extra_body` instead of merging
 `chat_template_kwargs` into the JSON root. Commit `e0f0ad2` corrects the wire format;
-68/68 local tests pass, but the correction has not been sent to Nebius. See
+68/68 local tests passed at that historical checkpoint. See
 `docs/submission/nebius-wire-format-correction-2026-09-14.md`.
+
+After source-ID anchoring in `1c432ed`, a fourth separately authorized request
+returned the first accepted `ObservationDraft` (HTTP 200). It ran `/api/analyze`
+through an in-process FastAPI TestClient with real Nebius HTTPS, not a public
+deployment. Usage was 2,288 input / 311 output tokens, latency 7.59 seconds and
+estimated cost US$0.00021192. The policy remained blocked and one proposed task
+remained pending. The key was revoked. The format contract passed, but the
+single-note quality audit failed; no Nemotron benchmark or superiority has been
+established. The [run record](docs/submission/nebius-source-anchor-run-2026-09-14.md)
+preserves those limitations. Current local verification: **88 tests passing**,
+34/34 frozen hashes unchanged, zero independent human reviews.
 
 ## License
 

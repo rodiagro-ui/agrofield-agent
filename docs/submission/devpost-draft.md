@@ -25,7 +25,7 @@ A first-party workflow account from the project owner reinforced three design re
 ## What it does
 
 1. Captures a Spanish field note by text or browser speech recognition.
-2. Uses NVIDIA Nemotron through Nebius Token Factory to extract only explicitly supported observations into a constrained schema.
+2. Uses NVIDIA Nemotron through Nebius Token Factory for constrained extraction, intended to retain only supported observations; current extraction-quality limitations are disclosed below.
 3. Attaches a literal evidence quote to each extracted value.
 4. Applies deterministic rules to identify missing critical checks for flooding, hail, wind, or mixed events.
 5. Combines the note with synthetic field history and weather context to explain inspection priority.
@@ -42,6 +42,8 @@ The visible red state — “decision blocked; critical checks missing” — is
 
 ## Demo story
 
+Target narrative, verified only in the local/synthetic rehearsal so far. The complete live Nemotron browser workflow still needs verification.
+
 An incomplete note reports soybean stage, a recent storm, safe access, standing water, and a low stand in one area. AgroField preserves those facts but blocks closure because the note does not report representative sampling or water duration. It asks only the missing questions.
 
 The user then supplies a complete note with a W-shaped route, multiple sampling points, affected area, and water duration. The evidence becomes ready for review, a follow-up visit is proposed, and the task remains pending until a named adviser approves it. The audit panel shows the observation, proposal, and human decision.
@@ -55,7 +57,7 @@ The user then supplies a complete note with a W-shaped route, multiple sampling 
 - SQLite field memory, proposed tasks, approvals, and audit events.
 - Optional Tavily adapter with domain allowlists and retained source URLs.
 
-The browser never receives provider credentials. Invalid model output is rejected. Missing evidence produces a blocked state rather than an invented value.
+Application responses never expose provider credentials. Structurally invalid model output is rejected. Missing required evidence produces a blocked state. Exact quotes do not guarantee semantic correctness: the first accepted smoke still contained an unsupported value, so this is not a guarantee against all model errors.
 
 ## Current evidence — replace before submission
 
@@ -65,7 +67,9 @@ The browser never receives provider credentials. Invalid model output is rejecte
 | Hard candidate suite | `local/deterministic-es-v0.1` | 30 synthetic | 0.9188 | 0.9714 | 0.0050 | 1.0000 |
 | Nemotron | `TBD_AFTER_AUTHORIZED_RUN` | TBD | TBD | TBD | TBD | TBD |
 
-Three separately authorized request attempts used `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`: the Playground run proved model execution but returned an empty final message after exhausting a 256-token reasoning budget; the guarded AgroField CLI reached the API but did not return exactly one required tool call; and the live `/api/analyze` route returned local HTTP 503 after an upstream HTTP/transport failure before model output was observable. These are adverse compatibility findings, not benchmark rows, and do not replace the `TBD` values above. The third attempt does not prove model inference.
+Four separately authorized requests used `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`: the Playground exhausted its reasoning budget without a final message; the guarded CLI failed the exactly-one-tool-call contract; the third request reached local evidence validation but was rejected for a nonliteral `event_type` quote (not a connection failure); the fourth produced the first accepted observation with HTTP 200 through in-process `/api/analyze` and real Nebius HTTPS.
+
+That fourth response took 7.59 seconds, reported 2,288 input / 311 output tokens, and cost an estimated US$0.00021192 at the observed rates. Against one synthetic developer reference it correctly extracted only four of eight expected observed fields, omitted three, misclassified the event, and asserted an unsupported general condition. Local extraction got eight of eight observed fields right on that same note. These are a single-case development diagnostic, not a held-out benchmark, and do not replace the `TBD` row above. All nonempty quotes were literal; semantic support still failed. See `nebius-source-anchor-run-2026-09-14.md` and its network-free audit.
 
 The 30-case candidate remains `benchmark_validated: false` and contains no independent human labels. The local numbers must never be described as Nemotron performance.
 
@@ -96,13 +100,16 @@ In a high-consequence workflow, fluency is not the same as readiness. The useful
 
 ## What's next
 
-- Run the frozen suites on Nemotron Nano and Super under an approved cap.
+- Improve extraction semantics on development cases, then verify with a separately authorized, capped live comparison; mocks alone cannot demonstrate quality gains.
+- Only then consider the frozen suites on Nemotron under a separately approved cap.
 - Measure quality, p95 latency, tokens, retries, and cost per completed visit.
 - Complete independent agronomy review without changing the frozen references after seeing holdout results.
 - Keep Tavily only if an ablation shows a measurable improvement in inspection prioritization.
 - Harden the public deployment, privacy notice, and uptime monitoring for judging.
 
 ## Testing instructions for judges
+
+Draft for a future authorized public deployment, not currently live or end-to-end verified with Nemotron.
 
 1. Open `TBD_PUBLIC_URL`.
 2. Confirm the header displays `Nemotron · Token Factory`.
@@ -116,7 +123,7 @@ Demo data and locations are synthetic. No treatment is autonomously recommended 
 
 ## Nebius and NVIDIA feedback
 
-Initial real-use evidence: Token Factory made the NVIDIA model and approximate per-token prices easy to inspect, and the Playground exposed latency and throughput. The first constrained-JSON Nano request revealed that a small completion budget can be consumed by reasoning before a final answer is emitted. A second request from AgroField's guarded harness reached the API but did not satisfy the forced-tool contract. Successful tool-call compatibility, accepted API telemetry, and benchmark quality remain `TBD_AFTER_AUTHORIZED_API_RUN`.
+Initial real-use evidence: Token Factory exposed model choice, token pricing and Playground timing. Early requests revealed reasoning-budget and output-contract failures. Source-ID anchoring subsequently produced one accepted observation with usage telemetry, but semantic extraction remained worse than local extraction on the single development note. Tool compatibility and quote provenance are separate from quality; aggregate Nemotron benchmark performance remains unmeasured.
 
 ## Required links
 
