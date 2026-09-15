@@ -1,6 +1,6 @@
 # AgroField Agent — resumen actualizado para compartir
 
-> 15 de septiembre de 2026. Primera extracción Nemotron aceptada, pero aún con errores importantes. Nada público. Este archivo informa estado; no concede permisos de gasto ni publicación.
+> 15 de septiembre de 2026, candidato semántico v2 preparado. La primera extracción Nemotron histórica fue aceptada con errores importantes; v2 no fue ejecutado live. Nada público. Este archivo informa estado; no concede permisos de gasto ni publicación.
 
 ## Qué estamos construyendo
 
@@ -11,6 +11,8 @@ Track previsto: Best Apps and Agents. Tavily solo si demuestra valor medible y t
 Repositorio real: outputs/agrofield-agent dentro del workspace nebius-nvidia-agrofield-agent. Licencia MIT. Consultar git status y git log desde esa raíz.
 
 Commits recientes: 1c432ed (anclaje de fuentes y perfil usado en la llamada aceptada) y 8d994c4 (evidencia saneada y auditoría offline). El resumen documental se guarda después; consultar git log para HEAD efectivo.
+
+Nuevo incremento: 6d7a5a8 (definiciones semánticas y rechazo de cantidades inválidas) y ab339dc (20 casos de desarrollo, preflight sin red y freeze separado).
 
 ## Avance implementado
 
@@ -24,10 +26,13 @@ Commits recientes: 1c432ed (anclaje de fuentes y perfil usado en la llamada acep
 - Benchmark candidato de 30 casos, Fase A/B separadas, P0/P1 cerrados, 17 gates y freeze inmutable.
 - Borrador Devpost, guion de menos de tres minutos, controles de afirmaciones y documentación de entrega.
 - Nueva auditoría offline de la respuesta real, con fallos preservados y referencia sintética identificada.
+- Perfil source-anchors-es-v2-semantic-candidate: los 12 campos ahora tienen definiciones explícitas; distingue tiempos, porcentajes, negación, otros lotes y condición del cultivo. No es una mejora real medida todavía.
+- Validación reforzada contra cantidades negativas/no finitas, sin reintentos ni sustitución por el extractor local.
+- 20 casos nuevos escritos por IA, todos de desarrollo y fuera del benchmark; referencias y requests congelados en ocho archivos. No se inventó revisión humana ni respuesta del modelo.
 
 ## Verificación local actual
 
-88 pruebas aprobadas; 34/34 hashes del freeze válidos. policy.py intacto.
+124 pruebas aprobadas; 34/34 hashes del benchmark y 8/8 del nuevo candidato de desarrollo válidos. policy.py intacto. Las pruebas incluyen seis rechazos de cantidades inválidas y 30 controles de referencias/perfil; no son métricas de calidad Nemotron.
 
 | Métrica | Baseline local, 12 casos | Candidato local, 30 casos |
 |---|---:|---:|
@@ -70,6 +75,10 @@ Evidencia y reproducción:
 - fixtures/nebius_smoke_reference.json
 - python -m agrofield_agent.smoke_audit — sin red ni créditos, compara respuesta guardada y extractor local.
 
+El incremento v2 no hizo otra llamada: total histórico sigue en cuatro. Su preflight local usa 9.776 bytes para la nota smoke y como máximo 9.999 para los 20 casos. Conserva el techo preventivo US$0,00122880 con precios históricos; no se comprobó facturación actual ni se consumieron nuevos créditos. El prompt más largo puede aumentar costo/latencia; eso aún no fue medido.
+
+Nuevo paquete: fixtures/development/semantic_v2/README.md y docs/submission/nebius-semantic-candidate-2026-09-15.md. Reproducción: python -m agrofield_agent.semantic_preflight. Reporta nemotron_quality null y benchmark_validated false; valida referencias, no predicciones.
+
 ## Evidencia humana: estado honesto
 
 Cero entrevistas completadas; cero revisiones primarias/dobles/de salida y cero adjudicaciones. No hay kappa ni task precision humanos. Existe un aporte saneado del fundador, no independiente y fuera del benchmark.
@@ -82,9 +91,9 @@ Se decidió preparar una submission lean sin esperar el protocolo humano complet
 
 ## Qué falta y qué conviene hacer ahora
 
-1. Mejorar extracción semántica en casos de desarrollo: evento vs condición, tiempos, porcentajes, negación y desconocidos. No ajustar contra el holdout.
-2. Verificar contrato y seguridad localmente, conservando el resultado adverso. Mocks no prueban que Nemotron mejore.
-3. Solicitar una nueva autorización concreta antes de otra comparación live; todas las autorizaciones de una llamada ya se consumieron.
+1. El perfil v2 y sus casos locales están listos y congelados. Preservarlos junto con el resultado adverso anterior; no ajustar contra el holdout.
+2. Solicitar autorización concreta para una nueva comparación live de una solicitud sobre la misma nota sintética histórica; todas las autorizaciones anteriores están consumidas.
+3. Medir todos los campos y sus errores, además de latencia/tokens/costo. Mocks y referencias válidas no prueban que Nemotron mejore; una sola nota tampoco permite generalizar.
 4. Verificar demo completa con Nemotron y evaluación más amplia, con métricas separadas por proveedor.
 5. Preparar y, solo tras autorizaciones específicas, publicar repositorio MIT, URL, video y submission.
 

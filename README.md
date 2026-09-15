@@ -96,6 +96,15 @@ python -m agrofield_agent.smoke_audit
 
 This compares a saved Nemotron response and current local extraction against one developer-authored synthetic reference. It is not a blind benchmark: Nemotron got four of eight expected observed fields right, omitted three, misclassified the event, and added an unsupported general condition. The local extractor got eight of eight observed fields right on this one development note. See the [full adverse result](docs/submission/nebius-source-anchor-run-2026-09-14.md).
 
+The current extraction profile is `source-anchors-es-v2-semantic-candidate`: explicit field definitions, distinctions between times/percentages, and client-side rejection of negative or nonfinite quantities. It has **not been evaluated live**. Twenty separate AI-authored synthetic development cases and their request budgets can be checked without network access:
+
+```bash
+python -m agrofield_agent.semantic_preflight
+python -m agrofield_agent.freeze fixtures/development/semantic_v2/manifest.json --root .
+```
+
+These checks validate reference structure and request integrity, not model quality or agronomic correctness. The separate development freeze has 8 files and does not replace the 34-file human-benchmark candidate freeze. See the [v2 candidate report](docs/submission/nebius-semantic-candidate-2026-09-15.md).
+
 ## Tavily policy
 
 Tavily is not used to invent a diagnosis. It is called only when a recent external alert could change **where or when to inspect**, and results are limited to configured authoritative domains such as INTA, SMN, SENASA, and university extension sites. Retrieved sources are displayed with date and URL, and never bypass the evidence gate.
@@ -157,7 +166,7 @@ estimated cost US$0.00021192. The policy remained blocked and one proposed task
 remained pending. The key was revoked. The format contract passed, but the
 single-note quality audit failed; no Nemotron benchmark or superiority has been
 established. The [run record](docs/submission/nebius-source-anchor-run-2026-09-14.md)
-preserves those limitations. Current local verification: **88 tests passing**,
+preserves those limitations. Current local verification: **124 tests passing**,
 34/34 frozen hashes unchanged, zero independent human reviews.
 
 ## License

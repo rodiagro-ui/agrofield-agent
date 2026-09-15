@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 15 de septiembre de 2026. Repositorio local, sin publicación ni despliegue. Primera extracción Nemotron aceptada, pero calidad insuficiente. Las cuatro autorizaciones de solicitud única están consumidas.
+> Snapshot: 15 de septiembre de 2026, tras preparar el candidato semántico v2. Repositorio local, sin publicación ni despliegue. La primera extracción histórica de Nemotron fue aceptada con calidad insuficiente; v2 aún no fue llamado. Las cuatro autorizaciones de solicitud única están consumidas.
 
 ## Ubicación y estado
 
@@ -15,8 +15,9 @@ El repositorio Git es outputs/agrofield-agent dentro del workspace nebius-nvidia
 - Perfil sin razonamiento: 911d786; diagnósticos: e8a926a; wire raw/SDK: e0f0ad2.
 - Anclaje por IDs de fuente: 1c432ed. Este es el commit ejecutado en la primera extracción aceptada.
 - Auditoría offline y registro saneado de la llamada: 8d994c4. Consultar git log para el commit posterior de actualización documental.
+- Instrucciones semánticas v2 y validación numérica: 6d7a5a8; casos/checker/freeze de desarrollo: ab339dc.
 - Licencia MIT.
-- 88 pruebas aprobadas: incluyen 31 pruebas Nebius simuladas, nueve de fuentes y tres de auditoría guardada.
+- 124 pruebas aprobadas: incluyen 37 pruebas Nebius simuladas, nueve de fuentes, tres de auditoría guardada y 30 del perfil/referencias de desarrollo.
 - Cero cambios en policy.py, extractor local o benchmark congelado durante este incremento.
 - Hash SHA-256 canónico de policy.py: e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b.
 
@@ -37,6 +38,8 @@ Leer completos y en este orden:
 11. benchmark/agronomy_blind_v1/authorization/preflight-findings.md
 12. docs/submission/README.md
 13. docs/submission/nebius-source-anchor-run-2026-09-14.md
+14. docs/submission/nebius-semantic-candidate-2026-09-15.md
+15. fixtures/development/semantic_v2/README.md
 
 Para trabajo Nebius: leer además nebius-api-compatibility-harness.md, nebius-source-anchors-2026-09-14.md y los registros de intentos anteriores dentro de docs/submission/.
 Para evidencia humana: leer los estados, consentimiento, alcance y fieldwork pack enlazados desde authorization/README.md.
@@ -51,6 +54,8 @@ Después reproducir sin servicios externos:
     .\.venv\Scripts\python.exe -m agrofield_agent.evaluate benchmark/agronomy_blind_v1/data/cases.jsonl
     .\.venv\Scripts\python.exe -m agrofield_agent.freeze benchmark/agronomy_blind_v1/freeze/manifest.json --root .
     .\.venv\Scripts\python.exe -m agrofield_agent.smoke_audit
+    .\.venv\Scripts\python.exe -m agrofield_agent.semantic_preflight
+    .\.venv\Scripts\python.exe -m agrofield_agent.freeze fixtures/development/semantic_v2/manifest.json --root .
 
 ## Producto y límites de confianza
 
@@ -59,6 +64,8 @@ AgroField Agent coordina recorridas de soja después de lluvia intensa, viento o
 El modo local usa deterministic-es-v0.1. El modo Nebius de la aplicación usa un adaptador guarded: una solicitud por proceso, cero retries, autorización/cap/precios obligatorios, esquema cerrado, fuentes por IDs, citas resueltas contra la nota original y telemetría. La app nunca permite al modelo desactivar policy.py.
 
 El anclaje de fuentes evita citas inventadas o parafraseadas: no garantiza que la frase respalde el valor elegido. La prueba real documentó precisamente ese límite.
+
+El perfil actual es source-anchors-es-v2-semantic-candidate. Añade definiciones explícitas de los 12 campos, distingue tiempos/porcentajes, negación y alcance por lote, y rechaza cantidades negativas/no finitas. Esto no reemplaza un validador semántico ni demuestra mejora del modelo. Su único estado es candidato probado localmente, no resultado live.
 
 El modo python -m agrofield_agent --recording fuerza local, desactiva credenciales externas, usa SQLite temporal y muestra ENSAYO LOCAL · SINTÉTICO. Su ensayo fue verificado de extremo a extremo. No es evidencia de una demo Nemotron. Tavily es opcional, restringido a fuentes permitidas y nunca fue llamado.
 
@@ -109,6 +116,17 @@ Referencia sintética: fixtures/nebius_smoke_reference.json; sus valores ya esta
 Auditoría reproducible: python -m agrofield_agent.smoke_audit; sin red, con hash de la nota.
 Reporte interpretado: docs/submission/nebius-source-anchor-run-2026-09-14.md.
 
+## Nuevo paquete de desarrollo v2, separado del benchmark
+
+- fixtures/development/semantic_v2/cases.jsonl: 20 notas nuevas con referencias explícitamente escritas por IA; split development en todas, no humanas y no holdout.
+- Casos de tiempos separados, porcentajes con distinto denominador, granizo negado, tormenta inespecífica, condición desconocida, otro lote, plantas/puntos, unidades, contradicciones, cero verificado y órdenes incrustadas.
+- semantic_preflight valida forma/citas de las referencias y presupuesto de los requests: no crea salidas del modelo ni calcula calidad.
+- preflight.json conserva fingerprints por nota/request y cobertura de campos observados/desconocidos. nemotron_quality null; benchmark_validated false.
+- manifest.json congela ocho archivos del perfil/referencias/checker; 8/8 verificados. No sustituye ni modifica el freeze humano candidato de 34 archivos.
+- Payload de la nota smoke: 9.776 bytes; máximo de los 20 casos: 9.999. Techo preventivo por solicitud sin cambios: US$0,00122880 con precios históricos. No es un precio vigente ni nueva autorización.
+- Los prompts más largos podrían aumentar tokens/latencia; ninguna mejora de calidad o rendimiento fue medida.
+- Mantener ambos freezes y el resultado adverso anterior. Versionar cambios futuros de perfil/referencias; no editar referencias después de observar resultados para mejorar el puntaje.
+
 ## Estado humano, privacidad y estrategia
 
 - Entrevistas completadas: 0.
@@ -148,8 +166,8 @@ Las cuatro autorizaciones Nebius de una solicitud están consumidas. No llamar d
 
 ## Próximo incremento de mayor impacto
 
-Mejorar las definiciones de campos y la extracción semántica en desarrollo: distinguir evento/condición, edad/duración y área/agua; cubrir negación y desconocidos. Preservar respuesta adversa y holdout; nunca completar silenciosamente la salida Nemotron con valores del extractor local.
+El candidato semántico está preparado y congelado. La siguiente evidencia de mayor valor sería una nueva solicitud diagnóstica sobre la misma nota de desarrollo histórica, con autorización separada. Comparar los 12 campos y conservar tanto aciertos como errores, tokens/latencia/costo; no basta HTTP 200. Una repetición perfecta tampoco constituye benchmark ni valida toda la demo.
 
-Verificación local: tests del contrato y nuevos casos de desarrollo, auditoría guardada, baselines y freeze. Eso no demuestra mejora del modelo; una comparación live posterior necesita autorización separada. Antes de presentar, falta demo completa Nemotron, evaluación más amplia y URL/repo/video públicos autorizados.
+Sin esa autorización, solo trabajo local. No repetir solicitudes con permisos ya consumidos ni reconstruir respuestas supuestas. Preservar policy.py, holdout y evidencia adversa. Antes de presentar, faltan calidad medida de v2, demo completa Nemotron, evaluación más amplia y URL/repo/video públicos autorizados.
 
 Fecha límite de las bases congeladas: 30/10/2026 10:00 PDT / 14:00 Argentina. Última revisión oficial registrada: 08/09/2026; no se hizo una nueva comprobación de bases en este incremento.

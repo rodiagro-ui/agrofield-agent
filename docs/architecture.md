@@ -54,7 +54,7 @@ original note excerpts before constructing the shared observation schema. Invali
 references fail closed. This guarantees literal provenance, not semantic support
 for every model-extracted value; see `submission/nebius-source-anchors-2026-09-14.md`.
 
-Every extracted field carries `value`, `unit` where relevant, an exact `evidence_quote`, and `confidence`. Values not explicitly supported by the note are `null`; the model is told not to infer them.
+The shared `ObservationDraft` contains typed observation fields, an `evidence_quotes` mapping, `notes` and `uncertainties`; it does not contain per-field confidence scores. Units are defined by field names and wire-schema descriptions. The v2 candidate explicitly distinguishes event age from water duration, total affected area from water area, and event type from crop condition. Unknown values remain `null`/`unknown`. Client-side quantity checks reject negative or nonfinite measurements even where the shared model lacks a bound. These checks do not prove semantic support. See `submission/nebius-semantic-candidate-2026-09-15.md`; v2 is locally tested only.
 
 Critical fields for the post-event slice:
 

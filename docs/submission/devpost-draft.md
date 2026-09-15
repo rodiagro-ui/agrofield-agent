@@ -100,7 +100,7 @@ In a high-consequence workflow, fluency is not the same as readiness. The useful
 
 ## What's next
 
-- Improve extraction semantics on development cases, then verify with a separately authorized, capped live comparison; mocks alone cannot demonstrate quality gains.
+- Verify the locally prepared semantic v2 candidate with a separately authorized, capped live comparison. Twenty AI-authored development references and improved field instructions are ready; mocks/reference checks alone do not demonstrate model quality gains.
 - Only then consider the frozen suites on Nemotron under a separately approved cap.
 - Measure quality, p95 latency, tokens, retries, and cost per completed visit.
 - Complete independent agronomy review without changing the frozen references after seeing holdout results.

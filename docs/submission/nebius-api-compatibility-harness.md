@@ -1,6 +1,6 @@
 # Nebius API compatibility harness
 
-> Estado al 2026-09-15: 31 pruebas con transporte simulado y una primera observación real aceptada después de tres intentos adversos. El contrato pasó; la calidad semántica del único caso aceptado no. Este documento no autoriza otra llamada.
+> Estado al 2026-09-15: 37 pruebas con transporte simulado; una observación real aceptada del perfil anterior y un perfil semántico v2 todavía no ejecutado live. El contrato histórico pasó; su calidad semántica no. Este documento no autoriza otra llamada.
 
 ## Propósito
 
@@ -40,6 +40,7 @@ Durante y después de la llamada:
 - fuerza exactamente un tool call `record_field_observation`;
 - rechaza respuesta vacía, texto libre, JSON inválido, herramienta equivocada o múltiples tool calls;
 - vuelve a comprobar que los argumentos contienen exactamente el esquema cerrado, aunque el servidor ignore `strict`;
+- rechaza cantidades negativas/no finitas del lado cliente, incluso donde el modelo compartido no impone el mínimo del esquema enviado;
 - recibe IDs de fuentes del catálogo exacto de la nota, rechaza IDs desconocidos/duplicados y los resuelve a citas originales; valida `ObservationDraft`, exige citas literales por cada hecho no nulo, citas vacías para campos ausentes y notas estrictamente literales;
 - exige `prompt_tokens`, `completion_tokens` y request ID;
 - calcula costo estimado desde el uso reportado;
@@ -102,7 +103,9 @@ El formato pasó, la calidad no. La clave se revocó; no se reintentó. Véase
 
 ## Preflight actual, sin red
 
-Con la nota sintética de desarrollo y los precios históricos —solo para reproducir el cálculo— el perfil con IDs serializa 5.885 bytes y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
+Con la nota sintética de desarrollo y los precios históricos —solo para reproducir el cálculo— el perfil v2 serializa 9.776 bytes (perfil anterior: 5.885) y mantiene el mismo techo conservador de US$0,00122880. El comando termina con código 2 por falta deliberada de confirmación live y reporta `network_request_sent: false`.
+
+El perfil `source-anchors-es-v2-semantic-candidate` añade definiciones de los 12 campos, separación de tiempos/porcentajes y tratamiento explícito de negación/contradicciones. La suite separada de desarrollo contiene 20 casos sintéticos escritos por IA y su preflight es reproducible sin HTTP. No hay resultados reales de v2. Véase `nebius-semantic-candidate-2026-09-15.md`.
 
 ## Gate para una futura llamada
 
