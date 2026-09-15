@@ -30,7 +30,8 @@
 - [x] Shared Token Factory base URL aligned with the current official API documentation.
 - [x] Model-selected source IDs resolved to exact original-note excerpts, with nine source-span tests; this verifies provenance, not semantic support.
 - [x] Offline audit of the first accepted live response with three regression tests: all 12 fields examined, adverse errors preserved, no network calls.
-- [x] Current local suite: 124 tests passing; human-benchmark candidate freeze 34/34 unchanged.
+- [x] Current local suite: 133 tests passing; human-benchmark candidate freeze 34/34 unchanged.
+- [x] Browser handoff diagnostic with no credentials/API client; nine tests, real local-browser check. September 15 live smoke paused before inference; key revoked. See `submission/nebius-semantic-preflight-pause-2026-09-15.md`.
 - [x] Semantic v2 profile: explicit field meanings and nonnegative/finite numeric guards; 20 separate AI-authored synthetic development cases, 30 reference/profile tests and an 8-file development freeze. No live v2 evaluation or human validation implied.
 
 ## Requires user authorization or external validation

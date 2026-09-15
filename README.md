@@ -86,7 +86,7 @@ python -m agrofield_agent.nebius_smoke \
   --max-cost-usd 0.01
 ```
 
-The prices above are only the values observed for Nemotron Nano on 2026-09-14 and must be rechecked before use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires human authorization plus an exact live-confirmation phrase. Existing single-request authorizations have been consumed. See [`docs/submission/nebius-api-compatibility-harness.md`](docs/submission/nebius-api-compatibility-harness.md).
+The prices above were observed for Nemotron Nano on 2026-09-14 and rechecked on 2026-09-15; recheck before every use. The harness sends no retries, rejects empty or nonliteral output, emits only sanitized failure diagnostics, and requires human authorization plus an exact live-confirmation phrase. Four historical single-request authorizations were consumed. A new authorized attempt was paused before inference on September 15 due to a local handoff failure; it is not permission to retry automatically. See the [pause record](docs/submission/nebius-semantic-preflight-pause-2026-09-15.md) and [guarded harness](docs/submission/nebius-api-compatibility-harness.md).
 
 Audit the first accepted real response **offline**, without provider credentials:
 
@@ -166,7 +166,7 @@ estimated cost US$0.00021192. The policy remained blocked and one proposed task
 remained pending. The key was revoked. The format contract passed, but the
 single-note quality audit failed; no Nemotron benchmark or superiority has been
 established. The [run record](docs/submission/nebius-source-anchor-run-2026-09-14.md)
-preserves those limitations. Current local verification: **124 tests passing**,
+preserves those limitations. Current local verification: **133 tests passing**,
 34/34 frozen hashes unchanged, zero independent human reviews.
 
 ## License

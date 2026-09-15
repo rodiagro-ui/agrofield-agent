@@ -1,6 +1,6 @@
 # AgroField Agent — handoff operativo para otra IA
 
-> Snapshot: 15 de septiembre de 2026, tras preparar el candidato semántico v2. Repositorio local, sin publicación ni despliegue. La primera extracción histórica de Nemotron fue aceptada con calidad insuficiente; v2 aún no fue llamado. Las cuatro autorizaciones de solicitud única están consumidas.
+> Snapshot: 15 de septiembre de 2026, tras pausar el nuevo smoke antes de inferencia por un fallo local de transferencia. Repositorio local, sin publicación ni despliegue. V2 aún no fue llamado. Cuatro autorizaciones históricas consumidas; la nueva solicitud autorizada sigue sin consumir, pausada hasta reanudación explícita del usuario. Clave temporal revocada, lista vacía.
 
 ## Ubicación y estado
 
@@ -16,8 +16,9 @@ El repositorio Git es outputs/agrofield-agent dentro del workspace nebius-nvidia
 - Anclaje por IDs de fuente: 1c432ed. Este es el commit ejecutado en la primera extracción aceptada.
 - Auditoría offline y registro saneado de la llamada: 8d994c4. Consultar git log para el commit posterior de actualización documental.
 - Instrucciones semánticas v2 y validación numérica: 6d7a5a8; casos/checker/freeze de desarrollo: ab339dc.
+- Preflight de navegador sin credenciales y nueve tests: 27ca97b. No cambia el perfil Nemotron ni consume inferencia.
 - Licencia MIT.
-- 124 pruebas aprobadas: incluyen 37 pruebas Nebius simuladas, nueve de fuentes, tres de auditoría guardada y 30 del perfil/referencias de desarrollo.
+- 133 pruebas aprobadas: incluyen 37 pruebas Nebius simuladas, nueve de fuentes, tres de auditoría guardada, 30 del perfil/referencias de desarrollo y nueve del diagnóstico de transferencia local.
 - Cero cambios en policy.py, extractor local o benchmark congelado durante este incremento.
 - Hash SHA-256 canónico de policy.py: e659fb913cc7526d4c9673e7ce6460ba83abce310a9fe8e0d94dbd3900d9938b.
 
@@ -40,6 +41,7 @@ Leer completos y en este orden:
 13. docs/submission/nebius-source-anchor-run-2026-09-14.md
 14. docs/submission/nebius-semantic-candidate-2026-09-15.md
 15. fixtures/development/semantic_v2/README.md
+16. docs/submission/nebius-semantic-preflight-pause-2026-09-15.md
 
 Para trabajo Nebius: leer además nebius-api-compatibility-harness.md, nebius-source-anchors-2026-09-14.md y los registros de intentos anteriores dentro de docs/submission/.
 Para evidencia humana: leer los estados, consentimiento, alcance y fieldwork pack enlazados desde authorization/README.md.
@@ -162,12 +164,14 @@ No modificar ni debilitar policy.py. Separar hechos, inferencias y recomendacion
 
 Cero secretos, PII, establecimientos reales o coordenadas exactas en Git. Solo registros saneados con el alcance autorizado.
 
-Las cuatro autorizaciones Nebius de una solicitud están consumidas. No llamar de nuevo ni crear otra clave sin autorización específica y cap concreto. No Tavily, gastos, publicación de repo, despliegue, video ni submission sin autorización. Verificar precio, crédito y Stop usage antes de una llamada autorizada; detenerse ante cobro o crédito insuficiente.
+Las cuatro autorizaciones históricas Nebius están consumidas. El usuario autorizó una nueva solicitud Nano (0 retries, cap US$0.01 promocional, US$0 personal, clave temporal) y pidió pausa ante anomalías. Se pausó por HTTP 403 del helper local antes de invocar AgroField/Nebius. La solicitud sigue sin consumir; no reanudar ni crear otra clave automáticamente: esperar reanudación explícita. No Tavily, gastos, publicación de repo, despliegue, video ni submission. Revalidar precio, crédito y Stop usage al retomar.
+
+La causa reproducida: Referrer-Policy no-referrer del helper generó Origin:null en el POST. El diagnóstico sin credenciales confirma que same-origin conserva el origen esperado sin aceptar null/orígenes ajenos. Herramienta: python -m agrofield_agent.handoff_preflight (solo datos ficticios, nunca claves; no ejecuta API). El helper transitorio fue eliminado. Antes de una nueva clave, ensayar el futuro runner completo en navegador con transporte simulado; mantener Host/Origin/ruta de un uso y limpiar SQLite antes de terminar en Windows. Registro: docs/submission/nebius-semantic-preflight-pause-2026-09-15.md.
 
 ## Próximo incremento de mayor impacto
 
-El candidato semántico está preparado y congelado. La siguiente evidencia de mayor valor sería una nueva solicitud diagnóstica sobre la misma nota de desarrollo histórica, con autorización separada. Comparar los 12 campos y conservar tanto aciertos como errores, tokens/latencia/costo; no basta HTTP 200. Una repetición perfecta tampoco constituye benchmark ni valida toda la demo.
+El candidato semántico está preparado y congelado. Respetar la pausa actual y resolver/verificar el runner completo sin credenciales reales. Tras reanudación del usuario y controles actuales, usar la única solicitud autorizada sobre la misma nota histórica. Comparar los 12 campos y conservar tanto aciertos como errores, tokens/latencia/costo; no basta HTTP 200. Una repetición perfecta tampoco constituye benchmark ni valida toda la demo.
 
-Sin esa autorización, solo trabajo local. No repetir solicitudes con permisos ya consumidos ni reconstruir respuestas supuestas. Preservar policy.py, holdout y evidencia adversa. Antes de presentar, faltan calidad medida de v2, demo completa Nemotron, evaluación más amplia y URL/repo/video públicos autorizados.
+Mientras dure la pausa, solo trabajo local. No repetir solicitudes con permisos históricos consumidos ni reconstruir respuestas supuestas. Preservar policy.py, holdout y evidencia adversa. Antes de presentar, faltan calidad medida de v2, demo completa Nemotron, evaluación más amplia y URL/repo/video públicos autorizados.
 
 Fecha límite de las bases congeladas: 30/10/2026 10:00 PDT / 14:00 Argentina. Última revisión oficial registrada: 08/09/2026; no se hizo una nueva comprobación de bases en este incremento.
