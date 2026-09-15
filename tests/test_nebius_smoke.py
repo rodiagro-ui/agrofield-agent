@@ -662,3 +662,37 @@ def test_malformed_response_metadata_is_sanitized_instead_of_crashing():
     assert caught.value.diagnostics["request_id"] is None
     assert caught.value.diagnostics["finish_reason"] is None
     assert "private" not in json.dumps(caught.value.diagnostics)
+
+
+@pytest.mark.parametrize("field_name,value", [
+    ("event_hours_ago", -1),
+    ("event_hours_ago", float("nan")),
+    ("event_hours_ago", float("inf")),
+    ("sample_points", -1),
+    ("water_duration_hours", float("inf")),
+    ("stand_count_per_m", float("inf")),
+])
+def test_invalid_quantities_fail_closed_without_retry_or_local_fallback(field_name, value, monkeypatch):
+    arguments = json.loads(valid_body()["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"])
+    arguments[field_name] = value
+    calls = 0
+
+    def handler(request):
+        nonlocal calls
+        calls += 1
+        return httpx.Response(200, json=valid_body(arguments))
+
+    async def forbidden_fallback(*args, **kwargs):
+        pytest.fail("Rejected model data must not be filled by the local provider")
+
+    monkeypatch.setattr(LocalExtractionProvider, "extract", forbidden_fallback)
+    provider = GuardedNebiusExtractionProvider(plan(), "test-secret", httpx.MockTransport(handler))
+    with pytest.raises(ContractViolation) as caught:
+        asyncio.run(provider.extract(NOTE))
+    assert caught.value.code == "invalid_measurement"
+    assert caught.value.diagnostics["http_status"] == 200
+    assert NOTE not in str(caught.value)
+    assert "test-secret" not in str(caught.value)
+    with pytest.raises(RuntimeError, match="one request per process"):
+        asyncio.run(provider.extract(NOTE))
+    assert calls == 1
