@@ -8,7 +8,8 @@ AgroField does not guess its way from a field note to a recommendation. It shows
 
 ## Preflight gates
 
-- Public build uses a real Nemotron runtime call and the header says `Nemotron · Token Factory`.
+- Record with `?lang=en` so the interface, questions and task templates are in English; the field notes stay in Spanish on purpose and the narration says so.
+- Public build uses a real Nemotron runtime call and the header says `Nemotron · Token Factory`; `/api/runtime` shows the model and demo budget.
 - The run records model, latency, tokens, request ID, retries, and measured cost.
 - No API key, personal data, browser bookmark, email, or private tab is visible.
 - Demo database contains only synthetic fields and a fresh audit trail.
@@ -35,7 +36,7 @@ AgroField does not guess its way from a field note to a recommendation. It shows
 
 ### 0:29–1:01 — Incomplete note
 
-**Action:** Select **Lote Bajo**, choose **Nota incompleta**, and click **Analizar evidencia**.
+**Action:** Select **Lote Bajo**, choose **Incomplete note**, and click **Analyze evidence**.
 
 **Screen:** Pause on literal evidence quotes, the red blocked banner, and the two missing checks.
 
@@ -45,7 +46,7 @@ AgroField does not guess its way from a field note to a recommendation. It shows
 
 ### 1:01–1:31 — Complete evidence
 
-**Action:** Choose **Nota completa** and analyze again.
+**Action:** Choose **Complete note** and analyze again.
 
 **Screen:** Show the W-route quote, six sampling points, water duration, review-ready state, priority score, and proposed follow-up task.
 
@@ -55,7 +56,7 @@ AgroField does not guess its way from a field note to a recommendation. It shows
 
 ### 1:31–1:52 — Human approval and audit
 
-**Action:** Enter a synthetic reviewer label, approve one follow-up task, and open **Trazabilidad**.
+**Action:** Enter a synthetic reviewer label, approve one follow-up task, and open **Audit trail**.
 
 **Screen:** Show the pending-to-approved transition and the audit events.
 

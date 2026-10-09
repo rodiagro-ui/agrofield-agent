@@ -42,7 +42,9 @@ The visible red state — “decision blocked; critical checks missing” — is
 
 ## Demo story
 
-Target narrative, verified only in the local/synthetic rehearsal so far. The complete live Nemotron browser workflow still needs verification.
+Target narrative, verified in the local/synthetic rehearsal and, on 2026-10-09, in a full browser → server → `/api/analyze` rehearsal with a simulated Nemotron transport. The complete live Nemotron browser workflow still needs verification.
+
+The interface is bilingual: scouts write notes in Spanish, and judges can switch the interface, completeness questions and task templates to English with the `EN` button or `?lang=en`.
 
 An incomplete note reports soybean stage, a recent storm, safe access, standing water, and a low stand in one area. AgroField preserves those facts but blocks closure because the note does not report representative sampling or water duration. It asks only the missing questions.
 
@@ -56,6 +58,8 @@ The user then supplies a complete note with a W-shaped route, multiple sampling 
 - Pure deterministic evidence and safety policy.
 - SQLite field memory, proposed tasks, approvals, and audit events.
 - Optional Tavily adapter with domain allowlists and retained source URLs.
+
+The public demo runs Nemotron through a budgeted provider: every note is one guarded request with zero retries, admitted first by a persistent spend ledger with a hard total budget, a daily cap and a per-minute limit. When the budget is exhausted the interface says so and only an explicitly labeled local extractor answers; it is never a silent fallback. `GET /api/runtime` shows the engine and the remaining budget without credentials.
 
 Application responses never expose provider credentials. Structurally invalid model output is rejected. Missing required evidence produces a blocked state. Exact quotes do not guarantee semantic correctness: the first accepted smoke still contained an unsupported value, so this is not a guarantee against all model errors.
 
@@ -111,13 +115,14 @@ In a high-consequence workflow, fluency is not the same as readiness. The useful
 
 Draft for a future authorized public deployment, not currently live or end-to-end verified with Nemotron.
 
-1. Open `TBD_PUBLIC_URL`.
-2. Confirm the header displays `Nemotron · Token Factory`.
-3. Select **Lote Bajo** and choose **Nota incompleta**.
-4. Click **Analizar evidencia** and verify that the system shows literal evidence quotes plus a blocked state for missing checks.
-5. Choose **Nota completa**, analyze again, and verify the review-ready state.
+1. Open `TBD_PUBLIC_URL?lang=en` (the `EN` button switches languages at any time; field notes stay in Spanish, the scouts' language).
+2. Confirm the header badge displays `Nemotron · Token Factory`; `TBD_PUBLIC_URL/api/runtime` shows the model and the remaining demo budget.
+3. Select **Lote Bajo** and choose **Incomplete note**.
+4. Click **Analyze evidence** and verify literal evidence quotes plus a blocked state with two missing checks.
+5. Choose **Complete note**, analyze again, and verify the review-ready state and proposed tasks.
 6. Enter a reviewer label and approve one proposed task.
-7. Open **Trazabilidad** and verify the recorded observation, proposal, and human decision.
+7. Open **Audit trail** and verify the recorded observation, proposal, and human decision.
+8. Optional: paste your own Spanish note; every analysis is one capped Nemotron request. If the demo budget is exhausted, the interface says so and labels the local extractor's result.
 
 Demo data and locations are synthetic. No treatment is autonomously recommended or executed.
 
