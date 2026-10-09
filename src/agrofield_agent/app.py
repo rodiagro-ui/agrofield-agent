@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from agrofield_agent.config import Settings
+from agrofield_agent.demo_provider import (
+    DEMO_PROVIDER,
+    DemoLimitReached,
+    demo_provider_from_env,
+)
 from agrofield_agent.models import AnalysisRequest, ApprovalRequest
 from agrofield_agent.nebius_smoke import (
     ContractViolation,
@@ -15,7 +21,10 @@ from agrofield_agent.nebius_smoke import (
 )
 from agrofield_agent.orchestrator import Orchestrator
 from agrofield_agent.repository import Repository
-from agrofield_agent.services.extraction import ExtractionProvider
+from agrofield_agent.services.extraction import (
+    ExtractionProvider,
+    LocalExtractionProvider,
+)
 from agrofield_agent.services.tavily import TavilyAlertProvider
 
 
@@ -33,11 +42,16 @@ def create_app(
         settings.database_path, PACKAGE_ROOT / "data" / "fields.json"
     )
     repository.initialize()
-    orchestrator = Orchestrator(
-        repository,
-        extraction_provider or provider_for_application(settings),
-        TavilyAlertProvider(settings),
-    )
+    if extraction_provider is None:
+        extraction_provider = (
+            demo_provider_from_env(settings)
+            if settings.provider == DEMO_PROVIDER
+            else provider_for_application(settings)
+        )
+    alerts = TavilyAlertProvider(settings)
+    orchestrator = Orchestrator(repository, extraction_provider, alerts)
+    # Explicit, user-requested and labeled by its telemetry; never a silent fallback.
+    local_orchestrator = Orchestrator(repository, LocalExtractionProvider(), alerts)
 
     app = FastAPI(
         title="AgroField Agent",
@@ -59,6 +73,18 @@ def create_app(
             "recording_mode": settings.recording_mode,
         }
 
+    @app.get("/api/runtime")
+    async def runtime() -> dict:
+        """Public, credential-free description of the extraction engine in use."""
+        budget = getattr(extraction_provider, "budget", None)
+        return {
+            "provider": settings.provider,
+            "model": settings.nebius_model if settings.provider != "local"
+            else "deterministic-es-v0.1",
+            "nemotron_runtime": settings.provider != "local",
+            "demo_budget": budget() if callable(budget) else None,
+        }
+
     @app.get("/api/fields")
     async def fields():
         return repository.list_fields()
@@ -71,13 +97,27 @@ def create_app(
         return item
 
     @app.post("/api/analyze")
-    async def analyze(request: AnalysisRequest):
+    async def analyze(
+        request: AnalysisRequest,
+        engine: Literal["default", "local"] = Query(default="default"),
+    ):
+        chosen = local_orchestrator if engine == "local" else orchestrator
         try:
-            return await orchestrator.analyze(
+            return await chosen.analyze(
                 request.field_id, request.raw_text, request.use_tavily
             )
         except KeyError as exc:
             raise HTTPException(status_code=404, detail="Unknown field") from exc
+        except DemoLimitReached as exc:
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "detail": str(exc),
+                    "failure_code": exc.code,
+                    "automatic_retry": False,
+                    "local_engine_available": True,
+                },
+            )
         except (ContractViolation, UpstreamRequestFailure) as exc:
             return JSONResponse(
                 status_code=503,

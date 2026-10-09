@@ -33,6 +33,10 @@
 - [x] Current local suite: 133 tests passing; human-benchmark candidate freeze 34/34 unchanged.
 - [x] Browser handoff diagnostic with no credentials/API client; nine tests, real local-browser check. September 15 live smoke paused before inference; key revoked. See `submission/nebius-semantic-preflight-pause-2026-09-15.md`.
 - [x] Semantic v2 profile: explicit field meanings and nonnegative/finite numeric guards; 20 separate AI-authored synthetic development cases, 30 reference/profile tests and an 8-file development freeze. No live v2 evaluation or human validation implied.
+- [x] 2026-10-09: full browser → loopback → `/api/analyze` handoff rehearsed with a simulated transport and a fictitious value; 24 tests. No key created, no inference consumed.
+- [x] 2026-10-09: public demo mode (`nebius-demo`) with persistent spend ledger, total budget, daily and per-minute caps, HTTP 429 on exhaustion and an explicit, labeled local engine; `/api/runtime`; 18 tests. Not exercised live.
+- [x] 2026-10-09: capped batch evaluator `nebius_eval` (one guarded request per synthetic development note, zero retries, total cap, holdout refused, local comparison on the same cases); 9 tests. No batch run yet.
+- [x] 2026-10-09: bilingual interface (Spanish notes, English chrome/questions/task templates) verified in the local browser; `policy.py` untouched. Suite: 184 tests.
 
 ## Requires user authorization or external validation
 
@@ -46,8 +50,10 @@
 - [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request, returned HTTP 503, and failed strict contract validation with `non-literal evidence quote for: event_type`, so the tool contract did not pass.
 - [x] First accepted `ObservationDraft` from real Nebius through `/api/analyze` in-process TestClient, HTTP 200; fourth separately authorized inference, one request and zero retries. See `submission/nebius-source-anchor-run-2026-09-14.md`.
 - [ ] Acceptable extraction quality: the first accepted response got only 4/8 expected observed fields right on one synthetic development note and added an unsupported condition; literal quotes alone did not ensure correctness.
-- [ ] Live browser-to-server Nemotron demo with both incomplete and complete notes; the accepted in-process smoke does not establish this.
-- [ ] Run the annotated suite on Nemotron Nano and Super under a separately approved cap.
+- [ ] Live browser-to-server Nemotron demo with both incomplete and complete notes; the accepted in-process smoke and the 2026-10-09 simulated rehearsal do not establish this.
+- [ ] Recheck Token Factory billing on the day (promotional credit, Nano prices, balance, `Usage stops after the trial`), then run the single authorized request through `handoff_runner --mode live`.
+- [ ] Run the 20 synthetic development notes on Nemotron Nano through `nebius_eval` under a separately approved request count and total cap; then consider Super.
+- [ ] Approve a demo budget and exercise `nebius-demo` mode live before deployment.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.
 - [x] User reports preliminary verbal acceptance from all five interview candidates and preliminary verbal coverage of `R01`, `R02`, and `A01`.

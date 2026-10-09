@@ -76,6 +76,39 @@ python -m agrofield_agent
 
 No live Nebius or Tavily request is made by the default configuration.
 
+### Public demo mode (not enabled by default)
+
+`AGROFIELD_PROVIDER=nebius-demo` serves many notes for judges while keeping every
+guard of the single-request contract (one POST per note, zero retries, closed
+schema, literal evidence). It adds a persistent SQLite spend ledger with a hard
+total budget, a daily request cap and a per-minute rate limit, all enforced
+before any network access. It refuses to start unless `AGROFIELD_NEBIUS_DEMO_CONFIRMATION`,
+both prices, `NEBIUS_MAX_COST_USD` and `AGROFIELD_DEMO_TOTAL_BUDGET_USD` are set
+(see `.env.example`). When the budget is exhausted `/api/analyze` returns HTTP 429
+and the interface says so; only an explicit `?engine=local` request answers with the
+local extractor, and its telemetry names that engine. `GET /api/runtime` reports the
+engine and the ledger without credentials. The ledger is an application estimate
+from reported tokens, not an invoice; the account-level usage stop on Token Factory
+remains the real backstop. This mode has **not** been exercised live yet.
+
+The interface is bilingual: field notes stay in Spanish, and the chrome,
+completeness questions and task templates switch to English with the `EN` button
+or `?lang=en`, without touching `policy.py`.
+
+### Single-use browser handoff and capped batch evaluation
+
+`python -m agrofield_agent.handoff_runner` rehearses the full browser → loopback →
+`/api/analyze` path with a simulated transport and a fixed fictitious value; its
+`--mode live` variant performs the one authorized request from a key pasted into a
+local form. See `docs/submission/handoff-rehearsal-2026-10-09.md`.
+
+`python -m agrofield_agent.nebius_eval` runs synthetic development notes through
+the guarded contract under a total cap and a request count, one request per note
+and zero retries, and compares all 12 fields with the local extractor on the same
+cases. Without `--confirm-live RUN_NEBIUS_EVAL_BATCH` it prints the plan and exits
+2. It refuses holdout cases. Its output is a development diagnostic on synthetic
+references, never a validated benchmark. No batch has been run yet.
+
 Before any future authorized API smoke, run the network-free cost and contract preflight. This command deliberately exits with code 2 because it omits the one-use live confirmation:
 
 ```bash
@@ -166,8 +199,13 @@ estimated cost US$0.00021192. The policy remained blocked and one proposed task
 remained pending. The key was revoked. The format contract passed, but the
 single-note quality audit failed; no Nemotron benchmark or superiority has been
 established. The [run record](docs/submission/nebius-source-anchor-run-2026-09-14.md)
-preserves those limitations. Current local verification: **133 tests passing**,
+preserves those limitations. Current local verification: **184 tests passing**,
 34/34 frozen hashes unchanged, zero independent human reviews.
+
+On 2026-10-09 the complete browser-to-route handoff was rehearsed with a simulated
+transport and a fictitious value; no key was created and no inference ran. The
+public demo mode, the capped batch evaluator and the bilingual interface were added
+the same day and are tested locally only.
 
 ## License
 

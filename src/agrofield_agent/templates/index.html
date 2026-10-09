@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#152b22" />
     <title>AgroField Agent</title>
-    <link rel="icon" href="/static/favicon.svg?v=0.1.1" type="image/svg+xml" />
-    <link rel="stylesheet" href="/static/styles.css?v=0.1.1" />
+    <link rel="icon" href="/static/favicon.svg?v=0.1.2" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/styles.css?v=0.1.2" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#" aria-label="AgroField Agent inicio">
+      <a class="brand" href="#" aria-label="AgroField Agent">
         <span class="brand-mark" aria-hidden="true">AF</span>
-        <span><strong>AgroField</strong><small>evidencia antes de decidir</small></span>
+        <span><strong>AgroField</strong><small data-i18n="brand_tagline">evidencia antes de decidir</small></span>
       </a>
       <div class="top-actions">
-        <span id="providerBadge" class="provider-badge">modo local · $0</span>
-        <button id="auditButton" class="ghost-button">Trazabilidad</button>
+        <span id="providerBadge" class="provider-badge" title=""></span>
+        <button id="langButton" class="ghost-button" aria-label="Language / Idioma">EN</button>
+        <button id="auditButton" class="ghost-button" data-i18n="audit_button">Trazabilidad</button>
       </div>
     </header>
 
@@ -24,12 +25,12 @@
       <aside class="field-panel">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">Post-evento · soja</p>
-            <h1>¿Dónde mirar primero?</h1>
+            <p class="eyebrow" data-i18n="panel_eyebrow">Post-evento · soja</p>
+            <h1 data-i18n="panel_title">¿Dónde mirar primero?</h1>
           </div>
-          <span class="event-chip">142 mm máx.</span>
+          <span class="event-chip" data-i18n="event_chip">142 mm máx.</span>
         </div>
-        <p class="panel-copy">Priorización previa. No diagnostica ni autoriza tratamientos.</p>
+        <p class="panel-copy" data-i18n="panel_copy">Priorización previa. No diagnostica ni autoriza tratamientos.</p>
         <div id="fieldList" class="field-list" aria-live="polite"></div>
       </aside>
 
@@ -39,25 +40,26 @@
         <section class="capture-card">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">1 · Captura de recorrida</p>
-              <h2>Contá lo que viste, sin completar formularios</h2>
+              <p class="eyebrow" data-i18n="capture_eyebrow">1 · Captura de recorrida</p>
+              <h2 data-i18n="capture_title">Contá lo que viste, sin completar formularios</h2>
             </div>
-            <button id="voiceButton" class="voice-button" title="Dictar nota">
-              <span aria-hidden="true">●</span> Dictar
+            <button id="voiceButton" class="voice-button" data-i18n-title="voice_title">
+              <span aria-hidden="true">●</span> <span data-i18n="voice_button">Dictar</span>
             </button>
           </div>
-          <div class="examples" role="group" aria-label="Ejemplos de nota">
-            <button id="incompleteExample" class="example-button active">Nota incompleta</button>
-            <button id="completeExample" class="example-button">Nota completa</button>
+          <div class="examples" role="group" aria-label="Examples">
+            <button id="incompleteExample" class="example-button active" data-i18n="example_incomplete">Nota incompleta</button>
+            <button id="completeExample" class="example-button" data-i18n="example_complete">Nota completa</button>
           </div>
-          <label class="sr-only" for="rawNote">Nota de campo</label>
-          <textarea id="rawNote" rows="7" placeholder="Ej.: Soja V3, tormenta hace 18 horas…"></textarea>
+          <label class="sr-only" for="rawNote" data-i18n="note_label">Nota de campo</label>
+          <textarea id="rawNote" rows="7" data-i18n-placeholder="note_placeholder" placeholder="Ej.: Soja V3, tormenta hace 18 horas…"></textarea>
+          <p class="field-hint" data-i18n="note_hint">Las notas de campo se escriben en español; la interfaz puede verse en inglés.</p>
           <div class="capture-footer">
             <label class="toggle-row">
               <input id="tavilyToggle" type="checkbox" />
-              <span><strong>Alertas oficiales recientes</strong><small>Tavily, solo fuentes permitidas</small></span>
+              <span><strong data-i18n="tavily_label">Alertas oficiales recientes</strong><small data-i18n="tavily_hint">Tavily, solo fuentes permitidas</small></span>
             </label>
-            <button id="analyzeButton" class="primary-button">Analizar evidencia <span>→</span></button>
+            <button id="analyzeButton" class="primary-button"><span data-i18n="analyze_button">Analizar evidencia</span> <span>→</span></button>
           </div>
           <p id="captureMessage" class="message" aria-live="polite"></p>
         </section>
@@ -69,8 +71,8 @@
             <article class="result-card evidence-card">
               <div class="section-heading compact">
                 <div>
-                  <p class="eyebrow">2 · Hechos extraídos</p>
-                  <h2>Evidencia trazable</h2>
+                  <p class="eyebrow" data-i18n="evidence_eyebrow">2 · Hechos extraídos</p>
+                  <h2 data-i18n="evidence_title">Evidencia trazable</h2>
                 </div>
                 <span id="latencyBadge" class="latency-badge"></span>
               </div>
@@ -78,8 +80,8 @@
             </article>
 
             <article class="result-card questions-card">
-              <p class="eyebrow">3 · Control de completitud</p>
-              <h2 id="questionsTitle">Preguntas pendientes</h2>
+              <p class="eyebrow" data-i18n="questions_eyebrow">3 · Control de completitud</p>
+              <h2 id="questionsTitle"></h2>
               <div id="questionList"></div>
             </article>
           </div>
@@ -87,17 +89,17 @@
           <article class="result-card decision-card">
             <div class="section-heading">
               <div>
-                <p class="eyebrow">4 · Revisión humana</p>
-                <h2>Tareas propuestas, todavía no ejecutadas</h2>
+                <p class="eyebrow" data-i18n="review_eyebrow">4 · Revisión humana</p>
+                <h2 data-i18n="review_title">Tareas propuestas, todavía no ejecutadas</h2>
               </div>
-              <label class="reviewer-label">Revisor <input id="reviewerName" placeholder="Ej.: Asesor demo" autocomplete="off" /></label>
+              <label class="reviewer-label"><span data-i18n="reviewer_label">Revisor</span> <input id="reviewerName" data-i18n-placeholder="reviewer_placeholder" placeholder="Ej.: Asesor demo" autocomplete="off" /></label>
             </div>
             <div id="taskList" class="task-list"></div>
           </article>
 
           <article id="alertsCard" class="result-card alerts-card hidden">
-            <p class="eyebrow">Contexto externo · no prueba presencia en el lote</p>
-            <h2>Alertas oficiales recientes</h2>
+            <p class="eyebrow" data-i18n="alerts_eyebrow">Contexto externo · no prueba presencia en el lote</p>
+            <h2 data-i18n="alerts_title">Alertas oficiales recientes</h2>
             <div id="alertList"></div>
           </article>
         </section>
@@ -106,12 +108,12 @@
 
     <dialog id="auditDialog" class="audit-dialog">
       <div class="section-heading">
-        <div><p class="eyebrow">Registro inmutable</p><h2>Trazabilidad local</h2></div>
-        <button id="closeAudit" class="ghost-button">Cerrar</button>
+        <div><p class="eyebrow" data-i18n="audit_eyebrow">Registro inmutable</p><h2 data-i18n="audit_title">Trazabilidad local</h2></div>
+        <button id="closeAudit" class="ghost-button" data-i18n="close_button">Cerrar</button>
       </div>
       <div id="auditList" class="audit-list"></div>
     </dialog>
 
-    <script src="/static/app.js?v=0.1.1" defer></script>
+    <script src="/static/app.js?v=0.1.2" defer></script>
   </body>
 </html>

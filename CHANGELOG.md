@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-09 — demo-readiness increment
+
+- Added the single-use browser handoff runner and passed its full rehearsal with a simulated Nebius transport and a fictitious value.
+- Added a public demo provider with a persistent spend ledger, hard total budget, daily and per-minute caps, HTTP 429 on exhaustion and an explicit, labeled local engine; `GET /api/runtime` describes the engine without credentials.
+- Added a capped batch evaluator for synthetic development notes through the guarded contract, with holdout refusal and a same-case local comparison.
+- Made the interface bilingual (Spanish field notes, English chrome, questions and task templates) without changing `policy.py`.
+- Suite: 184 tests; both freezes unchanged.
+
+No Nemotron request, Tavily request, deployment, publication, video upload or paid action was performed in this increment.
+
 ## 2026-09-08 — submission-preparation increment
 
 - Added an English Devpost draft, a timed demo runbook, and explicit release/claim controls.
