@@ -15,6 +15,7 @@ from agrofield_agent.nebius_smoke import (
 )
 from agrofield_agent.orchestrator import Orchestrator
 from agrofield_agent.repository import Repository
+from agrofield_agent.services.extraction import ExtractionProvider
 from agrofield_agent.services.tavily import TavilyAlertProvider
 
 
@@ -25,6 +26,7 @@ PROJECT_ROOT = PACKAGE_ROOT.parents[1]
 def create_app(
     settings: Settings | None = None,
     repository: Repository | None = None,
+    extraction_provider: ExtractionProvider | None = None,
 ) -> FastAPI:
     settings = settings or Settings.from_env()
     repository = repository or Repository(
@@ -33,7 +35,7 @@ def create_app(
     repository.initialize()
     orchestrator = Orchestrator(
         repository,
-        provider_for_application(settings),
+        extraction_provider or provider_for_application(settings),
         TavilyAlertProvider(settings),
     )
 
