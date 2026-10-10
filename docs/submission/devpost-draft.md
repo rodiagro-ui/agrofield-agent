@@ -119,7 +119,7 @@ In a high-consequence workflow, fluency is not the same as readiness. The useful
 
 Draft for a future authorized public deployment, not currently live or end-to-end verified with Nemotron.
 
-1. Open `TBD_PUBLIC_URL?lang=en` (the `EN` button switches languages at any time; field notes stay in Spanish, the scouts' language).
+1. Open `TBD_PUBLIC_URL?lang=en` (the `EN` button switches languages at any time; field notes stay in Spanish, the scouts' language). The demo runs on a free instance that sleeps after 15 idle minutes: the first load can take about a minute.
 2. Confirm the header badge displays `Nemotron · Token Factory`; `TBD_PUBLIC_URL/api/runtime` shows the model and the remaining demo budget.
 3. Select **Lote Bajo** and choose **Incomplete note**.
 4. Click **Analyze evidence** and verify literal evidence quotes plus a blocked state with two missing checks.

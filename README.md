@@ -153,6 +153,14 @@ python -m agrofield_agent.freeze fixtures/development/semantic_v2/manifest.json 
 
 These checks validate reference structure and request integrity, not model quality or agronomic correctness. The separate development freeze has 8 files and does not replace the 34-file human-benchmark candidate freeze. See the [v2 candidate report](docs/submission/nebius-semantic-candidate-2026-09-15.md).
 
+## Deploying the public demo
+
+`Dockerfile` honors `PORT`; `docker-compose.yml` runs the container locally from a
+filled `.env`; `render.yaml` is a Render Blueprint for a free web service with
+every non-secret variable preset (Super as extractor and verifier, US$1 total demo
+budget, 300 requests per day, 6 per minute). The only secret, `NEBIUS_API_KEY`, is
+entered in the host's dashboard. See `docs/submission/deploy-demo.md`.
+
 ## Tavily policy
 
 Tavily is not used to invent a diagnosis. It is called only when a recent external alert could change **where or when to inspect**, and results are limited to configured authoritative domains such as INTA, SMN, SENASA, and university extension sites. Retrieved sources are displayed with date and URL, and never bypass the evidence gate.

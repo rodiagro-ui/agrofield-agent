@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-10 — measured Nemotron increment
+
+- Rechecked Token Factory billing on the day and set the post-trial preference to stop usage.
+- Ran the single authorized request through the browser handoff: HTTP 200, 12/12 fields on the smoke note.
+- Ran capped 20-note batches: Nano under v2 (8/20 accepted, F1 0.52), then under the versioned profile v3 Nano (10/20, 0.65) and Super (18/20, 0.93); local extractor 0.82 on the same notes. About US$0.036 in total, promotional credit only. Super chosen for the demo.
+- Versioned the extraction profile as v3 with a new 8-file freeze; references byte-identical; v2 manifest kept as history.
+- Added the second-pass support verifier (optional, demo mode), batch mode and multi-model runs in the single-use form, Render Free blueprint, compose file and deployment plan.
+- Devpost draft now carries measured Nebius/NVIDIA feedback and the batch table. Suite: 210 tests.
+
+No deployment, publication, video upload or Devpost submission was performed in this increment; no personal charge.
+
 ## 2026-10-09 — demo-readiness increment
 
 - Added the single-use browser handoff runner and passed its full rehearsal with a simulated Nebius transport and a fictitious value.
