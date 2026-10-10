@@ -1,6 +1,6 @@
 # AgroField Agent submission workspace
 
-> Local preparation only. Publication, deployment, upload and submission require separate explicit owner authorization. Snapshot: 2026-09-15.
+> Local preparation only. Publication, deployment, upload and submission require separate explicit owner authorization. Snapshot: 2026-10-10.
 
 ## Positioning
 
@@ -11,18 +11,18 @@ AgroField Agent turns an incomplete post-storm soybean scouting note into tracea
 | Item | Current evidence |
 |---|---|
 | Local vertical MVP | Functional; safe local/synthetic recording rehearsal verified |
-| Local tests | 133 passing, including 37 mocked guarded-Nebius tests and nine browser-handoff diagnostic tests |
+| Local tests | 210 passing, including the single-use handoff runner, budgeted demo mode, batch evaluator and second-pass verifier |
 | Local 12-case baseline | F1 0.9551; omission recall 1.0000 |
 | Local 30-case candidate | F1 0.9188; omission recall 0.9714; 53 adverse failures |
 | Candidate freeze | 34/34 hashes valid; 7/17 gates; benchmark_validated false |
 | Human evidence | Zero independent interviews/reviews; one sanitized non-independent founder input |
-| Real Nemotron | Four separately authorized requests; first accepted extraction on request four |
-| Accepted route | In-process FastAPI TestClient /api/analyze with real Nebius HTTPS, not public browser E2E |
-| Accepted output quality | Only 4/8 expected observed fields right on one synthetic development note; three omissions, one wrong event, one unsupported condition |
-| Accepted request telemetry | 7.59 s; 2,288 input / 311 output tokens; estimated US$0.00021192 |
-| Aggregate Nemotron benchmark | Not run |
-| Current v2 candidate | Explicit semantic instructions and numeric guards; 20 separate synthetic development cases, 8/8-file freeze; not live-evaluated |
-| Credentials and authorization | Four historical requests consumed; new September 15 attempt paused before inference, temporary key revoked and list empty; owner must explicitly resume |
+| Real Nemotron | Five single requests plus two capped 20-note batches (Nano v2, Nano v3 and Super v3); 2026-10-10 single request 12/12 on the smoke note |
+| Accepted route | Browser → loopback single-use form → `/api/analyze` with real Nebius HTTPS on the owner's PC; still no public deployment |
+| Output quality | Super v3: F1 0.934, 18/20 accepted, 15/20 notes fully right on 20 AI-authored synthetic notes; Nano v3 0.65; local 0.82. Not a validated benchmark |
+| Telemetry | Super p95 2.7 s, about US$0.0014 per note; all 2026-10-10 runs about US$0.031 in total |
+| Aggregate Nemotron benchmark | 20-note synthetic development batches only; the 30-case candidate was not run on Nemotron |
+| Current profile | v3 (`fixtures/development/semantic_v3`, 8/8 freeze); optional second-pass verifier `support-judge-es-v1-candidate`, not live-evaluated |
+| Credentials and authorization | Owner-created temporary key used through the local form on 2026-10-10; the owner chose not to revoke it yet and was told the risk |
 | Tavily | No runtime requests; no measured bonus value |
 | Public repository, URL, video, submission | Not created |
 
