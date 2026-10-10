@@ -22,6 +22,7 @@ import httpx
 
 from agrofield_agent.config import Settings
 from agrofield_agent.models import ObservationDraft, ProviderTelemetry
+from agrofield_agent.semantic_verifier import VerifiedExtractionProvider
 from agrofield_agent.nebius_smoke import (
     MONEY_QUANTUM,
     ContractViolation,
@@ -218,6 +219,11 @@ class BudgetedNebiusExtractionProvider:
             ProviderTelemetry.model_validate(result["telemetry"]),
         )
 
+    def admit(self, ceiling_usd: Decimal) -> Callable[[str, Decimal | None], None]:
+        """Reserve a second request (the verifier) on the same ledger and caps."""
+        reservation = self.ledger.reserve(ceiling_usd, self.limits)
+        return lambda status, cost: self.ledger.settle(reservation, status, cost)
+
     def budget(self) -> dict[str, Any]:
         return {
             "provider": DEMO_PROVIDER,
@@ -231,7 +237,7 @@ class BudgetedNebiusExtractionProvider:
 
 def demo_provider_from_env(
     settings: Settings, *, transport: httpx.AsyncBaseTransport | None = None
-) -> BudgetedNebiusExtractionProvider:
+) -> BudgetedNebiusExtractionProvider | VerifiedExtractionProvider:
     """Build the demo provider or refuse to start; every guard is mandatory."""
     if os.getenv("AGROFIELD_NEBIUS_DEMO_CONFIRMATION") != DEMO_CONFIRMATION_PHRASE:
         raise PreflightBlocked(
@@ -260,10 +266,32 @@ def demo_provider_from_env(
         os.getenv("AGROFIELD_DEMO_LEDGER_PATH")
         or settings.database_path.with_name("nebius-demo-ledger.sqlite3")
     )
-    return BudgetedNebiusExtractionProvider(
+    provider = BudgetedNebiusExtractionProvider(
         plan=plan,
         api_key=settings.nebius_api_key,
         ledger=SpendLedger(ledger_path),
         limits=limits,
         transport=transport,
+    )
+    verifier_model = os.getenv("AGROFIELD_VERIFIER_MODEL", "").strip()
+    if not verifier_model:
+        return provider
+    # Optional second pass: its own model and prices, the same cap, the same
+    # ledger and caps (each verification is one more admitted request).
+    verifier_plan = SmokePlan(
+        model=verifier_model,
+        base_url=settings.nebius_base_url,
+        max_completion_tokens=plan.max_completion_tokens,
+        prompt_token_budget=plan.prompt_token_budget,
+        input_price_per_million=_required_decimal_env("NEBIUS_VERIFIER_INPUT_PRICE_PER_MILLION"),
+        output_price_per_million=_required_decimal_env("NEBIUS_VERIFIER_OUTPUT_PRICE_PER_MILLION"),
+        max_cost_usd=plan.max_cost_usd,
+    )
+    _validate_plan(verifier_plan)
+    return VerifiedExtractionProvider(
+        inner=provider,
+        plan=verifier_plan,
+        api_key=settings.nebius_api_key,
+        transport=transport,
+        admit=provider.admit,
     )

@@ -21,6 +21,7 @@ from agrofield_agent.nebius_smoke import (
 )
 from agrofield_agent.orchestrator import Orchestrator
 from agrofield_agent.repository import Repository
+from agrofield_agent.semantic_verifier import verification_context
 from agrofield_agent.services.extraction import (
     ExtractionProvider,
     LocalExtractionProvider,
@@ -82,6 +83,7 @@ def create_app(
             "model": settings.nebius_model if settings.provider != "local"
             else "deterministic-es-v0.1",
             "nemotron_runtime": settings.provider != "local",
+            "verifier_model": getattr(extraction_provider, "verifier_model", None),
             "demo_budget": budget() if callable(budget) else None,
         }
 
@@ -102,10 +104,22 @@ def create_app(
         engine: Literal["default", "local"] = Query(default="default"),
     ):
         chosen = local_orchestrator if engine == "local" else orchestrator
+        token = verification_context.set(None)
         try:
-            return await chosen.analyze(
+            analysis = await chosen.analyze(
                 request.field_id, request.raw_text, request.use_tavily
             )
+            report = verification_context.get()
+            payload = analysis.model_dump(mode="json")
+            if report is not None:
+                payload["verification"] = report
+                repository.record_event("observation_verified", analysis.id, {
+                    key: report[key] for key in (
+                        "status", "profile", "model", "fields_checked",
+                        "supported", "cleared", "failure_code", "telemetry",
+                    ) if key in report
+                })
+            return payload
         except KeyError as exc:
             raise HTTPException(status_code=404, detail="Unknown field") from exc
         except DemoLimitReached as exc:
@@ -130,6 +144,8 @@ def create_app(
             )
         except RuntimeError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
+        finally:
+            verification_context.reset(token)
 
     @app.post("/api/tasks/{task_id}/approve")
     async def approve(task_id: str, request: ApprovalRequest):

@@ -346,6 +346,10 @@ class VerifiedExtractionProvider:
         verification_context.set(report)
         return verified, telemetry
 
+    @property
+    def verifier_model(self) -> str:
+        return self.plan.model
+
     def budget(self) -> dict[str, Any] | None:
         inner_budget = getattr(self.inner, "budget", None)
         return inner_budget() if callable(inner_budget) else None

@@ -268,5 +268,98 @@ def test_local_default_runtime_reports_no_nemotron_and_no_budget(tmp_path):
 
     assert runtime.json() == {
         "provider": "local", "model": "deterministic-es-v0.1",
-        "nemotron_runtime": False, "demo_budget": None,
+        "nemotron_runtime": False, "verifier_model": None, "demo_budget": None,
     }
+
+
+# --- optional second-pass verifier in demo mode ---------------------------------
+
+def verifying_endpoint(verdicts):
+    """Answer the extraction with the fixed body and the verifier with `verdicts`."""
+    calls = []
+
+    def endpoint(request):
+        payload = json.loads(request.content)
+        tool = payload["tools"][0]["function"]["name"]
+        calls.append((payload["model"], tool))
+        if tool == "judge_field_support":
+            fields = payload["tools"][0]["function"]["parameters"]["required"]
+            answer = {name: verdicts.get(name, "supported") for name in fields}
+            return httpx.Response(200, json={
+                "id": "chatcmpl-verify",
+                "choices": [{"finish_reason": "tool_calls", "message": {
+                    "role": "assistant", "content": None, "tool_calls": [{
+                        "id": "call", "type": "function",
+                        "function": {"name": "judge_field_support", "arguments": json.dumps(answer)},
+                    }]}}],
+                "usage": {"prompt_tokens": 1200, "completion_tokens": 80},
+            })
+        return httpx.Response(200, json=body())
+
+    endpoint.calls = calls
+    return endpoint
+
+
+def test_demo_verifier_clears_unsupported_fields_and_records_the_check(monkeypatch, tmp_path):
+    endpoint = verifying_endpoint({"sample_points": "unsupported"})
+    client = demo_client(
+        monkeypatch, tmp_path, endpoint,
+        AGROFIELD_VERIFIER_MODEL="nvidia/nemotron-3-super-120b-a12b",
+        NEBIUS_VERIFIER_INPUT_PRICE_PER_MILLION="0.3",
+        NEBIUS_VERIFIER_OUTPUT_PRICE_PER_MILLION="0.9",
+    )
+    request = {"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False}
+
+    response = client.post("/api/analyze", json=request)
+    runtime = client.get("/api/runtime").json()
+    audit = client.get("/api/audit?limit=5").json()
+
+    assert response.status_code == 200
+    assert endpoint.calls == [
+        (DEFAULT_MODEL, "record_field_observation"),
+        ("nvidia/nemotron-3-super-120b-a12b", "judge_field_support"),
+    ]
+    payload = response.json()
+    assert payload["verification"]["status"] == "verified"
+    assert payload["verification"]["cleared"] == ["sample_points"]
+    assert payload["observation"]["sample_points"] is None
+    assert "sample_points" in payload["missing_critical"]
+    assert payload["status"] == "blocked"
+    assert runtime["verifier_model"] == "nvidia/nemotron-3-super-120b-a12b"
+    assert runtime["demo_budget"]["requests_total"] == 2
+    assert audit[0]["event_type"] == "observation_verified"
+    assert audit[0]["payload"]["cleared"] == ["sample_points"]
+    assert SECRET not in response.text + json.dumps(audit)
+
+
+def test_demo_verifier_failure_keeps_the_extraction_and_marks_it_unverified(monkeypatch, tmp_path):
+    def endpoint(request):
+        tool = json.loads(request.content)["tools"][0]["function"]["name"]
+        if tool == "judge_field_support":
+            return httpx.Response(503, json={"error": "synthetic"})
+        return httpx.Response(200, json=body())
+
+    client = demo_client(
+        monkeypatch, tmp_path, endpoint,
+        AGROFIELD_VERIFIER_MODEL="nvidia/nemotron-3-super-120b-a12b",
+        NEBIUS_VERIFIER_INPUT_PRICE_PER_MILLION="0.3",
+        NEBIUS_VERIFIER_OUTPUT_PRICE_PER_MILLION="0.9",
+    )
+    response = client.post("/api/analyze", json={"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False})
+
+    assert response.status_code == 200
+    assert response.json()["verification"]["status"] == "unverified"
+    assert response.json()["observation"]["sample_points"] == 6
+
+
+def test_demo_verifier_requires_its_own_prices(monkeypatch, tmp_path):
+    demo_env(monkeypatch, AGROFIELD_VERIFIER_MODEL="nvidia/nemotron-3-super-120b-a12b")
+    with pytest.raises(PreflightBlocked):
+        demo_provider_from_env(settings_for(tmp_path))
+
+
+def test_without_verifier_the_response_has_no_verification_key(monkeypatch, tmp_path):
+    client = demo_client(monkeypatch, tmp_path, Endpoint())
+    response = client.post("/api/analyze", json={"field_id": "lote-bajo", "raw_text": NOTE, "use_tavily": False})
+    assert response.status_code == 200 and "verification" not in response.json()
+    assert client.get("/api/runtime").json()["verifier_model"] is None

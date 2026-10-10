@@ -39,6 +39,9 @@ const i18n = {
     budget_exhausted: "El presupuesto de la demo con Nemotron se agotó; la instancia sigue disponible con el extractor local.",
     rate_limited: "Demasiadas solicitudes en un minuto; esperá unos segundos.",
     engine_local_note: "Resultado del extractor local determinista, no de Nemotron.",
+    verified: (m, ok, cleared) => `Verificación por ${m}: ${ok} respaldados · ${cleared} descartados`,
+    unverified: m => `Sin verificar (${m} no respondió; se muestra la extracción sin segunda pasada)`,
+    cleared_field: "Descartado por verificación: la cita no respalda el valor",
     labels: { crop_stage: "Estado", event_type: "Evento", event_hours_ago: "Antigüedad", access_safe: "Acceso",
       sample_points: "Puntos", affected_area_pct: "Área afectada", standing_water_pct: "Agua parada",
       water_duration_hours: "Duración agua", lodging_pct: "Vuelco", stem_damage_pct: "Daño de tallos", stand_count_per_m: "Stand" },
@@ -78,6 +81,9 @@ const i18n = {
     budget_exhausted: "The demo's Nemotron budget is exhausted; this instance stays available with the local extractor.",
     rate_limited: "Too many requests within a minute; wait a few seconds.",
     engine_local_note: "Result from the local deterministic extractor, not from Nemotron.",
+    verified: (m, ok, cleared) => `Verified by ${m}: ${ok} supported · ${cleared} cleared`,
+    unverified: m => `Unverified (${m} did not answer; showing the extraction without the second pass)`,
+    cleared_field: "Cleared by the verifier: the quote does not support the value",
     labels: { crop_stage: "Stage", event_type: "Event", event_hours_ago: "Event age", access_safe: "Access",
       sample_points: "Sample points", affected_area_pct: "Affected area", standing_water_pct: "Standing water",
       water_duration_hours: "Water duration", lodging_pct: "Lodging", stem_damage_pct: "Stem damage", stand_count_per_m: "Stand" },
@@ -240,12 +246,25 @@ function renderAnalysis(result, options = {}) {
   el("latencyBadge").textContent = `${provider} · ${telemetry.model} · ${Math.round(telemetry.latency_ms)} ms`;
   el("latencyBadge").title = telemetry.request_id ? `request ${telemetry.request_id}` : "";
 
+  const verification = result.verification || null;
+  const clearedFields = verification ? (verification.cleared || []) : [];
   el("evidenceGrid").innerHTML = Object.keys(lang.labels).map(key => {
     const value = result.observation[key];
     const missing = value === null || value === undefined || value === "unknown";
     const quote = result.observation.evidence_quotes[key];
-    return `<div class="evidence-item ${missing ? "missing" : ""}"><small>${lang.labels[key]}</small><strong>${missing ? t("not_reported") : formatValue(key, value)}</strong>${quote ? `<em>“${quote}”</em>` : ""}</div>`;
+    const cleared = clearedFields.includes(key);
+    return `<div class="evidence-item ${missing ? "missing" : ""} ${cleared ? "cleared" : ""}"><small>${lang.labels[key]}</small><strong>${missing ? t("not_reported") : formatValue(key, value)}</strong>${quote ? `<em>“${quote}”</em>` : ""}${cleared ? `<em class="cleared-note">${t("cleared_field")}</em>` : ""}</div>`;
   }).join("");
+  const badge = el("verificationBadge");
+  if (verification && verification.status === "verified") {
+    badge.textContent = t("verified")(verification.model, verification.supported.length, verification.cleared.length);
+    badge.className = "verification-badge ok";
+  } else if (verification && verification.status === "unverified") {
+    badge.textContent = t("unverified")(verification.model);
+    badge.className = "verification-badge warn";
+  } else {
+    badge.textContent = ""; badge.className = "verification-badge hidden";
+  }
 
   if (result.followup_questions.length) {
     el("questionsTitle").textContent = t("questions_pending");

@@ -153,6 +153,13 @@ class Repository:
             )
         return payload
 
+    def record_event(self, event_type: str, entity_id: str, payload: dict[str, Any]) -> None:
+        with self.connect() as connection:
+            connection.execute(
+                "INSERT INTO audit_events (event_type, entity_id, payload_json, created_at) VALUES (?, ?, ?, ?)",
+                (event_type, entity_id, json.dumps(payload), _now()),
+            )
+
     def list_audit(self, limit: int = 50) -> list[AuditEvent]:
         with self.connect() as connection:
             rows = connection.execute(
