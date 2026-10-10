@@ -1,0 +1,933 @@
+{
+  "scope": "capped_live_batch_synthetic_development_not_a_validated_benchmark",
+  "mode": "live",
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "outcome": "executed",
+  "referrer_policy": "same-origin",
+  "pricing_basis": "operator_supplied_for_this_run",
+  "cost_preflight": {
+    "serialized_request_bytes": 9776,
+    "prompt_token_ceiling": 16384,
+    "completion_token_ceiling": 1024,
+    "estimated_cost_ceiling_usd": "0.00122880"
+  },
+  "max_cost_usd": "0.01000000",
+  "note_sha256": "6bf557787620626e3f9542d116f83a803fcefa9d84f1970beebdb73f5dac0f7d",
+  "handoff": {
+    "path_matches": true,
+    "host_matches": true,
+    "origin_matches": true,
+    "content_type_matches": true,
+    "guard_accepted": true,
+    "posts_received": 1,
+    "posts_accepted": 1,
+    "posts_blocked_after_first": 0,
+    "body_reads": 1
+  },
+  "tavily_enabled": false,
+  "batch": {
+    "scope": "synthetic_development_batch_not_a_validated_benchmark",
+    "extraction_profile": "source-anchors-es-v2-semantic-candidate",
+    "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "benchmark_validated": false,
+    "human_reviews": 0,
+    "reference_origins": [
+      "ai_authored_synthetic_not_human_validated"
+    ],
+    "stop_reason": "completed",
+    "cases_in_dataset": 20,
+    "requests_sent": 20,
+    "accepted": 8,
+    "contract_rejected": 12,
+    "automatic_retries": 0,
+    "nebius": {
+      "correct_observed": 26,
+      "correct_absent": 58,
+      "missing": 8,
+      "wrong_value": 3,
+      "unsupported": 1,
+      "expected_facts_lost_to_rejected_responses": 33,
+      "precision": 0.8667,
+      "recall": 0.3714,
+      "micro_f1": 0.52,
+      "unsupported_assertion_rate": 0.0333,
+      "cases_with_all_fields_right": 1
+    },
+    "local_baseline_same_cases": {
+      "provider": "local/deterministic-es-v0.1",
+      "correct_observed": 60,
+      "correct_absent": 160,
+      "missing": 4,
+      "wrong_value": 6,
+      "unsupported": 10,
+      "expected_facts_lost_to_rejected_responses": 0,
+      "precision": 0.7895,
+      "recall": 0.8571,
+      "micro_f1": 0.8219,
+      "unsupported_assertion_rate": 0.1316,
+      "cases_with_all_fields_right": 7
+    },
+    "latency_ms_p50": 2884.9,
+    "latency_ms_p95": 3961.2,
+    "latency_ms_mean": 3010.9,
+    "input_tokens": 25767,
+    "output_tokens": 2365,
+    "estimated_total_cost_usd": "0.00527040",
+    "estimated_cost_per_accepted_note_usd": "0.00065880",
+    "warning": "Synthetic references are not agronomist-validated. A literal quote does not prove semantic support. Do not report as benchmark performance.",
+    "records": [
+      {
+        "case_id": "D01",
+        "focus": "separate_times",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 7,
+          "correct_absent": 4,
+          "missing": 0,
+          "wrong_value": 1,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "crop_stage",
+              "kind": "wrong_value",
+              "expected": "V4",
+              "observed": "V3"
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": "V3",
+          "event_type": "flooding",
+          "event_hours_ago": 26.0,
+          "access_safe": true,
+          "sample_points": 8,
+          "affected_area_pct": 12.0,
+          "standing_water_pct": 12.0,
+          "water_duration_hours": 10.0,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [
+            "Soja V4.",
+            "Tormenta hace 26 horas, acceso seguro.",
+            "Recorrí 8 puntos.",
+            "El agua parada afecta 12% del lote desde hace 10 horas."
+          ],
+          "evidence_quotes": {
+            "crop_stage": "Soja V4.",
+            "event_type": "Tormenta hace 26 horas, acceso seguro.",
+            "event_hours_ago": "Tormenta hace 26 horas, acceso seguro.",
+            "access_safe": "Tormenta hace 26 horas, acceso seguro.",
+            "sample_points": "Recorrí 8 puntos.",
+            "affected_area_pct": "El agua parada afecta 12% del lote desde hace 10 horas.",
+            "standing_water_pct": "El agua parada afecta 12% del lote desde hace 10 horas.",
+            "water_duration_hours": "El agua parada afecta 12% del lote desde hace 10 horas.",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "crop_stage",
+            "event_type",
+            "event_hours_ago",
+            "access_safe",
+            "sample_points",
+            "affected_area_pct",
+            "standing_water_pct",
+            "water_duration_hours",
+            "lodging_pct",
+            "stem_damage_pct",
+            "stand_count_per_m",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 3259.2322999989847,
+          "input_tokens": 3259,
+          "output_tokens": 353,
+          "request_id": "5dd0f5580e27e90e70f31554217f4412"
+        },
+        "estimated_usage_cost_usd": "0.00028026"
+      },
+      {
+        "case_id": "D02",
+        "focus": "missing_event_time",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 0,
+          "correct_absent": 9,
+          "missing": 3,
+          "wrong_value": 0,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "crop_stage",
+              "kind": "missing",
+              "expected": "V2",
+              "observed": null
+            },
+            {
+              "field": "event_type",
+              "kind": "missing",
+              "expected": "flooding",
+              "observed": "unknown"
+            },
+            {
+              "field": "water_duration_hours",
+              "kind": "missing",
+              "expected": 7,
+              "observed": null
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": null,
+          "event_type": "unknown",
+          "event_hours_ago": null,
+          "access_safe": null,
+          "sample_points": null,
+          "affected_area_pct": null,
+          "standing_water_pct": null,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [],
+          "evidence_quotes": {
+            "crop_stage": "",
+            "event_type": "",
+            "event_hours_ago": "",
+            "access_safe": "",
+            "sample_points": "",
+            "affected_area_pct": "",
+            "standing_water_pct": "",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "crop_stage",
+            "event_type",
+            "event_hours_ago",
+            "access_safe",
+            "sample_points",
+            "affected_area_pct",
+            "standing_water_pct",
+            "water_duration_hours",
+            "lodging_pct",
+            "stem_damage_pct",
+            "stand_count_per_m",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 2448.1755000015255,
+          "input_tokens": 3167,
+          "output_tokens": 304,
+          "request_id": "a0e002a2a55aa239a8c7d2521c26f28c"
+        },
+        "estimated_usage_cost_usd": "0.00026298"
+      },
+      {
+        "case_id": "D03",
+        "focus": "missing_water_time",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3171,
+          "completion_tokens": 298,
+          "completion_tokens_at_limit": false,
+          "request_id": "e139640e0b9f9d83662123647b047277",
+          "http_status": 200,
+          "latency_ms": 3110.7
+        }
+      },
+      {
+        "case_id": "D04",
+        "focus": "different_percentages",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3174,
+          "completion_tokens": 295,
+          "completion_tokens_at_limit": false,
+          "request_id": "5620a7b31b683fdd3121b880cf4b36f3",
+          "http_status": 200,
+          "latency_ms": 2506.4
+        }
+      },
+      {
+        "case_id": "D05",
+        "focus": "negated_hazard",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 0,
+          "correct_absent": 8,
+          "missing": 4,
+          "wrong_value": 0,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "crop_stage",
+              "kind": "missing",
+              "expected": "V5",
+              "observed": null
+            },
+            {
+              "field": "event_type",
+              "kind": "missing",
+              "expected": "wind",
+              "observed": "unknown"
+            },
+            {
+              "field": "event_hours_ago",
+              "kind": "missing",
+              "expected": 9,
+              "observed": null
+            },
+            {
+              "field": "access_safe",
+              "kind": "missing",
+              "expected": false,
+              "observed": null
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": null,
+          "event_type": "unknown",
+          "event_hours_ago": null,
+          "access_safe": null,
+          "sample_points": null,
+          "affected_area_pct": null,
+          "standing_water_pct": null,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [],
+          "evidence_quotes": {
+            "crop_stage": "",
+            "event_type": "",
+            "event_hours_ago": "",
+            "access_safe": "",
+            "sample_points": "",
+            "affected_area_pct": "",
+            "standing_water_pct": "",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "crop_stage",
+            "event_type",
+            "event_hours_ago",
+            "access_safe",
+            "sample_points",
+            "affected_area_pct",
+            "standing_water_pct",
+            "water_duration_hours",
+            "lodging_pct",
+            "stem_damage_pct",
+            "stand_count_per_m",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 2688.558899986674,
+          "input_tokens": 3239,
+          "output_tokens": 304,
+          "request_id": "ccea4c6bef9836e43ec98e27ca60f707"
+        },
+        "estimated_usage_cost_usd": "0.00026730"
+      },
+      {
+        "case_id": "D06",
+        "focus": "unconfirmed_hazards",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3170,
+          "completion_tokens": 306,
+          "completion_tokens_at_limit": false,
+          "request_id": "fa417fc006510e02d5fd20fab751e0f4",
+          "http_status": 200,
+          "latency_ms": 2639.3
+        }
+      },
+      {
+        "case_id": "D07",
+        "focus": "confirmed_mixed",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 3,
+          "correct_absent": 8,
+          "missing": 0,
+          "wrong_value": 1,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "event_type",
+              "kind": "wrong_value",
+              "expected": "mixed",
+              "observed": "hail"
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": "V3",
+          "event_type": "hail",
+          "event_hours_ago": 4.0,
+          "access_safe": true,
+          "sample_points": null,
+          "affected_area_pct": null,
+          "standing_water_pct": null,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [
+            "Soja V3.",
+            "Granizo y viento afectaron este lote hace 4 horas.",
+            "Acceso transitable."
+          ],
+          "evidence_quotes": {
+            "crop_stage": "Soja V3.",
+            "event_type": "Granizo y viento afectaron este lote hace 4 horas.",
+            "event_hours_ago": "Granizo y viento afectaron este lote hace 4 horas.",
+            "access_safe": "Acceso transitable.",
+            "sample_points": "",
+            "affected_area_pct": "",
+            "standing_water_pct": "",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "event_type",
+            "event_hours_ago",
+            "lodging_pct",
+            "stem_damage_pct",
+            "stand_count_per_m",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 2865.069299994502,
+          "input_tokens": 3169,
+          "output_tokens": 289,
+          "request_id": "217eb84bf6247dd3eafc455143fa1e1c"
+        },
+        "estimated_usage_cost_usd": "0.00025950"
+      },
+      {
+        "case_id": "D08",
+        "focus": "condition_not_event",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3165,
+          "completion_tokens": 299,
+          "completion_tokens_at_limit": false,
+          "request_id": "323fd4a13c705acde9fc20c5bd4c2353",
+          "http_status": 200,
+          "latency_ms": 3090.7
+        }
+      },
+      {
+        "case_id": "D09",
+        "focus": "other_field",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3189,
+          "completion_tokens": 301,
+          "completion_tokens_at_limit": false,
+          "request_id": "32c02e279d88615998e1ba47afc2a15b",
+          "http_status": 200,
+          "latency_ms": 3098.9
+        }
+      },
+      {
+        "case_id": "D10",
+        "focus": "plants_vs_points",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3250,
+          "completion_tokens": 265,
+          "completion_tokens_at_limit": false,
+          "request_id": "11216f0aee90e659a1e8c4905a8f45d3",
+          "http_status": 200,
+          "latency_ms": 3085.0
+        }
+      },
+      {
+        "case_id": "D11",
+        "focus": "damage_denominators",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3417,
+          "completion_tokens": 272,
+          "completion_tokens_at_limit": false,
+          "request_id": "2e1247c5ace5fe3e179fbaa99c197408",
+          "http_status": 200,
+          "latency_ms": 2973.0
+        }
+      },
+      {
+        "case_id": "D12",
+        "focus": "embedded_instruction",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3180,
+          "completion_tokens": 299,
+          "completion_tokens_at_limit": false,
+          "request_id": "9f4018dce88d152d9007eeee1d5dbf0d",
+          "http_status": 200,
+          "latency_ms": 3034.5
+        }
+      },
+      {
+        "case_id": "D13",
+        "focus": "conflicting_time",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3179,
+          "completion_tokens": 296,
+          "completion_tokens_at_limit": false,
+          "request_id": "f0ca70ffc27e31bc8e3267b682af135b",
+          "http_status": 200,
+          "latency_ms": 2914.7
+        }
+      },
+      {
+        "case_id": "D14",
+        "focus": "explicit_zero",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 5,
+          "correct_absent": 6,
+          "missing": 0,
+          "wrong_value": 0,
+          "unsupported": 1,
+          "errors": [
+            {
+              "field": "general_condition",
+              "kind": "unsupported",
+              "expected": "unknown",
+              "observed": "good"
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": "R1",
+          "event_type": "none",
+          "event_hours_ago": null,
+          "access_safe": true,
+          "sample_points": null,
+          "affected_area_pct": 0.0,
+          "standing_water_pct": 0.0,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "good",
+          "notes": [
+            "Soja R1.",
+            "No ocurrió ningún evento meteorológico en este lote.",
+            "Se verificó 0% del lote afectado y 0% del lote con agua parada.",
+            "Acceso seguro."
+          ],
+          "evidence_quotes": {
+            "crop_stage": "Soja R1.",
+            "event_type": "No ocurrió ningún evento meteorológico en este lote.",
+            "event_hours_ago": "",
+            "access_safe": "Acceso seguro.",
+            "sample_points": "",
+            "affected_area_pct": "Se verificó 0% del lote afectado y 0% del lote con agua parada.",
+            "standing_water_pct": "Se verificó 0% del lote afectado y 0% del lote con agua parada.",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": "No ocurrió ningún evento meteorológico en este lote."
+          },
+          "uncertainties": []
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 2857.7741000044625,
+          "input_tokens": 3258,
+          "output_tokens": 270,
+          "request_id": "c45fd0fd97b67989bfac3360a972668d"
+        },
+        "estimated_usage_cost_usd": "0.00026028"
+      },
+      {
+        "case_id": "D15",
+        "focus": "count_without_unit",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3246,
+          "completion_tokens": 306,
+          "completion_tokens_at_limit": false,
+          "request_id": "c80d84a9f2e78c490d9a00822de2405b",
+          "http_status": 200,
+          "latency_ms": 3326.0
+        }
+      },
+      {
+        "case_id": "D16",
+        "focus": "forecast_not_observed",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 0,
+          "correct_absent": 11,
+          "missing": 1,
+          "wrong_value": 0,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "crop_stage",
+              "kind": "missing",
+              "expected": "V2",
+              "observed": null
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": null,
+          "event_type": "unknown",
+          "event_hours_ago": null,
+          "access_safe": null,
+          "sample_points": null,
+          "affected_area_pct": null,
+          "standing_water_pct": null,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [],
+          "evidence_quotes": {
+            "crop_stage": "",
+            "event_type": "",
+            "event_hours_ago": "",
+            "access_safe": "",
+            "sample_points": "",
+            "affected_area_pct": "",
+            "standing_water_pct": "",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "crop_stage",
+            "event_type",
+            "event_hours_ago",
+            "access_safe",
+            "sample_points",
+            "affected_area_pct",
+            "standing_water_pct",
+            "water_duration_hours",
+            "lodging_pct",
+            "stem_damage_pct",
+            "stand_count_per_m",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 3961.1822000006214,
+          "input_tokens": 3254,
+          "output_tokens": 304,
+          "request_id": "c3f617ea8e2b914de9fbe881a0d7f744"
+        },
+        "estimated_usage_cost_usd": "0.00026820"
+      },
+      {
+        "case_id": "D17",
+        "focus": "explicit_unit_conversion",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 5,
+          "correct_absent": 7,
+          "missing": 0,
+          "wrong_value": 0,
+          "unsupported": 0,
+          "errors": []
+        },
+        "observation": {
+          "crop_stage": "R1",
+          "event_type": "hail",
+          "event_hours_ago": 1.5,
+          "access_safe": true,
+          "sample_points": 4,
+          "affected_area_pct": null,
+          "standing_water_pct": null,
+          "water_duration_hours": null,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [
+            "Soja R1.",
+            "Granizo hace 90 minutos.",
+            "Acceso seguro.",
+            "Recorrí 4 puntos."
+          ],
+          "evidence_quotes": {
+            "crop_stage": "Soja R1.",
+            "event_type": "Granizo hace 90 minutos.",
+            "event_hours_ago": "Granizo hace 90 minutos.",
+            "access_safe": "Acceso seguro.",
+            "sample_points": "Recorrí 4 puntos.",
+            "affected_area_pct": "",
+            "standing_water_pct": "",
+            "water_duration_hours": "",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 2884.930300002452,
+          "input_tokens": 3240,
+          "output_tokens": 271,
+          "request_id": "bb017ca17292ac541f462f0bbfc1f62b"
+        },
+        "estimated_usage_cost_usd": "0.00025944"
+      },
+      {
+        "case_id": "D18",
+        "focus": "partial_area_denominator",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3177,
+          "completion_tokens": 295,
+          "completion_tokens_at_limit": false,
+          "request_id": "0fb68840085770b3e3a3418b4b9876e6",
+          "http_status": 200,
+          "latency_ms": 2815.1
+        }
+      },
+      {
+        "case_id": "D19",
+        "focus": "negated_condition",
+        "status": "contract_rejected",
+        "failure_code": "contract_violation",
+        "safe_diagnostics": {
+          "response_shape": "single_tool_call_present",
+          "finish_reason": "stop",
+          "tool_call_count": 1,
+          "assistant_content_present": false,
+          "assistant_content_chars": 0,
+          "reasoning_content_present": false,
+          "reasoning_content_chars": 0,
+          "prompt_tokens": 3167,
+          "completion_tokens": 300,
+          "completion_tokens_at_limit": false,
+          "request_id": "97c5d0fbd0a905c0c14b22a50bc21a7d",
+          "http_status": 200,
+          "latency_ms": 2733.5
+        }
+      },
+      {
+        "case_id": "D20",
+        "focus": "reordered_same_source",
+        "status": "accepted",
+        "comparison": {
+          "fields": 12,
+          "correct_observed": 6,
+          "correct_absent": 5,
+          "missing": 0,
+          "wrong_value": 1,
+          "unsupported": 0,
+          "errors": [
+            {
+              "field": "crop_stage",
+              "kind": "wrong_value",
+              "expected": "V4",
+              "observed": "V3"
+            }
+          ]
+        },
+        "observation": {
+          "crop_stage": "V3",
+          "event_type": "flooding",
+          "event_hours_ago": 22.0,
+          "access_safe": null,
+          "sample_points": 7,
+          "affected_area_pct": 12.0,
+          "standing_water_pct": 12.0,
+          "water_duration_hours": 4.0,
+          "lodging_pct": null,
+          "stem_damage_pct": null,
+          "stand_count_per_m": null,
+          "general_condition": "unknown",
+          "notes": [],
+          "evidence_quotes": {
+            "crop_stage": "Soja V4.",
+            "event_type": "Agua parada en 12% del lote desde hace 4 horas; tormenta hace 22 horas.",
+            "event_hours_ago": "Agua parada en 12% del lote desde hace 4 horas; tormenta hace 22 horas.",
+            "access_safe": "",
+            "sample_points": "Recorrí 7 puntos.",
+            "affected_area_pct": "Agua parada en 12% del lote desde hace 4 horas; tormenta hace 22 horas.",
+            "standing_water_pct": "Agua parada en 12% del lote desde hace 4 horas; tormenta hace 22 horas.",
+            "water_duration_hours": "Agua parada en 12% del lote desde hace 4 horas; tormenta hace 22 horas.",
+            "lodging_pct": "",
+            "stem_damage_pct": "",
+            "stand_count_per_m": "",
+            "general_condition": ""
+          },
+          "uncertainties": [
+            "crop_stage",
+            "general_condition"
+          ]
+        },
+        "telemetry": {
+          "provider": "nebius",
+          "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+          "latency_ms": 3122.5994000124047,
+          "input_tokens": 3181,
+          "output_tokens": 270,
+          "request_id": "704715976baeddf63855582eb6f2847e"
+        },
+        "estimated_usage_cost_usd": "0.00025566"
+      }
+    ]
+  },
+  "transport": {
+    "simulated": false,
+    "automatic_retries": 0
+  },
+  "submitted_value": {
+    "fictitious": false,
+    "found_in_environment": false,
+    "found_in_temporary_files": false,
+    "found_in_report": false
+  },
+  "cleanup": {
+    "server_closed": true,
+    "temporary_directory_removed": true
+  }
+}
