@@ -18,7 +18,7 @@ from agrofield_agent.nebius_smoke import (
     _validate_quantities, preflight,
 )
 
-DEFAULT_DATASET = Path("fixtures/development/semantic_v2/cases.jsonl")
+DEFAULT_DATASET = Path("fixtures/development/semantic_v3/cases.jsonl")
 REFERENCE_ORIGIN = "ai_authored_synthetic_not_human_validated"
 
 

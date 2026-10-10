@@ -154,7 +154,7 @@ def strict_observation_schema(raw_text: str) -> dict[str, Any]:
         "crop_stage": nullable(
             {
                 "type": "string",
-                "description": "Etapa fenológica explícita, por ejemplo V3 o R1.",
+                "description": "Etapa fenológica explícita tal como figura en la nota.",
             }
         ),
         "event_type": {
@@ -344,6 +344,15 @@ def _validate_quantities(draft: ObservationDraft) -> None:
 def _resolve_arguments(parsed_arguments: dict[str, Any], raw_text: str) -> dict[str, Any]:
     schema = strict_observation_schema(raw_text)
     expected_fields = set(schema["properties"])
+    # v3: a model that omits an empty list has not asserted anything, so the
+    # omission is filled with []; a missing value field or an extra key still
+    # fails closed.
+    parsed_arguments = dict(parsed_arguments)
+    for optional_list in ("note_sources", "uncertainties"):
+        parsed_arguments.setdefault(optional_list, [])
+    if isinstance(parsed_arguments.get("evidence_sources"), dict):
+        for field_name in EVIDENCE_FIELDS:
+            parsed_arguments["evidence_sources"].setdefault(field_name, [])
     actual_fields = set(parsed_arguments)
     if actual_fields != expected_fields:
         raise ContractViolation(
@@ -372,6 +381,21 @@ def _resolve_arguments(parsed_arguments: dict[str, Any], raw_text: str) -> dict[
         resolved["notes"] = [resolve_sources([source_id], raw_text) for source_id in note_sources]
     except ValueError as exc:
         raise ContractViolation("invalid note source", code="invalid_note_source") from exc
+    # v3: a source attached to a field the model left null/unknown is kept as
+    # a literal note instead of rejecting the whole response. The field stays
+    # absent, so nothing is asserted that the model did not assert.
+    for field_name in EVIDENCE_FIELDS:
+        value = resolved.get(field_name)
+        if quotes[field_name] and (value is None or value == "unknown"):
+            if quotes[field_name] not in resolved["notes"]:
+                resolved["notes"].append(quotes[field_name])
+            quotes[field_name] = ""
+    # v3: repeated uncertainty entries collapse instead of failing.
+    seen: list[str] = []
+    for item in resolved.get("uncertainties", []) or []:
+        if item not in seen:
+            seen.append(item)
+    resolved["uncertainties"] = seen
     resolved["evidence_quotes"] = quotes
     return resolved
 

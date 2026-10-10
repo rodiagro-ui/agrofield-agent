@@ -181,7 +181,10 @@ async def run_batch(
                 Decimal(reported[0]) * plan.input_price_per_million
                 + Decimal(reported[1]) * plan.output_price_per_million
             ) / Decimal(1_000_000)
+            # The message before the first colon is a fixed string; nothing from
+            # the model response is retained.
             record.update({"status": "contract_rejected", "failure_code": exc.code,
+                           "reason": str(exc).split(":")[0],
                            "safe_diagnostics": exc.diagnostics})
             rejected.append(case["reference"])
             records.append(record)
@@ -238,7 +241,7 @@ async def run_batch(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--dataset", type=Path, default=Path("fixtures/development/semantic_v2/cases.jsonl")
+        "--dataset", type=Path, default=Path("fixtures/development/semantic_v3/cases.jsonl")
     )
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--input-price-per-million", type=_decimal_argument, required=True)

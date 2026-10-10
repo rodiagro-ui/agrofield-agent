@@ -318,26 +318,44 @@ def test_generated_quote_instead_of_source_is_rejected_without_retry():
     assert calls == 1
 
 
-def test_incomplete_tool_arguments_are_rejected_even_if_pydantic_has_defaults():
+def test_v3_omitted_empty_lists_are_filled_but_missing_values_still_fail():
     arguments = json.loads(
         valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
             "arguments"
         ]
     )
     arguments.pop("note_sources")
+    arguments.pop("uncertainties")
+    arguments["evidence_sources"].pop("lodging_pct")
 
-    def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, json=valid_body(arguments))
+    result = asyncio.run(execute_one_request(
+        NOTE, plan(), "test-secret",
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, json=valid_body(arguments))
+        ),
+    ))
+    assert result["status"] == "contract_pass"
+    assert result["observation"]["notes"] == []
+    assert result["observation"]["uncertainties"] == []
+    assert result["observation"]["lodging_pct"] is None
 
+    arguments.pop("sample_points")
     with pytest.raises(ContractViolation, match="closed observation schema"):
-        asyncio.run(
-            execute_one_request(
-                NOTE,
-                plan(),
-                "test-secret",
-                transport=httpx.MockTransport(handler),
-            )
-        )
+        asyncio.run(execute_one_request(
+            NOTE, plan(), "test-secret",
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(200, json=valid_body(arguments))
+            ),
+        ))
+    arguments["sample_points"] = 6
+    arguments["extra_key"] = True
+    with pytest.raises(ContractViolation, match="closed observation schema"):
+        asyncio.run(execute_one_request(
+            NOTE, plan(), "test-secret",
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(200, json=valid_body(arguments))
+            ),
+        ))
 
 
 def test_nonliteral_notes_are_rejected_as_unsupported_claims():
@@ -362,7 +380,7 @@ def test_nonliteral_notes_are_rejected_as_unsupported_claims():
         )
 
 
-def test_duplicate_uncertainties_are_rejected_client_side():
+def test_v3_duplicate_uncertainties_collapse_but_unknown_fields_still_fail():
     arguments = json.loads(
         valid_body()["choices"][0]["message"]["tool_calls"][0]["function"][
             "arguments"
@@ -370,18 +388,22 @@ def test_duplicate_uncertainties_are_rejected_client_side():
     )
     arguments["uncertainties"] = ["crop_stage", "crop_stage"]
 
-    def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, json=valid_body(arguments))
+    result = asyncio.run(execute_one_request(
+        NOTE, plan(), "test-secret",
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, json=valid_body(arguments))
+        ),
+    ))
+    assert result["observation"]["uncertainties"] == ["crop_stage"]
 
-    with pytest.raises(ContractViolation, match="duplicate fields"):
-        asyncio.run(
-            execute_one_request(
-                NOTE,
-                plan(),
-                "test-secret",
-                transport=httpx.MockTransport(handler),
-            )
-        )
+    arguments["uncertainties"] = ["crop_stage", "diagnosis"]
+    with pytest.raises(ContractViolation, match="unsupported fields"):
+        asyncio.run(execute_one_request(
+            NOTE, plan(), "test-secret",
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(200, json=valid_body(arguments))
+            ),
+        ))
 
 
 def test_missing_usage_is_not_counted_as_contract_pass():
@@ -592,7 +614,6 @@ def test_analyze_route_sanitizes_upstream_http_failure(monkeypatch, tmp_path):
         ("event_type", ["S99"], "invalid evidence source"),
         ("event_type", ["S04", "S04"], "invalid evidence source"),
         ("event_type", [], "missing evidence quote"),
-        ("general_condition", ["S01"], "evidence quote supplied for an absent field"),
     ],
 )
 def test_evidence_source_failures_keep_diagnostics_without_accepting_an_observation(
@@ -610,6 +631,22 @@ def test_evidence_source_failures_keep_diagnostics_without_accepting_an_observat
     assert caught.value.diagnostics["prompt_tokens"] == 900
     assert NOTE not in json.dumps(caught.value.diagnostics)
     assert "inundación" not in str(caught.value)
+
+
+def test_v3_source_on_an_absent_field_becomes_a_literal_note_not_a_value():
+    arguments = json.loads(valid_body()["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"])
+    arguments["evidence_sources"]["general_condition"] = ["S01"]
+    arguments["evidence_sources"]["lodging_pct"] = ["S02"]
+    result = asyncio.run(execute_one_request(
+        NOTE, plan(), "test-secret",
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json=valid_body(arguments))),
+    ))
+    observation = result["observation"]
+    assert observation["general_condition"] == "unknown"
+    assert observation["lodging_pct"] is None
+    assert observation["evidence_quotes"]["general_condition"] == ""
+    assert observation["evidence_quotes"]["lodging_pct"] == ""
+    assert observation["notes"] == ["Tormenta hace 18 horas, acceso seguro.", "Soja V3."]
 
 
 def test_literal_guard_still_rejects_translations_and_even_changed_case():

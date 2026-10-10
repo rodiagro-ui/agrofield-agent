@@ -1,0 +1,48 @@
+{
+  "version": "semantic-v3-development-candidate",
+  "created_date": "2026-10-10",
+  "freeze_scope": "synthetic_development_contract_not_human_benchmark",
+  "extraction_profile": "source-anchors-es-v3-semantic-candidate",
+  "reference_origin": "ai_authored_synthetic_not_human_validated",
+  "cases": 20,
+  "candidate_live_calls": 0,
+  "human_reviews": 0,
+  "benchmark_validated": false,
+  "model_quality_validated": false,
+  "live_authorized": false,
+  "supersedes": "fixtures/development/semantic_v2/manifest.json",
+  "files": [
+    {
+      "path": "fixtures/development/semantic_v3/cases.jsonl",
+      "canonical_sha256": "44312d2ff6b34dc532b053c4ec6b80233f2b5ea38bd0366cc31ae28b73831d61"
+    },
+    {
+      "path": "fixtures/development/semantic_v3/README.md",
+      "canonical_sha256": "7a5a1d4e68cc2e275f3e94061b651b0177d2f80c2267f0437ef215d1c59acbda"
+    },
+    {
+      "path": "fixtures/development/semantic_v3/preflight.json",
+      "canonical_sha256": "e7fa8995fc5a590fdadc672e448443efb4d624aed1dfc2faab9a06d5224b792a"
+    },
+    {
+      "path": "src/agrofield_agent/extraction_contract.py",
+      "canonical_sha256": "8c1e5367e33a382cffccb10989b82a034951380fc3e95ac9af5cbfc77f639738"
+    },
+    {
+      "path": "src/agrofield_agent/nebius_smoke.py",
+      "canonical_sha256": "30b52294c0bf3dc11f5298d4c92d04867cc01c600dbbddff0f57b9026d2591b9"
+    },
+    {
+      "path": "src/agrofield_agent/evidence.py",
+      "canonical_sha256": "4a4c5c531c680bb41641be31b1e211abf6bf824640fd82e091e79c65981a8f64"
+    },
+    {
+      "path": "src/agrofield_agent/models.py",
+      "canonical_sha256": "f70272aa33796cee4512d0a9ef8c0a453396a830ef36bc30eb0b29a8034037d4"
+    },
+    {
+      "path": "src/agrofield_agent/semantic_preflight.py",
+      "canonical_sha256": "8ddb89784e0d5e5b166410150a604eb30667e1ee17ae1e6bd700965eb8a7c990"
+    }
+  ]
+}

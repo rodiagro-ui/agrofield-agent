@@ -641,7 +641,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--batch", action="store_true",
                         help="run the capped development batch instead of one request")
     parser.add_argument("--dataset", type=Path,
-                        default=Path("fixtures/development/semantic_v2/cases.jsonl"))
+                        default=Path("fixtures/development/semantic_v3/cases.jsonl"))
     parser.add_argument("--model", default=DEFAULT_MODEL, help="batch mode only")
     parser.add_argument("--max-requests", type=int, default=20, help="batch mode only")
     parser.add_argument("--max-total-cost-usd", type=_decimal_argument,

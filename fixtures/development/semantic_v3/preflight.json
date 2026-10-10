@@ -1,0 +1,304 @@
+{
+  "status": "development_reference_preflight_only",
+  "extraction_profile": "source-anchors-es-v3-semantic-candidate",
+  "reference_origin": "ai_authored_synthetic_not_human_validated",
+  "cases": 20,
+  "network_request_sent": false,
+  "human_reviews": 0,
+  "benchmark_validated": false,
+  "nemotron_quality": null,
+  "pricing_basis": "historical_2026-09-14_not_authorization",
+  "max_serialized_request_bytes": 10291,
+  "observed_reference_counts": {
+    "crop_stage": 19,
+    "event_type": 13,
+    "event_hours_ago": 9,
+    "access_safe": 7,
+    "sample_points": 5,
+    "affected_area_pct": 6,
+    "standing_water_pct": 4,
+    "water_duration_hours": 3,
+    "lodging_pct": 1,
+    "stem_damage_pct": 1,
+    "stand_count_per_m": 1,
+    "general_condition": 1
+  },
+  "unknown_reference_counts": {
+    "crop_stage": 1,
+    "event_type": 7,
+    "event_hours_ago": 11,
+    "access_safe": 13,
+    "sample_points": 15,
+    "affected_area_pct": 14,
+    "standing_water_pct": 16,
+    "water_duration_hours": 17,
+    "lodging_pct": 19,
+    "stem_damage_pct": 19,
+    "stand_count_per_m": 19,
+    "general_condition": 19
+  },
+  "checks": [
+    {
+      "case_id": "D01",
+      "focus": "separate_times",
+      "normalized_note_sha256": "4e91d0fb91a557c205c74e92a806846a99f07bf1c550790bcaab9ad82671bb2b",
+      "request_payload_sha256": "de9fca219da455e5677cf9a402e0ed1c287f94b5d25860844f6d311b06eb1702",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10068,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D02",
+      "focus": "missing_event_time",
+      "normalized_note_sha256": "b00d5511dc71f4433371b06a63641a93ffc0a1e71ca3e01bfd3a647c1a5fe3fc",
+      "request_payload_sha256": "699e49fade14c38bc516b38b506a1c3faa602de32f06fb3822b3d9b9dfe8830e",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9939,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D03",
+      "focus": "missing_water_time",
+      "normalized_note_sha256": "0e50b98a02e9cf1800d0030b221f76095ebbb0a753bc31392884df95b25820a2",
+      "request_payload_sha256": "8ffbc299b20f22ad80754cd9e3b96a7a3e724ef3a9889bd5273596644f677a46",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9939,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D04",
+      "focus": "different_percentages",
+      "normalized_note_sha256": "7f409faa445083753209bca09c10726d0594903ffcb8d08ac619eae228e6a319",
+      "request_payload_sha256": "e0ca6a96ecbbe383a48a54025714b9d080ec6b3b6f0c7bb4da3468f92d209f3a",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9924,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D05",
+      "focus": "negated_hazard",
+      "normalized_note_sha256": "90ebba6b6660619a6ee660c684c059535f74bcf1488037e82f9b41b8d915820a",
+      "request_payload_sha256": "094297c8a69d8a35442a02cc50c78eb871a643a8d73a0c610c7875ea8ff0e1ea",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10010,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D06",
+      "focus": "unconfirmed_hazards",
+      "normalized_note_sha256": "df982db397777a3a6f1238bb4ea95f2231553b8dbbaaf7ddf7ca8d99dafd4bc2",
+      "request_payload_sha256": "2a9a596fb61cd272bc12cc4c860b2a395c39caeac6f313beac54a007df673ea8",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9929,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D07",
+      "focus": "confirmed_mixed",
+      "normalized_note_sha256": "1e5eb802739c76d8283f6d174f0aff7acd8526ee09a5a8ea1a44646455d548f8",
+      "request_payload_sha256": "5668edf239f77961265077a4e324c2d1a61e6791a51de140e05d2e02b57c2e44",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9933,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D08",
+      "focus": "condition_not_event",
+      "normalized_note_sha256": "1b72e055195b4dbc5427e8d48fc18c121b06b00e80cc0a540d020dea8b372c67",
+      "request_payload_sha256": "434be8b46aeb565ea08874c0bc9cabf69b98dc0468527e969bbb5b952506a55f",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9940,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D09",
+      "focus": "other_field",
+      "normalized_note_sha256": "5a48fed391205e53e6da48ca0c4bbc8c082350eba24f432097592d41f5626983",
+      "request_payload_sha256": "a93135e2f66368587bf6e189379ea116bef20e9f73d473ae7321db936450ff44",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9981,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D10",
+      "focus": "plants_vs_points",
+      "normalized_note_sha256": "83eb7e932de380e4d0b7347d846a9fb1d9367c81e1b85711ca5fe8f450982867",
+      "request_payload_sha256": "1c41a733231572b212aed503e6d29697eae6f23f879a1fb2c4a2272df6bf9163",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10047,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D11",
+      "focus": "damage_denominators",
+      "normalized_note_sha256": "f63ec092b7a9332bb28ae0157eb0bb651e9c28cd945d424f17298a313e0b02e2",
+      "request_payload_sha256": "9d01b9b3d24d8a59529ec659d57840a7a5a8e9719e6502f070f426901991eda5",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10291,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D12",
+      "focus": "embedded_instruction",
+      "normalized_note_sha256": "e6986bb692ad8bf2cf0b060fa310553ac065308d7530751b24a6a3ab93dd2769",
+      "request_payload_sha256": "d3ebfb723bf6938899afc93c21e5c7a904ccd4efa033711c0b0d808b9659d9d4",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9979,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D13",
+      "focus": "conflicting_time",
+      "normalized_note_sha256": "190bb464e24ce8c937da3ecc65e5e65305c286a5673502da794ac0a675837f2c",
+      "request_payload_sha256": "8017c3d3234a0a68cdfee0109af540dcee6494a655596fabd4d0280a7c942685",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9968,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D14",
+      "focus": "explicit_zero",
+      "normalized_note_sha256": "c04faf03edf577ecaa30c688b33c5e05e9387daf797430943739d09b6a7ded39",
+      "request_payload_sha256": "544ac0e75c0ccfb91f910a75c430f1610354d5b1d10b1b1b34a75798b475c839",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10090,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D15",
+      "focus": "count_without_unit",
+      "normalized_note_sha256": "e3c64e11e7b516c29ae42fbeff5f99dfe75259a9648cb0746a568302b1493f0e",
+      "request_payload_sha256": "df136490c9b21cd0fc54025877c4236a9966f13b402201a6779fc31073fd887d",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10032,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D16",
+      "focus": "forecast_not_observed",
+      "normalized_note_sha256": "7ccb0b30d5caaec68a6d444d31ac4c32e1e969608fcef793181ba2652b973b7c",
+      "request_payload_sha256": "ea38785aab217266c7f2b2067e7ace538e8c9b30ec36072216d95baeaa1bf10d",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10065,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D17",
+      "focus": "explicit_unit_conversion",
+      "normalized_note_sha256": "95b77b0e4bb26f59a0a4df99e3ff369a8fa88270d6cbae22f8cd54e4714715a9",
+      "request_payload_sha256": "13f07854790d07211454ed327cc672c9800e7d5e09d59965b045626e08f735c9",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 10013,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D18",
+      "focus": "partial_area_denominator",
+      "normalized_note_sha256": "6e575472ee190add6e2dc4ac3ffec2e644f5a0a208fd2457e689bf24381802dc",
+      "request_payload_sha256": "45bc232d0cc5d995867e2eae3705d925b77aee169e168ee21756df34473e6dc6",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9937,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D19",
+      "focus": "negated_condition",
+      "normalized_note_sha256": "ff206a50dcf7b1024ce8b248478c1c56b8e0e31cdda857d89a3ea3a176141eaa",
+      "request_payload_sha256": "04e877ff455068cd7fa35eec89d3032cc9b200e24353f651d726fc5b314b9cd1",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9941,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    },
+    {
+      "case_id": "D20",
+      "focus": "reordered_same_source",
+      "normalized_note_sha256": "d419e1b5f5bf7f5499239a18a36bd2fa8a82ba2d5ab195a34d5875ef8bb185e8",
+      "request_payload_sha256": "0afd089abd0ffc877c84b6ab965f9672106eda02e1efa6c40d537683b2598ea2",
+      "reference_contract_valid": true,
+      "cost_preflight": {
+        "serialized_request_bytes": 9953,
+        "prompt_token_ceiling": 16384,
+        "completion_token_ceiling": 1024,
+        "estimated_cost_ceiling_usd": "0.00122880"
+      }
+    }
+  ],
+  "warning": "Reference shape and literal quotes are checked, not agronomic correctness or model performance. No responses are generated or scored.",
+  "dataset_canonical_sha256": "44312d2ff6b34dc532b053c4ec6b80233f2b5ea38bd0366cc31ae28b73831d61"
+}

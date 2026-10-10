@@ -4,13 +4,15 @@ This profile is a locally tested candidate. Descriptions instruct a future model
 call; they do not prove entailment or improve the historical saved response.
 """
 
-PROFILE_ID = "source-anchors-es-v2-semantic-candidate"
+PROFILE_ID = "source-anchors-es-v3-semantic-candidate"
 TOOL_NAME = "record_field_observation"
 
 FIELD_DESCRIPTIONS = {
     "crop_stage": (
-        "Etapa fenológica explícita del cultivo actual, normalizada como V3 o R1. "
-        "No deducirla de fecha, otro lote, pronóstico o antecedentes. null si falta."
+        "Etapa fenológica explícita del cultivo actual, escrita tal como figura en "
+        "la nota: letra de la escala de soja (V o R) seguida del número, sin "
+        "espacios. No deducirla de fecha, otro lote, pronóstico o antecedentes. "
+        "null si falta."
     ),
     "event_type": (
         "Peligro observado en el lote actual: flooding=anegamiento/agua parada; "
@@ -91,7 +93,10 @@ SYSTEM_PROMPT = (
     "Si hay contradicción no resuelta, dejá el campo null/unknown, incluilo en "
     "uncertainties y conservá ambas frases mediante note_sources. No promedies "
     "ni elijas una versión silenciosamente. uncertainties contiene solo campos "
-    "ambiguos, no todos los que faltan. No transferir hechos de otros lotes, "
+    "con evidencia contradictoria o ambigua: nunca campos establecidos ni "
+    "campos simplemente ausentes. Una frase que explica por qué un campo queda "
+    "null (negación, medición no hecha, contradicción) va en note_sources, no "
+    "en evidence_sources. No transferir hechos de otros lotes, "
     "eventos históricos distintos, planes o pronósticos al evento observado.\n"
     "Por cada valor establecido, seleccioná en evidence_sources los IDs mínimos "
     "que lo respaldan, sin generar ni traducir citas. Para null/unknown usá []. "

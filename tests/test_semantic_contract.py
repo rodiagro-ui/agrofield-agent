@@ -14,7 +14,7 @@ from agrofield_agent.nebius_smoke import ContractViolation, build_payload, stric
 from agrofield_agent.semantic_preflight import check_cases, historical_plan
 
 ROOT = Path(__file__).resolve().parents[1]
-DATASET = ROOT / "fixtures/development/semantic_v2/cases.jsonl"
+DATASET = ROOT / "fixtures/development/semantic_v3/cases.jsonl"
 CASES = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines()]
 
 
