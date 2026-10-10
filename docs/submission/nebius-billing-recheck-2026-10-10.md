@@ -28,3 +28,14 @@ credit. However the `Usage stops after the trial` control is **not confirmed**:
 the UI currently reads `Paid usage after trial`. Per the handoff, the single
 authorized request is not sent until the owner either sets the preference back
 to stop usage or explicitly accepts paid usage after the trial.
+
+## Update, same day
+
+At the owner's explicit request ("cambialo y avanza"), the post-trial preference
+was switched in the user menu from `Continue with paid usage when the trial ends`
+to `Stop usage when the trial ends` and saved. The UI then read `Stop usage after
+trial` and `Your resources will be deactivated after the trial. No charges will
+apply.` Every billing gate of the handoff is now confirmed for 2026-10-10:
+unchanged Nano prices, US$1.00 trial credit, US$0.00 balance, no charges, stop
+usage. The single authorized request may proceed once the owner pastes a
+temporary key into the local single-use form.
