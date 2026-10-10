@@ -41,10 +41,14 @@ answers, so the URL never goes dark.
 | Option | Cost | Notes |
 |---|---|---|
 | Hugging Face Space (Docker) | free | Public URL, sleeps after inactivity and wakes on request; `/data` is ephemeral unless persistent storage is paid, so the ledger resets on restart (caps still apply per process; keep the total budget small) |
-| Render / Railway / Fly | free tier or a few USD | Persistent disk available on paid tiers; set `PORT` automatically |
+| **Render Free (chosen)** | US$0, no payment method needed | Verified in docs on 2026-10-10: without a payment method Render suspends instead of billing; 750 free instance hours per month (one always-on service uses ~720); spins down after 15 idle minutes and takes about a minute to wake, showing a loading page; ephemeral filesystem, so the SQLite demo data and the spend ledger reset on every restart (caps still apply per process; keep the total budget small). Deploys from a public GitHub repo through Render's GitHub login; `render.yaml` in the repo is the blueprint. |
+| Railway / Fly | trial credit or card | Not needed |
 | Nebius AI Cloud (Serverless Endpoints / DevPod) | requires the US$25 card charge | Encouraged by the rules but not required; outside the current authorization |
 
-Any choice needs the owner's account; the container is the same.
+Any choice needs the owner's account; the container is the same. With Render Free the
+only secret typed anywhere is `NEBIUS_API_KEY`, entered by the owner in the Render
+dashboard; `render.yaml` marks it `sync: false`. Judges should be told that the first
+request after idle takes about a minute.
 
 ## Steps (owner present)
 

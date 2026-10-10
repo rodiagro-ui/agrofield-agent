@@ -1,0 +1,49 @@
+# Render Blueprint: one free web service running the public demo container.
+# Secrets (NEBIUS_API_KEY) are entered in the Render dashboard, never here.
+services:
+  - type: web
+    name: agrofield-agent
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: AGROFIELD_PROVIDER
+        value: nebius-demo
+      - key: AGROFIELD_NEBIUS_DEMO_CONFIRMATION
+        value: RUN_PUBLIC_NEMOTRON_DEMO
+      - key: AGROFIELD_DB_PATH
+        value: /data/agrofield.sqlite3
+      - key: AGROFIELD_DEMO_LEDGER_PATH
+        value: /data/nebius-demo-ledger.sqlite3
+      - key: NEBIUS_BASE_URL
+        value: https://api.tokenfactory.nebius.com/v1
+      - key: NEBIUS_MODEL
+        value: nvidia/nemotron-3-super-120b-a12b
+      - key: NEBIUS_INPUT_PRICE_PER_MILLION
+        value: "0.3"
+      - key: NEBIUS_OUTPUT_PRICE_PER_MILLION
+        value: "0.9"
+      - key: NEBIUS_MAX_COST_USD
+        value: "0.01"
+      - key: NEBIUS_MAX_COMPLETION_TOKENS
+        value: "1024"
+      - key: NEBIUS_PROMPT_TOKEN_BUDGET
+        value: "16384"
+      - key: NEBIUS_REASONING_EFFORT
+        value: none
+      - key: AGROFIELD_DEMO_TOTAL_BUDGET_USD
+        value: "1"
+      - key: AGROFIELD_DEMO_DAILY_REQUESTS
+        value: "300"
+      - key: AGROFIELD_DEMO_REQUESTS_PER_MINUTE
+        value: "6"
+      - key: AGROFIELD_VERIFIER_MODEL
+        value: nvidia/nemotron-3-super-120b-a12b
+      - key: NEBIUS_VERIFIER_INPUT_PRICE_PER_MILLION
+        value: "0.3"
+      - key: NEBIUS_VERIFIER_OUTPUT_PRICE_PER_MILLION
+        value: "0.9"
+      - key: NEBIUS_API_KEY
+        sync: false
