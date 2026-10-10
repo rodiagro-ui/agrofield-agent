@@ -65,7 +65,7 @@
 - [ ] Freeze the final human-reviewed benchmark; all current freezes remain candidate-only and `benchmark_validated: false`.
 - [ ] Choose a deployment host and approve a spend ceiling.
 - [ ] Deploy a public demo and add monitoring through the judging period.
-- [ ] Create and make the repository public.
+- [x] 2026-10-10: repository public at https://github.com/rodiagro-ui/agrofield-agent with MIT visible; pushed from the owner's PC via GitHub device-code sign-in.
 - [ ] Record and publish a sub-three-minute YouTube demo in English or with English translation.
 - [ ] Complete and submit Devpost before 2026-10-30 10:00 PDT / 14:00 ART.
 
