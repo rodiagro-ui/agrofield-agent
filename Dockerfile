@@ -13,4 +13,5 @@ RUN useradd --create-home --uid 10001 agrofield && mkdir -p /data && chown agrof
 USER agrofield
 
 EXPOSE 8000
-CMD ["uvicorn", "agrofield_agent.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Hosts such as Render, Railway and Hugging Face inject PORT; default to 8000.
+CMD ["sh", "-c", "uvicorn agrofield_agent.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
