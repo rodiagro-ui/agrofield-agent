@@ -91,6 +91,21 @@ engine and the ledger without credentials. The ledger is an application estimate
 from reported tokens, not an invoice; the account-level usage stop on Token Factory
 remains the real backstop. This mode has **not** been exercised live yet.
 
+### Optional second-pass support verifier
+
+Literal quotes prove provenance, not entailment. With `AGROFIELD_VERIFIER_MODEL`
+set (for example `nvidia/nemotron-3-super-120b-a12b`, with its own
+`NEBIUS_VERIFIER_*_PRICE_PER_MILLION`), demo mode makes one more guarded Nemotron
+call per note that judges, field by field, whether the quote supports the
+extracted value, unit and scope. Fields judged unsupported or ambiguous are
+cleared to null/unknown and listed as uncertainties before deterministic policy
+runs, so a doubtful value becomes a follow-up question instead of a fact. The
+verifier can remove values, never add them; if it fails, the extraction is kept
+and labeled unverified. The response carries a `verification` object, the audit
+trail records an `observation_verified` event, and the interface shows the
+badge. Each verification is admitted by the same spend ledger. Profile
+`support-judge-es-v1-candidate` has not been evaluated live.
+
 The interface is bilingual: field notes stay in Spanish, and the chrome,
 completeness questions and task templates switch to English with the `EN` button
 or `?lang=en`, without touching `policy.py`.
