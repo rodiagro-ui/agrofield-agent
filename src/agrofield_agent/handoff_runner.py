@@ -564,6 +564,8 @@ def _parser() -> argparse.ArgumentParser:
         "--reference", type=Path, default=Path("fixtures/nebius_smoke_reference.json")
     )
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
+    parser.add_argument("--idle-seconds", type=float, default=180.0,
+                        help="close the unused form after this many seconds (30-900)")
     parser.add_argument("--input-price-per-million", type=_decimal_argument)
     parser.add_argument("--output-price-per-million", type=_decimal_argument)
     parser.add_argument("--max-cost-usd", type=_decimal_argument, default=Decimal("0.01"))
@@ -586,6 +588,8 @@ def main(argv: list[str] | None = None) -> int:
         else:
             prices = (prices[0] or Decimal("0.06"), prices[1] or Decimal("0.24"))
             basis = "historical_2026-09-15_not_current"
+        if not 30 <= args.idle_seconds <= 900:
+            raise PreflightBlocked("--idle-seconds must be between 30 and 900")
         note = args.note_file.read_text(encoding="utf-8").strip()
         reference = json.loads(args.reference.read_text(encoding="utf-8"))
         if reference["normalized_note_sha256"] != hashlib.sha256(
@@ -601,6 +605,7 @@ def main(argv: list[str] | None = None) -> int:
                 max_cost_usd=args.max_cost_usd,
             ),
             note=note, reference=reference, port=args.port, pricing_basis=basis,
+            idle_seconds=args.idle_seconds,
         )
         report = run(config, lambda item: print(json.dumps(item), flush=True))
     except PreflightBlocked as exc:

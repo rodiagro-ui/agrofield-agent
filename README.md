@@ -207,6 +207,13 @@ transport and a fictitious value; no key was created and no inference ran. The
 public demo mode, the capped batch evaluator and the bilingual interface were added
 the same day and are tested locally only.
 
+On 2026-10-10 the single authorized request ran through that complete path with a
+real temporary key pasted by the owner into the local single-use form: HTTP 200,
+2.37 s, 3,259/290 tokens, estimated US$0.00026514, and **12/12 fields** against the
+fixed synthetic reference under the v2 profile (the 2026-09-14 run scored 4/8). One
+development note, not a benchmark. See
+`docs/submission/nebius-live-handoff-run-2026-10-10.md`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

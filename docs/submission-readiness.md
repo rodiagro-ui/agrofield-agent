@@ -49,9 +49,9 @@
 - [x] Run one separately authorized guarded AgroField-harness API smoke with a US$0.01 promotional cap and zero retries; connectivity passed, the exactly-one-tool-call contract failed, and the key was revoked.
 - [x] Exercise the real `/api/analyze` path once under a separate cap; it sent one request, returned HTTP 503, and failed strict contract validation with `non-literal evidence quote for: event_type`, so the tool contract did not pass.
 - [x] First accepted `ObservationDraft` from real Nebius through `/api/analyze` in-process TestClient, HTTP 200; fourth separately authorized inference, one request and zero retries. See `submission/nebius-source-anchor-run-2026-09-14.md`.
-- [ ] Acceptable extraction quality: the first accepted response got only 4/8 expected observed fields right on one synthetic development note and added an unsupported condition; literal quotes alone did not ensure correctness.
+- [ ] Acceptable extraction quality: the 2026-09-14 response got 4/8 observed fields on one synthetic note; the 2026-10-10 v2 response got 12/12 on the same note. Still a single development note; a broader live run is required before any quality claim.
 - [ ] Live browser-to-server Nemotron demo with both incomplete and complete notes; the accepted in-process smoke and the 2026-10-09 simulated rehearsal do not establish this.
-- [ ] Recheck Token Factory billing on the day (promotional credit, Nano prices, balance, `Usage stops after the trial`), then run the single authorized request through `handoff_runner --mode live`.
+- [x] 2026-10-10: billing rechecked (unchanged Nano prices, US$1.00 credit, US$0.00 balance, stop usage set) and the single authorized request ran through `handoff_runner --mode live` from the owner's browser: HTTP 200, 12/12 fields on the fixed synthetic note, US$0.00026514. One note, not a benchmark.
 - [ ] Run the 20 synthetic development notes on Nemotron Nano through `nebius_eval` under a separately approved request count and total cap; then consider Super.
 - [ ] Approve a demo budget and exercise `nebius-demo` mode live before deployment.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
