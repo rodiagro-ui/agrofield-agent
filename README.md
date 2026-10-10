@@ -229,6 +229,14 @@ fixed synthetic reference under the v2 profile (the 2026-09-14 run scored 4/8). 
 development note, not a benchmark. See
 `docs/submission/nebius-live-handoff-run-2026-10-10.md`.
 
+Later the same day, capped batches ran the 20 synthetic development notes through
+the guarded contract. Under profile v3, **Nemotron 3 Super** accepted 18/20 notes
+with micro-F1 **0.934** (precision 0.955, recall 0.914, 15/20 notes fully right,
+p95 2.7 s, about US$0.0014 per note); Nano accepted 10/20 with F1 0.65; the local
+extractor scores 0.82 on the same notes. Super is therefore the demo model. These
+are AI-authored synthetic references, not a validated benchmark. See
+`docs/submission/nebius-batch-v3-nano-super-2026-10-10.md`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

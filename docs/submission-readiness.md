@@ -52,7 +52,7 @@
 - [ ] Acceptable extraction quality: the 2026-09-14 response got 4/8 observed fields on one synthetic note; the 2026-10-10 v2 response got 12/12 on the same note. Still a single development note; a broader live run is required before any quality claim.
 - [ ] Live browser-to-server Nemotron demo with both incomplete and complete notes; the accepted in-process smoke and the 2026-10-09 simulated rehearsal do not establish this.
 - [x] 2026-10-10: billing rechecked (unchanged Nano prices, US$1.00 credit, US$0.00 balance, stop usage set) and the single authorized request ran through `handoff_runner --mode live` from the owner's browser: HTTP 200, 12/12 fields on the fixed synthetic note, US$0.00026514. One note, not a benchmark.
-- [ ] Run the 20 synthetic development notes on Nemotron Nano through `nebius_eval` under a separately approved request count and total cap; then consider Super.
+- [x] 2026-10-10: the 20 synthetic development notes ran on Nano (v2 and v3) and Super (v3) under caps; Super F1 0.934 with 18/20 accepted, Nano 0.65, local 0.82. Super chosen for the demo. Development diagnostic, not a benchmark.
 - [ ] Approve a demo budget and exercise `nebius-demo` mode live before deployment.
 - [x] User attested that the private privacy addendum, storage/retention/rights channel, recipient selection, and coded role map are complete without adding PII to Git.
 - [x] User reports all authorized outreach sent: 5/5 interview invitations and 3/3 reviewer invitations. No additional recipients are authorized.

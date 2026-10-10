@@ -69,13 +69,17 @@ Application responses never expose provider credentials. Structurally invalid mo
 |---|---|---:|---:|---:|---:|---:|
 | Local regression suite | `local/deterministic-es-v0.1` | 12 synthetic | 0.9551 | 1.0000 | 0.0000 | 1.0000 |
 | Hard candidate suite | `local/deterministic-es-v0.1` | 30 synthetic | 0.9188 | 0.9714 | 0.0050 | 1.0000 |
-| Nemotron | `TBD_AFTER_AUTHORIZED_RUN` | TBD | TBD | TBD | TBD | TBD |
+| Synthetic development notes | `nvidia/nemotron-3-super-120b-a12b`, profile v3 | 20 synthetic (AI-authored) | 0.9343 | n/a (per-field diagnostic) | 0.0299 | n/a |
+| Synthetic development notes | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, profile v3 | 20 synthetic (AI-authored) | 0.6545 | n/a | 0.0750 | n/a |
+| Synthetic development notes | `local/deterministic-es-v0.1` | same 20 | 0.8219 | n/a | 0.1316 | n/a |
 
 Four separately authorized requests used `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`: the Playground exhausted its reasoning budget without a final message; the guarded CLI failed the exactly-one-tool-call contract; the third request reached local evidence validation but was rejected for a nonliteral `event_type` quote (not a connection failure); the fourth produced the first accepted observation with HTTP 200 through in-process `/api/analyze` and real Nebius HTTPS.
 
 That fourth response took 7.59 seconds, reported 2,288 input / 311 output tokens, and cost an estimated US$0.00021192 at the observed rates. Against one synthetic developer reference it correctly extracted only four of eight expected observed fields, omitted three, misclassified the event, and asserted an unsupported general condition. Local extraction got eight of eight observed fields right on that same note. These are a single-case development diagnostic, not a held-out benchmark, and do not replace the `TBD` row above. All nonempty quotes were literal; semantic support still failed. See `nebius-source-anchor-run-2026-09-14.md` and its network-free audit.
 
 The 30-case candidate remains `benchmark_validated: false` and contains no independent human labels. The local numbers must never be described as Nemotron performance.
+
+The 20-note rows are capped live batches run on 2026-10-10 (one request per note, zero retries, 40 requests, about US$0.03 in total). Super accepted 18/20 notes at p95 2.7 s; Nano accepted 10/20. The references were written by an AI for development and were frozen before the runs; they are not agronomist labels.
 
 ## Built with
 
