@@ -1,5 +1,7 @@
 # AgroField Agent
 
+[![ci](https://github.com/rodiagro-ui/agrofield-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/rodiagro-ui/agrofield-agent/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 AgroField Agent is a protocol-aware field-scouting coordinator for soybean fields after heavy rain, wind, or hail. It turns a spoken or typed field note, weather context, and field history into a structured evidence packet, highlights what still needs to be checked, ranks follow-up work, and requires human approval before creating a decision.
 
 This is deliberately not a general agronomy chatbot. The first vertical slice is **post-weather-event soybean triage**.
