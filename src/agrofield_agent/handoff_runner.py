@@ -85,6 +85,9 @@ class RunnerConfig:
     # of one /api/analyze request. Same single-use form, same cleanup.
     batch_cases: list[dict[str, Any]] | None = None
     batch_max_total_cost_usd: Decimal | None = None
+    # Further plans (other models, their own prices) run after `plan` with
+    # the remaining shared cap, each one its own capped batch.
+    batch_extra_plans: tuple[SmokePlan, ...] = ()
 
 
 @dataclass
@@ -286,11 +289,34 @@ def _execute_batch(value: str, config: RunnerConfig, directory: Path) -> dict[st
             config.plan, hashlib.sha256(value.encode("utf-8")).hexdigest()
         )
         transport = httpx.MockTransport(simulated.handler)
-    report = asyncio.run(run_batch(
-        config.batch_cases, config.plan, value, config.batch_max_total_cost_usd,
-        transport=transport,
-    ))
+    remaining = config.batch_max_total_cost_usd
+    batches: list[dict[str, Any]] = []
+    for plan in (config.plan, *config.batch_extra_plans):
+        if remaining <= 0:
+            break
+        batch = asyncio.run(run_batch(
+            config.batch_cases, plan, value, remaining, transport=transport,
+        ))
+        remaining -= Decimal(batch["estimated_total_cost_usd"])
+        batches.append(batch)
+    report = batches[0]
     result: dict[str, Any] = {"tavily_enabled": False, "batch": report}
+    if len(batches) > 1:
+        result["batches"] = batches
+        result["batch"] = {
+            **report,
+            "models": [item["model"] for item in batches],
+            "stop_reason": "completed" if all(
+                item["stop_reason"] == "completed" for item in batches
+            ) else "partial",
+            "requests_sent": sum(item["requests_sent"] for item in batches),
+            "accepted": sum(item["accepted"] for item in batches),
+            "estimated_total_cost_usd": _money(
+                sum((Decimal(item["estimated_total_cost_usd"]) for item in batches),
+                    Decimal(0))
+            ),
+            "records": [],
+        }
     result["transport"] = (
         simulated.public_dict() if simulated is not None
         else {"simulated": False, "automatic_retries": 0}
@@ -385,8 +411,9 @@ def _form_page(config: RunnerConfig) -> str:
     mode = config.mode
     scope = ""
     if config.batch_cases is not None:
-        scope = (f"<p>LOTE: {len(config.batch_cases)} notas sintéticas, modelo "
-                 f"{html.escape(config.plan.model)}, tope total "
+        models = ", ".join(html.escape(item.model) for item in (config.plan, *config.batch_extra_plans))
+        scope = (f"<p>LOTE: {len(config.batch_cases)} notas sintéticas, modelos "
+                 f"{models}, tope total "
                  f"US${_money(config.batch_max_total_cost_usd)}, una solicitud por nota, "
                  "sin reintentos.</p>")
     if mode == "mock":
@@ -643,6 +670,9 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--dataset", type=Path,
                         default=Path("fixtures/development/semantic_v3/cases.jsonl"))
     parser.add_argument("--model", default=DEFAULT_MODEL, help="batch mode only")
+    parser.add_argument("--extra-model", action="append", default=[],
+                        metavar="MODEL,INPUT_PRICE,OUTPUT_PRICE",
+                        help="batch mode only: another model with its own prices")
     parser.add_argument("--max-requests", type=int, default=20, help="batch mode only")
     parser.add_argument("--max-total-cost-usd", type=_decimal_argument,
                         default=Decimal("0.05"), help="batch mode only")
@@ -679,10 +709,24 @@ def main(argv: list[str] | None = None) -> int:
         ).hexdigest():
             raise PreflightBlocked("reference does not belong to this note")
         batch_cases = None
+        extra_plans: list[SmokePlan] = []
         if args.batch:
             if not 1 <= args.max_requests <= 200:
                 raise PreflightBlocked("--max-requests must be between 1 and 200")
             batch_cases = load_cases(args.dataset)[: args.max_requests]
+            for spec in args.extra_model:
+                parts = spec.split(",")
+                if len(parts) != 3:
+                    raise PreflightBlocked("--extra-model needs MODEL,INPUT_PRICE,OUTPUT_PRICE")
+                extra_plans.append(SmokePlan(
+                    model=parts[0], base_url=DEFAULT_NEBIUS_BASE_URL,
+                    max_completion_tokens=1024, prompt_token_budget=16384,
+                    input_price_per_million=_decimal_argument(parts[1]),
+                    output_price_per_million=_decimal_argument(parts[2]),
+                    max_cost_usd=args.max_cost_usd,
+                ))
+        elif args.extra_model:
+            raise PreflightBlocked("--extra-model is only valid with --batch")
         config = RunnerConfig(
             mode=args.mode,
             plan=SmokePlan(
@@ -696,11 +740,14 @@ def main(argv: list[str] | None = None) -> int:
             idle_seconds=args.idle_seconds,
             batch_cases=batch_cases,
             batch_max_total_cost_usd=args.max_total_cost_usd if args.batch else None,
+            batch_extra_plans=tuple(extra_plans),
         )
         if batch_cases is not None:
-            print(json.dumps({"status": "batch_plan", "network_request_sent": False,
-                              **plan_batch(batch_cases, config.plan, args.max_total_cost_usd)},
-                             indent=2), flush=True)
+            for item in (config.plan, *config.batch_extra_plans):
+                print(json.dumps({"status": "batch_plan", "network_request_sent": False,
+                                  "model": item.model,
+                                  **plan_batch(batch_cases, item, args.max_total_cost_usd)},
+                                 indent=2), flush=True)
         report = run(config, lambda item: print(json.dumps(item), flush=True))
     except PreflightBlocked as exc:
         print(json.dumps({"status": "blocked", "error": str(exc)}, ensure_ascii=False))

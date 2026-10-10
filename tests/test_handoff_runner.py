@@ -265,7 +265,40 @@ def test_batch_rehearsal_with_simulated_transport_sends_one_request_per_note(dri
     assert FICTITIOUS_KEY not in json.dumps(report)
 
 
+def test_batch_form_runs_extra_models_under_one_shared_cap(drive, monkeypatch):
+    from agrofield_agent.nebius_eval import load_cases
+
+    calls = []
+
+    async def fake_run_batch(cases, plan, api_key, max_total, *, transport=None):
+        calls.append((plan.model, max_total))
+        return {"model": plan.model, "stop_reason": "completed", "requests_sent": len(cases),
+                "accepted": len(cases), "estimated_total_cost_usd": "0.01000000",
+                "records": [{"case_id": "x"}]}
+
+    monkeypatch.setattr(handoff_runner, "run_batch", fake_run_batch)
+    cases = load_cases(PROJECT_ROOT / "fixtures" / "development" / "semantic_v3" / "cases.jsonl")[:2]
+    super_plan = SmokePlan(
+        model="nvidia/nemotron-3-super-120b-a12b", base_url=DEFAULT_NEBIUS_BASE_URL,
+        max_completion_tokens=1024, prompt_token_budget=16384,
+        input_price_per_million=Decimal("0.3"), output_price_per_million=Decimal("0.9"),
+        max_cost_usd=Decimal("0.01"),
+    )
+    report, _ = drive(lambda url: send(url), batch_cases=cases,
+                      batch_max_total_cost_usd=Decimal("0.05"),
+                      batch_extra_plans=(super_plan,))
+
+    assert calls == [(DEFAULT_MODEL, Decimal("0.05")),
+                     ("nvidia/nemotron-3-super-120b-a12b", Decimal("0.04"))]
+    assert report["batch"]["models"] == [DEFAULT_MODEL, "nvidia/nemotron-3-super-120b-a12b"]
+    assert report["batch"]["estimated_total_cost_usd"] == "0.02000000"
+    assert report["batch"]["requests_sent"] == 4 and report["batch"]["records"] == []
+    assert [item["model"] for item in report["batches"]] == report["batch"]["models"]
+
+
 @pytest.mark.parametrize("argv", [
+    ["--mode", "mock", "--extra-model", "nvidia/x,0.3,0.9"],
+    ["--mode", "mock", "--batch", "--extra-model", "nvidia/x,0.3"],
     ["--mode", "live", "--batch", "--input-price-per-million", "0.06",
      "--output-price-per-million", "0.24"],
     ["--mode", "live", "--batch", "--input-price-per-million", "0.06",
