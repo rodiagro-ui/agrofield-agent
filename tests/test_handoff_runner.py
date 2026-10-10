@@ -214,3 +214,71 @@ def test_cli_blocks_before_opening_a_server(argv, monkeypatch, capsys):
     )
     assert handoff_runner.main(argv) == 2
     assert json.loads(capsys.readouterr().out)["status"] == "blocked"
+
+
+# --- batch mode -------------------------------------------------------------
+
+def test_batch_form_runs_every_case_with_the_pasted_value_once(drive, monkeypatch):
+    from agrofield_agent.nebius_eval import load_cases
+
+    seen = {}
+
+    async def fake_run_batch(cases, plan, api_key, max_total, *, transport=None):
+        seen.update(cases=len(cases), key=api_key, cap=max_total, model=plan.model,
+                    transport=transport is not None)
+        return {"stop_reason": "completed", "requests_sent": len(cases),
+                "accepted": len(cases), "estimated_total_cost_usd": "0.00100000"}
+
+    monkeypatch.setattr(handoff_runner, "run_batch", fake_run_batch)
+    cases = load_cases(PROJECT_ROOT / "fixtures" / "development" / "semantic_v2" / "cases.jsonl")[:3]
+
+    def action(url):
+        return send(url, "GET"), send(url)
+
+    report, (form, post) = drive(
+        action, batch_cases=cases, batch_max_total_cost_usd=Decimal("0.05")
+    )
+
+    assert "LOTE: 3 notas" in form[1] and "0.05000000" in form[1]
+    assert post[0] == 200 and "stop_reason" in post[1] and "completed" in post[1]
+    assert seen == {"cases": 3, "key": FICTITIOUS_KEY, "cap": Decimal("0.05"),
+                    "model": DEFAULT_MODEL, "transport": True}
+    assert report["scope"] == "batch_rehearsal_simulated_transport_not_model_evidence"
+    assert report["batch"]["accepted"] == 3
+    assert report["handoff"]["posts_accepted"] == 1
+    assert "rehearsal_checks" not in report
+    assert report["submitted_value"]["found_in_report"] is False
+    assert report["cleanup"]["temporary_directory_removed"] is True
+
+
+def test_batch_rehearsal_with_simulated_transport_sends_one_request_per_note(drive):
+    from agrofield_agent.nebius_eval import load_cases
+
+    cases = load_cases(PROJECT_ROOT / "fixtures" / "development" / "semantic_v2" / "cases.jsonl")[:2]
+    report, _ = drive(lambda url: send(url), batch_cases=cases,
+                      batch_max_total_cost_usd=Decimal("0.05"))
+
+    batch = report["batch"]
+    assert batch["requests_sent"] == 2 and batch["automatic_retries"] == 0
+    assert report["transport"]["requests_received"] == 2
+    assert batch["benchmark_validated"] is False
+    assert FICTITIOUS_KEY not in json.dumps(report)
+
+
+@pytest.mark.parametrize("argv", [
+    ["--mode", "live", "--batch", "--input-price-per-million", "0.06",
+     "--output-price-per-million", "0.24"],
+    ["--mode", "live", "--batch", "--input-price-per-million", "0.06",
+     "--output-price-per-million", "0.24", "--confirm-live", CONFIRMATION_PHRASE],
+    ["--mode", "live", "--batch", "--confirm-live", "RUN_NEBIUS_EVAL_BATCH"],
+    ["--mode", "mock", "--batch", "--confirm-live", "RUN_NEBIUS_EVAL_BATCH"],
+    ["--mode", "mock", "--batch", "--max-requests", "0"],
+])
+def test_batch_cli_blocks_without_its_own_confirmation_and_prices(argv, monkeypatch, capsys):
+    monkeypatch.chdir(PROJECT_ROOT)
+    monkeypatch.setattr(
+        handoff_runner, "HTTPServer",
+        lambda *args, **kwargs: pytest.fail("server must not start"),
+    )
+    assert handoff_runner.main(argv) == 2
+    assert json.loads(capsys.readouterr().out.splitlines()[-1])["status"] == "blocked"

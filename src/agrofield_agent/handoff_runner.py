@@ -9,6 +9,7 @@ the environment, a file, a log or the report.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import gc
 import hashlib
 import hmac
@@ -44,6 +45,12 @@ from agrofield_agent.nebius_smoke import (
     preflight,
     require_live_confirmation,
 )
+from agrofield_agent.nebius_eval import (
+    BATCH_CONFIRMATION_PHRASE,
+    load_cases,
+    plan_batch,
+    run_batch,
+)
 from agrofield_agent.smoke_audit import compare_fields
 
 FICTITIOUS_KEY = "agrofield-rehearsal-value-not-a-credential"
@@ -74,6 +81,10 @@ class RunnerConfig:
     idle_seconds: float = 180.0
     linger_seconds: float = 5.0
     pricing_basis: str = "historical_2026-09-15_not_current"
+    # Batch mode: the pasted value runs every case through nebius_eval instead
+    # of one /api/analyze request. Same single-use form, same cleanup.
+    batch_cases: list[dict[str, Any]] | None = None
+    batch_max_total_cost_usd: Decimal | None = None
 
 
 @dataclass
@@ -256,7 +267,41 @@ def _value_in_files(directory: Path, value: str) -> bool:
     )
 
 
+def _submitted_value_checks(value: str, config: RunnerConfig, directory: Path,
+                            result: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "fictitious": config.mode == "mock",
+        "found_in_environment": value in os.environ.values(),
+        "found_in_temporary_files": _value_in_files(directory, value),
+        "found_in_report": value in json.dumps(result, ensure_ascii=False),
+    }
+
+
+def _execute_batch(value: str, config: RunnerConfig, directory: Path) -> dict[str, Any]:
+    """Run the capped development batch with the pasted value; one request per note."""
+    simulated = None
+    transport = None
+    if config.mode == "mock":
+        simulated = SimulatedNebius(
+            config.plan, hashlib.sha256(value.encode("utf-8")).hexdigest()
+        )
+        transport = httpx.MockTransport(simulated.handler)
+    report = asyncio.run(run_batch(
+        config.batch_cases, config.plan, value, config.batch_max_total_cost_usd,
+        transport=transport,
+    ))
+    result: dict[str, Any] = {"tavily_enabled": False, "batch": report}
+    result["transport"] = (
+        simulated.public_dict() if simulated is not None
+        else {"simulated": False, "automatic_retries": 0}
+    )
+    result["submitted_value"] = _submitted_value_checks(value, config, directory, result)
+    return result
+
+
 def execute_handoff(value: str, config: RunnerConfig, directory: Path) -> dict[str, Any]:
+    if config.batch_cases is not None:
+        return _execute_batch(value, config, directory)
     """Run the fixed note through the real FastAPI route with one guarded provider."""
     from fastapi.testclient import TestClient
 
@@ -307,12 +352,7 @@ def execute_handoff(value: str, config: RunnerConfig, directory: Path) -> dict[s
         result["transport"] = simulated.public_dict()
     else:
         result["transport"] = {"simulated": False, "automatic_retries": 0}
-    result["submitted_value"] = {
-        "fictitious": config.mode == "mock",
-        "found_in_environment": value in os.environ.values(),
-        "found_in_temporary_files": _value_in_files(directory, value),
-        "found_in_report": value in json.dumps(result, ensure_ascii=False),
-    }
+    result["submitted_value"] = _submitted_value_checks(value, config, directory, result)
     return result
 
 
@@ -341,7 +381,14 @@ def _remove_directory(directory: Path) -> bool:
     return False
 
 
-def _form_page(mode: str) -> str:
+def _form_page(config: RunnerConfig) -> str:
+    mode = config.mode
+    scope = ""
+    if config.batch_cases is not None:
+        scope = (f"<p>LOTE: {len(config.batch_cases)} notas sintéticas, modelo "
+                 f"{html.escape(config.plan.model)}, tope total "
+                 f"US${_money(config.batch_max_total_cost_usd)}, una solicitud por nota, "
+                 "sin reintentos.</p>")
     if mode == "mock":
         notice = ("<h1>ENSAYO · transporte Nebius simulado</h1><p>Valor ficticio fijo. "
                   "<strong>No pegar claves reales.</strong></p>")
@@ -352,7 +399,7 @@ def _form_page(mode: str) -> str:
                   "usa una vez en memoria y no se guarda.</p>")
         control = (f'<input name="{FORM_FIELD}" type="password" autocomplete="off" '
                    'required size="48">')
-    return ("<title>AgroField · traspaso local de un solo uso</title>" + notice
+    return ("<title>AgroField · traspaso local de un solo uso</title>" + notice + scope
             + '<form method="post" autocomplete="off"><label>Valor '
             + control + "</label> <button>Enviar una sola vez</button></form>")
 
@@ -413,7 +460,7 @@ def run(config: RunnerConfig, announce=None) -> dict[str, Any]:
             if (state.claimed or self.path != route
                     or self.headers.get("Host") != origin.removeprefix("http://")):
                 return self.reply(404, "Unavailable")
-            self.reply(200, _form_page(config.mode))
+            self.reply(200, _form_page(config))
 
         def do_POST(self):
             state.posts_received += 1
@@ -452,12 +499,24 @@ def run(config: RunnerConfig, announce=None) -> dict[str, Any]:
                 state.execution = {"error_class": type(exc).__name__}
             finally:
                 del value
-            status = state.execution.get("analysis", {}).get("http_status")
+            summary: dict[str, Any] = {"mode": config.mode, "outcome": state.outcome}
+            batch = state.execution.get("batch")
+            if batch is not None:
+                ok = batch.get("stop_reason") == "completed"
+                summary.update({
+                    "requests_sent": batch.get("requests_sent"),
+                    "accepted": batch.get("accepted"),
+                    "stop_reason": batch.get("stop_reason"),
+                    "estimated_total_cost_usd": batch.get("estimated_total_cost_usd"),
+                })
+            else:
+                status = state.execution.get("analysis", {}).get("http_status")
+                ok = status == 200
+                summary["analyze_http_status"] = status
             self.reply(
-                200 if status == 200 else 502,
+                200 if ok else 502,
                 "<title>Traspaso terminado</title><pre>" + html.escape(json.dumps(
-                    {"mode": config.mode, "outcome": state.outcome,
-                     "analyze_http_status": status}, indent=2)) + "</pre>"
+                    summary, indent=2)) + "</pre>"
                 "<p>El detalle saneado quedó en la terminal. Ya puede cerrar esta "
                 "pestaña.</p>",
             )
@@ -491,8 +550,7 @@ def run(config: RunnerConfig, announce=None) -> dict[str, Any]:
         temporary_directory_removed = _remove_directory(directory)
 
     report: dict[str, Any] = {
-        "scope": "full_handoff_rehearsal_simulated_transport_not_model_evidence"
-        if config.mode == "mock" else "single_authorized_live_request",
+        "scope": _scope(config),
         "mode": config.mode,
         "model": config.plan.model,
         "outcome": state.outcome,
@@ -514,7 +572,7 @@ def run(config: RunnerConfig, announce=None) -> dict[str, Any]:
             "temporary_directory_removed": temporary_directory_removed,
         },
     }
-    if config.mode == "mock":
+    if config.mode == "mock" and config.batch_cases is None:
         report["replay_after_single_use"] = {
             "http_status": replay.get("http_status"),
             "blocked": replay.get("http_status") == 409,
@@ -523,6 +581,15 @@ def run(config: RunnerConfig, announce=None) -> dict[str, Any]:
         report["rehearsal_passed"] = all(report["rehearsal_checks"].values())
         report["nemotron_quality"] = None
     return report
+
+
+def _scope(config: RunnerConfig) -> str:
+    if config.batch_cases is not None:
+        return ("batch_rehearsal_simulated_transport_not_model_evidence"
+                if config.mode == "mock"
+                else "capped_live_batch_synthetic_development_not_a_validated_benchmark")
+    return ("full_handoff_rehearsal_simulated_transport_not_model_evidence"
+            if config.mode == "mock" else "single_authorized_live_request")
 
 
 def rehearsal_checks(report: dict[str, Any]) -> dict[str, bool]:
@@ -571,6 +638,14 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-cost-usd", type=_decimal_argument, default=Decimal("0.01"))
     parser.add_argument("--confirm-live", help=f"exactly {CONFIRMATION_PHRASE}; live mode only")
     parser.add_argument("--report-file", type=Path, help="also write the sanitized report here")
+    parser.add_argument("--batch", action="store_true",
+                        help="run the capped development batch instead of one request")
+    parser.add_argument("--dataset", type=Path,
+                        default=Path("fixtures/development/semantic_v2/cases.jsonl"))
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="batch mode only")
+    parser.add_argument("--max-requests", type=int, default=20, help="batch mode only")
+    parser.add_argument("--max-total-cost-usd", type=_decimal_argument,
+                        default=Decimal("0.05"), help="batch mode only")
     return parser
 
 
@@ -579,7 +654,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         prices = (args.input_price_per_million, args.output_price_per_million)
         if args.mode == "live":
-            require_live_confirmation(args.confirm_live)
+            if args.batch:
+                if args.confirm_live != BATCH_CONFIRMATION_PHRASE:
+                    raise PreflightBlocked(
+                        f"batch blocked; pass --confirm-live {BATCH_CONFIRMATION_PHRASE} "
+                        "only after the owner authorizes this request count and cap"
+                    )
+            else:
+                require_live_confirmation(args.confirm_live)
             if None in prices:
                 raise PreflightBlocked("live mode requires both prices, verified today")
             basis = "operator_supplied_for_this_run"
@@ -596,17 +678,29 @@ def main(argv: list[str] | None = None) -> int:
             note.encode("utf-8")
         ).hexdigest():
             raise PreflightBlocked("reference does not belong to this note")
+        batch_cases = None
+        if args.batch:
+            if not 1 <= args.max_requests <= 200:
+                raise PreflightBlocked("--max-requests must be between 1 and 200")
+            batch_cases = load_cases(args.dataset)[: args.max_requests]
         config = RunnerConfig(
             mode=args.mode,
             plan=SmokePlan(
-                model=DEFAULT_MODEL, base_url=DEFAULT_NEBIUS_BASE_URL,
+                model=args.model if args.batch else DEFAULT_MODEL,
+                base_url=DEFAULT_NEBIUS_BASE_URL,
                 max_completion_tokens=1024, prompt_token_budget=16384,
                 input_price_per_million=prices[0], output_price_per_million=prices[1],
                 max_cost_usd=args.max_cost_usd,
             ),
             note=note, reference=reference, port=args.port, pricing_basis=basis,
             idle_seconds=args.idle_seconds,
+            batch_cases=batch_cases,
+            batch_max_total_cost_usd=args.max_total_cost_usd if args.batch else None,
         )
+        if batch_cases is not None:
+            print(json.dumps({"status": "batch_plan", "network_request_sent": False,
+                              **plan_batch(batch_cases, config.plan, args.max_total_cost_usd)},
+                             indent=2), flush=True)
         report = run(config, lambda item: print(json.dumps(item), flush=True))
     except PreflightBlocked as exc:
         print(json.dumps({"status": "blocked", "error": str(exc)}, ensure_ascii=False))
@@ -618,6 +712,8 @@ def main(argv: list[str] | None = None) -> int:
     print("HANDOFF_RUNNER_CLOSED", flush=True)
     if report["outcome"] == "no_post_received":
         return 4
+    if "batch" in report:
+        return 0 if report["batch"].get("stop_reason") == "completed" else 3
     if args.mode == "mock":
         return 0 if report["rehearsal_passed"] else 1
     return 0 if report.get("analysis", {}).get("http_status") == 200 else 3
