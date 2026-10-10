@@ -1,0 +1,111 @@
+{
+  "scope": "single_authorized_live_request",
+  "mode": "live",
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "outcome": "executed",
+  "referrer_policy": "same-origin",
+  "pricing_basis": "operator_supplied_for_this_run",
+  "cost_preflight": {
+    "serialized_request_bytes": 9776,
+    "prompt_token_ceiling": 16384,
+    "completion_token_ceiling": 1024,
+    "estimated_cost_ceiling_usd": "0.00122880"
+  },
+  "max_cost_usd": "0.01000000",
+  "note_sha256": "6bf557787620626e3f9542d116f83a803fcefa9d84f1970beebdb73f5dac0f7d",
+  "handoff": {
+    "path_matches": true,
+    "host_matches": true,
+    "origin_matches": true,
+    "content_type_matches": true,
+    "guard_accepted": true,
+    "posts_received": 1,
+    "posts_accepted": 1,
+    "posts_blocked_after_first": 0,
+    "body_reads": 1
+  },
+  "tavily_enabled": false,
+  "analysis": {
+    "route": "/api/analyze",
+    "http_status": 200,
+    "policy_status": "blocked",
+    "missing_critical": [
+      "stand_count_per_m"
+    ],
+    "tasks_pending": 1,
+    "tasks_not_pending": 0,
+    "official_alerts": 0,
+    "telemetry": {
+      "provider": "nebius",
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "latency_ms": 2374.767100001918,
+      "input_tokens": 3259,
+      "output_tokens": 290,
+      "request_id": "3214519921009416fdb5e924c416d1f6"
+    },
+    "estimated_usage_cost_usd": "0.00026514",
+    "observation": {
+      "crop_stage": "V3",
+      "event_type": "flooding",
+      "event_hours_ago": 18.0,
+      "access_safe": true,
+      "sample_points": 6,
+      "affected_area_pct": 35.0,
+      "standing_water_pct": 35.0,
+      "water_duration_hours": 14.0,
+      "lodging_pct": null,
+      "stem_damage_pct": null,
+      "stand_count_per_m": null,
+      "general_condition": "unknown",
+      "notes": [
+        "Soja V3.",
+        "Tormenta hace 18 horas, acceso seguro.",
+        "Recorrí 6 puntos.",
+        "El agua parada afecta 35% del lote desde hace 14 horas."
+      ],
+      "evidence_quotes": {
+        "crop_stage": "Soja V3.",
+        "event_type": "Tormenta hace 18 horas, acceso seguro.",
+        "event_hours_ago": "Tormenta hace 18 horas, acceso seguro.",
+        "access_safe": "Tormenta hace 18 horas, acceso seguro.",
+        "sample_points": "Recorrí 6 puntos.",
+        "affected_area_pct": "El agua parada afecta 35% del lote desde hace 14 horas.",
+        "standing_water_pct": "El agua parada afecta 35% del lote desde hace 14 horas.",
+        "water_duration_hours": "El agua parada afecta 35% del lote desde hace 14 horas.",
+        "lodging_pct": "",
+        "stem_damage_pct": "",
+        "stand_count_per_m": "",
+        "general_condition": ""
+      },
+      "uncertainties": [
+        "general_condition"
+      ],
+      "provider": "nebius"
+    },
+    "observation_sha256": "4d0da532d50cb6fc3864b928085a4b0533a5ba67b38eae51bb946473bbf3c94f",
+    "reference_comparison": {
+      "reference_status": "synthetic_developer_reference_not_human_validated",
+      "fields": 12,
+      "correct_observed": 8,
+      "correct_absent": 4,
+      "missing": 0,
+      "wrong_value": 0,
+      "unsupported": 0,
+      "errors": []
+    }
+  },
+  "transport": {
+    "simulated": false,
+    "automatic_retries": 0
+  },
+  "submitted_value": {
+    "fictitious": false,
+    "found_in_environment": false,
+    "found_in_temporary_files": false,
+    "found_in_report": false
+  },
+  "cleanup": {
+    "server_closed": true,
+    "temporary_directory_removed": true
+  }
+}
