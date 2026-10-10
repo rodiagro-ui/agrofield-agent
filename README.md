@@ -155,6 +155,8 @@ These checks validate reference structure and request integrity, not model quali
 
 ## Deploying the public demo
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/rodiagro-ui/agrofield-agent)
+
 `Dockerfile` honors `PORT`; `docker-compose.yml` runs the container locally from a
 filled `.env`; `render.yaml` is a Render Blueprint for a free web service with
 every non-secret variable preset (Super as extractor and verifier, US$1 total demo
