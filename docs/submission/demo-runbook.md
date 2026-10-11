@@ -66,19 +66,19 @@ AgroField does not guess its way from a field note to a recommendation. It shows
 
 ### 1:52–2:12 — Technical proof
 
-**Screen:** Architecture graphic or concise overlay: Nemotron → schema → deterministic gate → approval → audit.
+**Screen:** Architecture overlay: Nemotron 3 Super extracts → Nemotron verifies each quote → deterministic gate → approval → audit. Point at the `Verified by …` badge and at the live budget line under the note.
 
 **Narration:**
 
-> The browser holds no provider key. Nemotron runs through Nebius Token Factory with constrained output. Invalid output is rejected, SQLite retains field memory, and the deterministic gate cannot be overridden by the model.
+> The browser holds no provider key. Nemotron 3 Super runs through Nebius Token Factory twice per note: once to extract with a closed schema and literal source IDs, and once to judge whether each quote really supports its value. An unsupported value becomes a question, never a fact. Every call is one guarded request with zero retries, admitted by a spend ledger you can see on screen.
 
 ### 2:12–2:33 — Measured evidence
 
-**Screen:** Real Nemotron result card only after the authorized evaluation.
+**Screen:** Result card with the three-way table from `nebius-batch-v3-nano-super-2026-10-10.md`, labeled "20 synthetic development notes · AI-authored references · not a validated benchmark".
 
-**Narration template:**
+**Narration (measured 2026-10-10):**
 
-> On our frozen synthetic suite, `[MODEL]` reached `[F1]` extraction F1 and `[OMISSION_RECALL]` critical-omission recall at `[P95]` p95 latency and `[COST]` per visit. Full independent agronomy validation remains future work.
+> We measured before choosing. On twenty adversarial synthetic notes, Nemotron 3 Super reached 0.93 extraction F1 with a 2.7-second p95 and about a seventh of a cent per note, ahead of our own hand-written extractor at 0.82. Nano reached 0.65, so Super runs the demo. The references are synthetic and written by an AI; independent agronomy validation remains future work, and the repository keeps every failure.
 
 ### 2:33–2:42 — Close
 

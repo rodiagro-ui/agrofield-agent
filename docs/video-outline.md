@@ -8,7 +8,7 @@ Target length: 2:35–2:50. Final public upload is not authorized.
 4. **1:15–1:50 — Complete note.** Add sampling points and water duration. Show `review_ready`, priority rationale from weather/history, and proposed follow-up tasks.
 5. **1:50–2:10 — Human approval and audit.** Approve one task with a named reviewer; open the immutable audit panel.
 6. **2:10–2:30 — Stack.** Nemotron Super through Nebius Token Factory performs schema-constrained extraction. Deterministic gates own safety. Tavily retrieves only recent allowlisted official alerts and cannot prove field presence.
-7. **2:30–2:45 — Evidence.** Show extraction F1, critical-omission recall, latency, and measured cost from the real Nemotron evaluation—not the local baseline.
+7. **2:30–2:45 — Evidence.** Show the measured 2026-10-10 table: Super F1 0.93, p95 2.7 s, about US$0.0014 per note; Nano 0.65; local extractor 0.82; 20 synthetic AI-authored notes, not a validated benchmark.
 8. **2:45–2:55 — Close.** “AgroField turns a plausible note into accountable field evidence before a human decides.”
 
 Avoid copyrighted music, third-party logos without permission, fake live calls, and unmeasured impact claims.
