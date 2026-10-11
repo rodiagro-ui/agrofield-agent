@@ -26,7 +26,7 @@ def test_api_vertical_slice(tmp_path: Path):
         "recording_mode": False,
     }
     assert client.get("/static/favicon.svg").status_code == 200
-    assert "/static/app.js?v=0.1.2" in client.get("/").text
+    assert "/static/app.js?v=0.1.3" in client.get("/").text
     fields = client.get("/api/fields").json()
     assert len(fields) == 4
     response = client.post(

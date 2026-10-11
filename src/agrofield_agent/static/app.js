@@ -42,6 +42,7 @@ const i18n = {
     verified: (m, ok, cleared) => `Verificación por ${m}: ${ok} respaldados · ${cleared} descartados`,
     unverified: m => `Sin verificar (${m} no respondió; se muestra la extracción sin segunda pasada)`,
     cleared_field: "Descartado por verificación: la cita no respalda el valor",
+    budget_line: (left, total, today, cap) => `Demo en vivo · presupuesto Nemotron: US$${left} de US$${total} disponibles · ${today} de ${cap} solicitudes hoy · sin reintentos`,
     labels: { crop_stage: "Estado", event_type: "Evento", event_hours_ago: "Antigüedad", access_safe: "Acceso",
       sample_points: "Puntos", affected_area_pct: "Área afectada", standing_water_pct: "Agua parada",
       water_duration_hours: "Duración agua", lodging_pct: "Vuelco", stem_damage_pct: "Daño de tallos", stand_count_per_m: "Stand" },
@@ -84,6 +85,7 @@ const i18n = {
     verified: (m, ok, cleared) => `Verified by ${m}: ${ok} supported · ${cleared} cleared`,
     unverified: m => `Unverified (${m} did not answer; showing the extraction without the second pass)`,
     cleared_field: "Cleared by the verifier: the quote does not support the value",
+    budget_line: (left, total, today, cap) => `Live demo · Nemotron budget: US$${left} of US$${total} left · ${today} of ${cap} requests today · zero retries`,
     labels: { crop_stage: "Stage", event_type: "Event", event_hours_ago: "Event age", access_safe: "Access",
       sample_points: "Sample points", affected_area_pct: "Affected area", standing_water_pct: "Standing water",
       water_duration_hours: "Water duration", lodging_pct: "Lodging", stem_damage_pct: "Stem damage", stand_count_per_m: "Stand" },
@@ -144,7 +146,7 @@ function applyLanguage(lang) {
   document.querySelectorAll("[data-i18n]").forEach(node => { node.textContent = t(node.dataset.i18n); });
   document.querySelectorAll("[data-i18n-placeholder]").forEach(node => { node.placeholder = t(node.dataset.i18nPlaceholder); });
   document.querySelectorAll("[data-i18n-title]").forEach(node => { node.title = t(node.dataset.i18nTitle); });
-  renderBadge();
+  renderBadge(); renderBudget();
   if (state.fields.length) { renderFields(); if (state.selected) renderHero(state.selected); }
   if (state.latest) renderAnalysis(state.latest, { keepScroll: true });
 }
@@ -220,6 +222,19 @@ function formatValue(key, value) {
     case "event_type": return lang.events[value] || value;
     default: return `${value}`;
   }
+}
+
+function renderBudget() {
+  const line = el("budgetLine");
+  const budget = state.runtime && state.runtime.demo_budget;
+  if (!budget) { line.classList.add("hidden"); return; }
+  line.textContent = t("budget_line")(Number(budget.estimated_remaining_usd).toFixed(3), Number(budget.total_budget_usd).toFixed(2), budget.requests_today, budget.daily_request_cap);
+  line.classList.remove("hidden");
+}
+
+async function refreshRuntime() {
+  try { state.runtime = await api("/api/runtime"); } catch (_) { return; }
+  renderBudget();
 }
 
 function renderBadge() {
@@ -321,6 +336,7 @@ async function analyze() {
     }
   } finally {
     button.disabled = false; button.innerHTML = `<span data-i18n="analyze_button">${t("analyze_button")}</span> <span>→</span>`;
+    refreshRuntime();
   }
 }
 

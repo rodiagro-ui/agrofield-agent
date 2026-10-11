@@ -169,3 +169,6 @@ textarea:focus { border-color: #79a087; box-shadow: 0 0 0 4px rgba(31,111,74,.08
 .verification-badge.hidden { display: none; }
 .evidence-item.cleared { outline: 1px dashed #c9a24a; }
 .evidence-item .cleared-note { display: block; margin-top: 4px; color: #8a5a12; font-style: normal; font-size: 11px; }
+.budget-line { margin-top: 2px; }
+.budget-line.hidden { display: none; }
+.results { scroll-margin-top: 84px; }
