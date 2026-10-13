@@ -1,6 +1,6 @@
 # AgroField Agent — Devpost draft
 
-> **DO NOT PUBLISH YET.** Replace every `TBD` item with verified evidence. Publication and submission require separate owner authorization.
+> Submitted on 2026-10-13 with the owner's authorization: https://devpost.com/software/agrofield-agent. The submitted text is a condensed version of this draft; edits are possible until 2026-10-30 10:00 PDT.
 
 ## Project title
 
