@@ -4,6 +4,8 @@
 
 AgroField Agent is a protocol-aware field-scouting coordinator for soybean fields after heavy rain, wind, or hail. It turns a spoken or typed field note, weather context, and field history into a structured evidence packet, highlights what still needs to be checked, ranks follow-up work, and requires human approval before creating a decision.
 
+**Demo video (2 min):** https://youtu.be/btm73c6GPyY
+
 **Live demo:** https://agrofield-agent.onrender.com/?lang=en (free instance: the first load after idle takes about a minute; every analysis is a real, capped Nemotron 3 Super call through Nebius Token Factory).
 
 This is deliberately not a general agronomy chatbot. The first vertical slice is **post-weather-event soybean triage**.

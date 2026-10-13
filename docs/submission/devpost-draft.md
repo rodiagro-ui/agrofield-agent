@@ -142,7 +142,7 @@ What we would ask for. A server-side strict-schema mode; batch pricing for short
 
 - Live application: https://agrofield-agent.onrender.com/?lang=en (Render free instance, live since 2026-10-13)
 - Public repository: https://github.com/rodiagro-ui/agrofield-agent (MIT, public since 2026-10-10)
-- Video under three minutes: `TBD_PUBLIC_YOUTUBE_URL`
+- Video under three minutes: https://youtu.be/btm73c6GPyY (2:06, public since 2026-10-13; synthetic English narration over the live demo)
 - License: MIT
 
 ## Tavily bonus decision
