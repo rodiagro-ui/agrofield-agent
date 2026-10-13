@@ -38,3 +38,16 @@ reference. All references are AI-authored synthetic development notes: this is a
 development diagnostic that now compares three extractors on the same 20 notes,
 not a validated benchmark and not agronomist evidence. The second-pass verifier
 (`support-judge-es-v1-candidate`) was not part of this batch.
+
+## Known limitation seen on the public demo (2026-10-13)
+
+On the interface's "incomplete note" example ("Hay agua parada en aproximadamente
+35% del lote"), Super under profile v3 repeatedly reports the standing-water
+percentage but leaves `event_type` unknown, although the field definition maps
+standing water to flooding. It was the same in four live runs, so it is
+systematic, not noise. The effect is conservative: the policy asks "was the event
+rain/flooding, hail, wind or a combination?" instead of assuming. It is still an
+extraction miss by our own definition. The profile was not changed for it: a
+prompt edit would be a new version and would need the 20-note batch re-run to
+check for regressions, and tuning the prompt on the demo's own example would
+flatter the demo rather than the model.
