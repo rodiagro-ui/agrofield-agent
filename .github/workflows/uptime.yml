@@ -1,0 +1,28 @@
+name: demo-uptime
+
+# Keeps the free demo instance awake for judges and fails loudly if it is down.
+# It only calls /health and /api/runtime: no Nemotron request, no cost.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Health
+        run: |
+          for attempt in 1 2 3 4; do
+            code=$(curl -s -o health.json -w "%{http_code}" --max-time 90 https://agrofield-agent.onrender.com/health || true)
+            if [ "$code" = "200" ]; then break; fi
+            sleep 20
+          done
+          cat health.json
+          test "$code" = "200"
+          grep -q '"status":"ok"' health.json
+      - name: Runtime and budget
+        run: |
+          curl -s --max-time 60 https://agrofield-agent.onrender.com/api/runtime | tee runtime.json
+          grep -q '"nemotron_runtime":true' runtime.json
