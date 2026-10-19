@@ -165,7 +165,7 @@ These checks validate reference structure and request integrity, not model quali
 
 `Dockerfile` honors `PORT`; `docker-compose.yml` runs the container locally from a
 filled `.env`; `render.yaml` is a Render Blueprint for a free web service with
-every non-secret variable preset (Super as extractor and verifier, US$1 total demo
+every non-secret variable preset (Super as extractor and verifier, US$10 total demo
 budget, 300 requests per day, 6 per minute). The only secret, `NEBIUS_API_KEY`, is
 entered in the host's dashboard. See `docs/submission/deploy-demo.md`.
 

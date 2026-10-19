@@ -34,7 +34,7 @@ services:
       - key: NEBIUS_REASONING_EFFORT
         value: none
       - key: AGROFIELD_DEMO_TOTAL_BUDGET_USD
-        value: "1"
+        value: "10"
       - key: AGROFIELD_DEMO_DAILY_REQUESTS
         value: "300"
       - key: AGROFIELD_DEMO_REQUESTS_PER_MINUTE
