@@ -9,15 +9,18 @@ on:
 
 jobs:
   ping:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Health
         run: |
-          for attempt in 1 2 3 4; do
+          # A sleeping free instance answers 502/503 for a minute or more while it
+          # wakes; only a failure that lasts about five minutes counts as down.
+          for attempt in $(seq 1 10); do
             code=$(curl -s -o health.json -w "%{http_code}" --max-time 90 https://agrofield-agent.onrender.com/health || true)
+            echo "attempt $attempt: HTTP $code"
             if [ "$code" = "200" ]; then break; fi
-            sleep 20
+            sleep 30
           done
           cat health.json
           test "$code" = "200"
